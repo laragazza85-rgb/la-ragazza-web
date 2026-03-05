@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+/* Aquí definimos nuestro Design System para Tailwind v4 */
+@theme {
+    /* Tipografías: Esto generará las clases font-cinzel y font-lora */
+    --font-cinzel: 'Cinzel', serif;
+    --font-lora: 'Lora', serif;
+
+    /* Colores de marca: Esto generará bg-ragazza-primary, text-ragazza-dark, etc. */
+    --color-ragazza-primary: #662a2a;
+    --color-ragazza-secondary: #331717;
+    --color-ragazza-dark: #331717;
+    --color-ragazza-accent: #749f62;
+    --color-ragazza-bg: #f8f7f6;
+}
+
+/* Base global de Tailwind v4 */
+@layer base {
+    body {
+        @apply bg-ragazza-bg text-ragazza-dark font-lora antialiased;
+    }
+}

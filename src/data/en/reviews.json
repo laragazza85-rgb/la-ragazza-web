@@ -1,0 +1,35 @@
+{
+  "section": {
+    "label": "Our Customers",
+    "title": "The Family Grows"
+  },
+  "reviews": [
+    {
+      "author": "María Fernanda R.",
+      "date": "2 weeks ago",
+      "text": "The best lasagna in Villavicencio, without a doubt. You can taste the love and family tradition in every bite. The atmosphere is super welcoming and Mauricio's service is spectacular.",
+      "rating": 5
+    },
+    {
+      "author": "Carlos Gómez",
+      "date": "1 month ago",
+      "text": "I came with my wife for our anniversary. We loved how the pasta truly feels homemade. The house wine he recommended paired perfectly with the Tournedos.",
+      "rating": 5
+    },
+    {
+      "author": "Andrea V.",
+      "date": "2 months ago",
+      "text": "A hidden gem in the Llanos. If you're looking for authentic Italian food and not franchises, this is the place. The Panna Cotta for dessert is a must.",
+      "rating": 5
+    },
+    {
+      "author": "Felipe Restrepo",
+      "date": "3 months ago",
+      "text": "Excellent service and the food arrives on time. The provolone appetizer is delicious and the prices are very fair for the extremely high quality of the ingredients.",
+      "rating": 5
+    }
+  ],
+  "cta": "Read our reviews on Google",
+  "googleMapsLink": "https://maps.google.com/?q=La+Ragazza+Ristorante+Villavicencio"
+}
+

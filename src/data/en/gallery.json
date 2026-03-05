@@ -1,0 +1,30 @@
+{
+  "header": {
+    "label": "Our Atmosphere",
+    "title": "Gallery",
+    "description": "A visual journey through our handcrafted dishes and the warm Italian corner we have created for you."
+  },
+  "items": [
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&q=80&w=800",
+      "alt": "Cozy interior of La Ragazza"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&fit=crop&q=80&w=800",
+      "alt": "Our famous Lasagna"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1574936145840-28808d77a0b6?auto=format&fit=crop&q=80&w=800",
+      "alt": "Kneading tradition: Fatto en Casa"
+    },
+    {
+      "type": "image",
+      "src": "https://images.unsplash.com/photo-1560008581-09826d1de69e?auto=format&fit=crop&q=80&w=800",
+      "alt": "The sweet touch: Panna Cotta"
+    }
+  ]
+}
+

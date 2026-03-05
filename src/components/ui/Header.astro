@@ -1,0 +1,114 @@
+---
+// src/components/ui/Header.astro
+import { useTranslations } from '../../i18n/utils';
+import { ui } from '../../i18n/ui';
+
+interface Props {
+    lang?: string;
+    solidBg?: boolean;
+}
+
+const lang = (Astro.props.lang || 'es') as 'es' | 'en';
+const t = useTranslations(lang);
+const solidBg = Astro.props.solidBg ?? false;
+const labelsData = await import(`../../data/${lang}/labels.json`).then(m => m.default);
+
+const navItems = [
+    { name: t('nav.home'), path: `/${lang}/` },
+    { name: t('nav.about'), path: `/${lang}/about` },
+    { name: t('nav.menu'), path: `/${lang}/menu` },
+    { name: t('nav.gallery'), path: `/${lang}/gallery` },
+];
+---
+
+<header
+        id="main-header"
+        class:list={[
+            "fixed w-full top-0 z-50 transition-all duration-500 border-b text-white border-white/10",
+            solidBg ? "bg-ragazza-dark" : "bg-transparent"
+        ]}
+>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-24 transition-all duration-500" id="header-container">
+
+            {/* Logo Tipográfico */}
+            <a href={`/${lang}/`} class="font-cinzel text-2xl md:text-3xl font-bold tracking-widest z-50 hover:text-ragazza-accent transition-colors">
+                LA RAGAZZA
+            </a>
+
+            {/* Menú Desktop */}
+            <nav class="hidden md:flex space-x-10">
+                {navItems.map(item => (
+                        <a href={item.path} class="font-cinzel text-sm uppercase tracking-widest hover:text-ragazza-accent transition-colors relative group">
+                            {item.name}
+                            <span class="absolute -bottom-2 left-0 w-0 h-[1px] bg-ragazza-accent transition-all duration-300 group-hover:w-full"></span>
+                        </a>
+                ))}
+            </nav>
+
+            {/* Botón CTA y Hamburguesa Mobile */}
+            <div class="flex items-center gap-6 z-50">
+                <a href="#contact" class="hidden md:inline-flex border border-white/50 px-6 py-2.5 font-cinzel text-xs uppercase tracking-widest hover:bg-white hover:text-ragazza-primary transition-all duration-300">
+                    {labelsData.header.reserve}
+                </a>
+
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-white hover:text-ragazza-accent transition-colors" aria-label="Menu">
+                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    {/* Menú Mobile Desplegable */}
+    <div id="mobile-menu" class="fixed inset-0 bg-ragazza-secondary/95 backdrop-blur-md transform translate-x-full transition-transform duration-500 md:hidden pt-32 px-8 flex flex-col gap-8 z-40">
+        {navItems.map(item => (
+                <a href={item.path} class="font-cinzel text-3xl uppercase tracking-widest text-white border-b border-white/10 pb-4 hover:text-ragazza-accent transition-colors">
+                    {item.name}
+                </a>
+        ))}
+    </div>
+</header>
+
+<script define:vars={{ solidBg }}>
+    document.addEventListener('DOMContentLoaded', () => {
+        const header = document.getElementById('main-header');
+        const headerContainer = document.getElementById('header-container');
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        let isMenuOpen = false;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                // Al scrollear hacia abajo, agregamos el efecto blur y la transparencia oscura
+                header?.classList.add('bg-ragazza-dark/90', 'backdrop-blur-md');
+                // Solo quitamos el transparente si no es solidBg
+                if (!solidBg) header?.classList.remove('bg-transparent');
+
+                headerContainer?.classList.remove('h-24');
+                headerContainer?.classList.add('h-20');
+            } else {
+                // Al volver arriba, quitamos el efecto
+                header?.classList.remove('bg-ragazza-dark/90', 'backdrop-blur-md');
+                // Solo regresamos a transparente si NO es una página de fondo sólido
+                if (!solidBg) header?.classList.add('bg-transparent');
+
+                headerContainer?.classList.add('h-24');
+                headerContainer?.classList.remove('h-20');
+            }
+        });
+
+        mobileBtn?.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu?.classList.remove('translate-x-full');
+                mobileBtn.innerHTML = '<svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>';
+            } else {
+                mobileMenu?.classList.add('translate-x-full');
+                mobileBtn.innerHTML = '<svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>';
+            }
+        });
+    });
+</script>

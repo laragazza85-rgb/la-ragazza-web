@@ -1,0 +1,26 @@
+{
+  "subtitle": "A corner of Italy in the Llanos since 1985",
+  "philosophy": "Homemade",
+  "viewMenu": "View Menu",
+  "reserveTable": "Book a Table",
+  "essence": {
+    "title": "True tradition is not invented,<br/>it is inherited.",
+    "description": "Since 1985, the López Cortés family has preserved the philosophy of cooking \"like at home.\" Every pasta is kneaded by hand, every sauce respects slow cooking times, and every guest is welcomed as part of the family.",
+    "ctaText": "Discover our story",
+    "ctaLink": "/en/about"
+  },
+  "cards": {
+    "menu": {
+      "title": "The Menu",
+      "subtitle": "Pastas, meats and wines"
+    },
+    "gallery": {
+      "title": "The Atmosphere",
+      "subtitle": "A corner of Italy"
+    },
+    "reservations": {
+      "title": "Reservations",
+      "subtitle": "Personalized service"
+    }
+  }
+}

@@ -1,0 +1,283 @@
+[
+  {
+    "id": "entradas",
+    "title": "Entradas",
+    "items": [
+      {
+        "id": "ent-1",
+        "name": "Provolone",
+        "description": "Rodajas de Tomate y Queso con Finas Hierbas al Horno.",
+        "price": 9000,
+        "isVegetarian": true,
+        "image": "provolone.webp"
+      },
+      {
+        "id": "ent-2",
+        "name": "Crema de Pollo y Champiñones",
+        "price": 10000
+      },
+      {
+        "id": "ent-3",
+        "name": "Champiñones al Ajillo",
+        "price": 9000,
+        "isVegetarian": true
+      }
+    ]
+  },
+  {
+    "id": "lasagna",
+    "title": "Lasagna",
+    "items": [
+      {
+        "id": "las-1",
+        "name": "De la Casa",
+        "description": "Salsa Bolognesa, Pollo, Jamón y Champiñones.",
+        "price": 50000,
+        "image": "lasagna-casa.webp"
+      },
+      {
+        "id": "las-2",
+        "name": "Salsa Bolognesa o Salsa de Pollo",
+        "price": 48000
+      },
+      {
+        "id": "las-3",
+        "name": "Salsa Roja o Blanca de Pollo y Champiñones",
+        "price": 50000,
+        "sauceOptions": ["roja", "blanca"]
+      },
+      {
+        "id": "las-4",
+        "name": "Salsa Napolitana o Bechamel",
+        "description": "Brócoli, Champiñón, Aceituna, Tomate.",
+        "price": 50000,
+        "isVegetarian": true,
+        "sauceOptions": ["napolitana", "bechamel"]
+      },
+      {
+        "id": "las-5",
+        "name": "Salsa Napolitana o Bechamel con Champiñones",
+        "price": 48000,
+        "isVegetarian": true,
+        "sauceOptions": ["napolitana", "bechamel"]
+      }
+    ]
+  },
+  {
+    "id": "spaguetti-tallarin",
+    "title": "Spaguetti / Tallarin",
+    "items": [
+      {
+        "id": "spa-1",
+        "name": "De la Casa",
+        "description": "Salsa Bolognesa, Pollo, Jamón y Champiñones.",
+        "price": 50000,
+        "image": "spaguetti-casa.webp"
+      },
+      {
+        "id": "spa-2",
+        "name": "Salsa Bolognesa o Salsa de Pollo",
+        "price": 48000
+      },
+      {
+        "id": "spa-3",
+        "name": "A la Carbonara",
+        "description": "Crema, Tocineta, Huevo Batido.",
+        "price": 48000
+      },
+      {
+        "id": "spa-4",
+        "name": "A la Alfredo",
+        "description": "Crema, Jamón y Queso Parmesano.",
+        "price": 51000
+      },
+      {
+        "id": "spa-5",
+        "name": "Salsa Picante con Tomate y Tocineta",
+        "price": 48000,
+        "notes": "Con o Sin crema"
+      },
+      {
+        "id": "spa-6",
+        "name": "Al Ajo con Champiñones",
+        "price": 48000,
+        "isVegetarian": true,
+        "notes": "Con o Sin crema"
+      },
+      {
+        "id": "spa-7",
+        "name": "Al Burro",
+        "description": "Mantequilla.",
+        "price": 22000,
+        "isVegetarian": true
+      }
+    ]
+  },
+  {
+    "id": "ravioli",
+    "title": "Ravioli (Rellenos de Carne)",
+    "items": [
+      {
+        "id": "rav-1",
+        "name": "De la Casa",
+        "description": "Salsa Bolognesa, Pollo, Jamón y Champiñones.",
+        "price": 52000
+      },
+      {
+        "id": "rav-2",
+        "name": "Salsa Bolognesa o Salsa de Pollo",
+        "price": 50000
+      },
+      {
+        "id": "rav-3",
+        "name": "A la Alfredo",
+        "description": "Crema, Jamón y Queso Parmesano.",
+        "price": 53000
+      }
+    ]
+  },
+  {
+    "id": "caneloni",
+    "title": "Caneloni (Rellenos de Queso)",
+    "items": [
+      {
+        "id": "can-1",
+        "name": "Salsa Bolognesa o Salsa de Pollo",
+        "price": 50000,
+        "sauceOptions": ["roja", "blanca"]
+      }
+    ]
+  },
+  {
+    "id": "alternativas",
+    "title": "Otras Alternativas",
+    "items": [
+      {
+        "id": "alt-1",
+        "name": "Plato Mixto",
+        "description": "Milanesa de Cerdo con Spaguetti o Lasagna.",
+        "price": 53000
+      },
+      {
+        "id": "alt-2",
+        "name": "Tournedos",
+        "description": "Medallones de Carne albardados en Tocineta con Spaguetti.",
+        "price": 60000,
+        "image": "tournedos.webp"
+      },
+      {
+        "id": "alt-3",
+        "name": "Filete de Pescado",
+        "description": "Filete de Dorado al horno en Salsa Napolitana con Champiñones, Queso Parmesano, y Papas a la Francesa.",
+        "price": 53000
+      }
+    ]
+  },
+  {
+    "id": "adicionales",
+    "title": "Porciones Adicionales",
+    "items": [
+      {
+        "id": "adi-1",
+        "name": "Papa a la francesa",
+        "price": 8000
+      },
+      {
+        "id": "adi-2",
+        "name": "Queso parmesano",
+        "price": 3000
+      },
+      {
+        "id": "adi-3",
+        "name": "Porción de salsa personal",
+        "price": 8000
+      }
+    ]
+  },
+  {
+    "id": "postres",
+    "title": "Postres",
+    "items": [
+      {
+        "id": "pos-1",
+        "name": "Panna Cotta",
+        "price": 10000,
+        "image": "pannacotta.webp"
+      },
+      {
+        "id": "pos-2",
+        "name": "Cocadas",
+        "price": 3000
+      }
+    ]
+  },
+  {
+    "id": "bebidas-sin-alcohol",
+    "title": "Bebidas Sin Alcohol",
+    "items": [
+      {
+        "id": "bsa-1",
+        "name": "Gaseosa o Limonada con o sin Azúcar",
+        "price": 6000,
+        "notes": "350mL"
+      },
+      {
+        "id": "bsa-2",
+        "name": "Mr. Tea de Durazno - Limón",
+        "price": 6500,
+        "notes": "500 mL"
+      },
+      {
+        "id": "bsa-3",
+        "name": "Botella de Agua con o sin Gas",
+        "price": 6000,
+        "notes": "600mL"
+      }
+    ]
+  },
+  {
+    "id": "bebidas-con-alcohol",
+    "title": "Bebidas Con Alcohol",
+    "items": [
+      {
+        "id": "bca-1",
+        "name": "Águila Light",
+        "price": 8000
+      },
+      {
+        "id": "bca-2",
+        "name": "Club Colombia",
+        "price": 9000
+      },
+      {
+        "id": "bca-3",
+        "name": "Kola y Pola",
+        "price": 6500
+      }
+    ]
+  },
+  {
+    "id": "vinos",
+    "title": "Vinos",
+    "items": [
+      {
+        "id": "vin-1",
+        "name": "Vino de la Casa",
+        "description": "Tempranillo, Español.",
+        "price": 90000
+      },
+      {
+        "id": "vin-2",
+        "name": "Vino Santa Helena",
+        "description": "Chileno.",
+        "price": 160000
+      },
+      {
+        "id": "vin-3",
+        "name": "Dubonet",
+        "description": "Dulce, Francés.",
+        "price": 180000
+      }
+    ]
+  }
+]

@@ -1,0 +1,116 @@
+---
+// src/pages/[lang]/about.astro
+import Layout from '../../layouts/Layout.astro';
+import Contact from '../../components/sections/Contact.astro';
+import Footer from '../../components/ui/Footer.astro';
+
+export function getStaticPaths() {
+    return [
+        { params: { lang: 'es' } },
+        { params: { lang: 'en' } }
+    ];
+}
+
+const { lang } = Astro.params;
+
+// Importar datos del JSON
+const aboutData = await import(`../../data/${lang}/about.json`).then(m => m.default);
+---
+
+<Layout
+        title={lang === 'es'
+            ? 'Nuestra Historia | La Ragazza Ristorante'
+            : 'Our Story | La Ragazza Ristorante'}
+        description={lang === 'es'
+            ? 'Conozca a la familia López Cortés y nuestra historia desde 1985. Tradición italiana pura, sin químicos y hecha en casa en Villavicencio.'
+            : 'Meet the López Cortés family and our story since 1985. Pure Italian tradition, chemical-free and homemade in Villavicencio.'}
+        solidBg={true}
+>
+    {/* Editorial Header */}
+    <div class="pt-40 pb-20 bg-ragazza-bg text-center px-4 relative overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-ragazza-primary/5 rounded-full blur-3xl -z-10"></div>
+        <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold reveal opacity-0 translate-y-8 transition-all duration-1000">{aboutData.header.label}</span>
+        <h1 class="font-cinzel text-5xl md:text-7xl text-ragazza-dark mt-4 mb-6 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">{aboutData.header.title}</h1>
+        <div class="w-16 h-[2px] bg-ragazza-accent mx-auto mt-8 mb-8 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200"></div>
+    </div>
+
+    <main class="bg-ragazza-bg pb-24 overflow-hidden">
+
+        {/* Block 1: History and Philosophy */}
+        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-32 text-center reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out">
+            <h2 class="font-cinzel text-3xl md:text-4xl text-ragazza-primary mb-8">{aboutData.philosophy.title}</h2>
+            <p class="font-lora text-lg md:text-xl text-ragazza-secondary/80 leading-relaxed italic mb-6">
+                {aboutData.philosophy.description}
+            </p>
+            <p class="font-lora text-lg md:text-xl text-ragazza-secondary/80 leading-relaxed italic">
+                {aboutData.philosophy.promise}
+            </p>
+        </section>
+
+        {/* Block 2: Mauricio (Photo Left / Text Right) */}
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-32">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+                {/* Photo Container */}
+                <div class="relative h-[450px] lg:h-[600px] w-full group reveal opacity-0 translate-y-8 transition-all duration-1000">
+                    {/* Decorative Element */}
+                    <div class="absolute inset-0 bg-ragazza-primary/10 transition-transform duration-700 group-hover:-translate-x-6 group-hover:-translate-y-6"></div>
+
+                    {/* Photo */}
+                    <div class="absolute inset-0 bg-ragazza-secondary flex items-center justify-center overflow-hidden shadow-2xl border border-ragazza-primary/10">
+                        {/* ⚠️ When you have Mauricio's photo, change src and remove span */}
+                        <img src="" alt="Mauricio López Cortés" class="w-full h-full object-cover opacity-60 mix-blend-overlay transition-transform duration-1000 group-hover:scale-105" />
+                        <span class="font-cinzel text-white/50 text-xl tracking-widest absolute">Mauricio Photo</span>
+                    </div>
+                </div>
+
+
+                {/* Text Container */}
+                <div class="reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200">
+                    <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold">{aboutData.mauricio.label}</span>
+                    <h2 class="font-cinzel text-4xl lg:text-5xl text-ragazza-dark mt-2 mb-6">{aboutData.mauricio.name}</h2>
+                    <div class="space-y-6 font-lora text-ragazza-secondary/80 leading-relaxed text-lg">
+                        {aboutData.mauricio.paragraphs.map((paragraph: string) => (
+                            <p>{paragraph}</p>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {/* Block 3: Carolina (Text Left / Photo Right) */}
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+                {/* Text Container */}
+                <div class="order-2 md:order-1 reveal opacity-0 translate-y-8 transition-all duration-1000">
+                    <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold">{aboutData.carolina.label}</span>
+                    <h2 class="font-cinzel text-4xl lg:text-5xl text-ragazza-dark mt-2 mb-6">{aboutData.carolina.name}</h2>
+                    <div class="space-y-6 font-lora text-ragazza-secondary/80 leading-relaxed text-lg">
+                        {aboutData.carolina.paragraphs.map((paragraph: string) => (
+                            <p>{paragraph}</p>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Photo Container */}
+                <div class="order-1 md:order-2 relative h-[450px] lg:h-[600px] w-full group reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200">
+                    {/* Decorative Element (Reverse) */}
+                    <div class="absolute inset-0 bg-ragazza-accent/10 transition-transform duration-700 group-hover:translate-x-6 group-hover:-translate-y-6"></div>
+
+                    {/* Photo */}
+                    <div class="absolute inset-0 bg-ragazza-dark flex items-center justify-center overflow-hidden shadow-2xl border border-ragazza-primary/10">
+                        {/* ⚠️ When you have Carolina's photo, change src and remove span */}
+                        <img src="" alt="Carolina López" class="w-full h-full object-cover opacity-60 mix-blend-overlay transition-transform duration-1000 group-hover:scale-105" />
+                        <span class="font-cinzel text-white/50 text-xl tracking-widest absolute">Carolina Photo</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <Contact lang={lang} />
+    <Footer lang={lang} />
+</Layout>

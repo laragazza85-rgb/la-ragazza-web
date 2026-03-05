@@ -1,0 +1,88 @@
+---
+// src/pages/[lang]/index.astro
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/sections/Hero.astro';
+import Contact from '../../components/sections/Contact.astro';
+import Footer from '../../components/ui/Footer.astro';
+
+export function getStaticPaths() {
+    return [
+        { params: { lang: 'es' } },
+        { params: { lang: 'en' } }
+    ];
+}
+
+const { lang } = Astro.params;
+
+// Importar datos del JSON
+const heroData = await import(`../../data/${lang}/hero.json`).then(m => m.default);
+---
+
+<Layout
+        title="La Ragazza Ristorante | Villavicencio"
+        description={lang === 'es'
+            ? 'Un rincón de Italia en los Llanos desde 1985. Pasta hecha en casa, un asunto de tradición familiar en Villavicencio.'
+            : 'A corner of Italy in the Llanos since 1985. Homemade pasta, a matter of family tradition in Villavicencio.'}
+>
+    <Hero lang={lang} />
+
+    {/* Section: The Essence (Initial Storytelling) */}
+    <section class="py-24 bg-ragazza-bg px-4 sm:px-6 lg:px-8 text-center reveal opacity-0 translate-y-8 transition-all duration-1000">
+        <div class="max-w-3xl mx-auto">
+            <svg class="w-8 h-8 mx-auto text-ragazza-accent mb-6 opacity-80" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            <h2 class="font-cinzel text-3xl md:text-5xl text-ragazza-primary leading-tight mb-8">
+                <Fragment set:html={heroData.essence.title} />
+            </h2>
+            <p class="font-lora text-lg md:text-xl text-ragazza-secondary/80 italic leading-relaxed">
+                {heroData.essence.description}
+            </p>
+            <a href={heroData.essence.ctaLink} class="inline-block mt-10 font-cinzel text-sm text-ragazza-primary font-bold uppercase tracking-widest border-b border-ragazza-primary pb-1 hover:text-ragazza-accent hover:border-ragazza-accent transition-colors">
+                {heroData.essence.ctaText}
+            </a>
+        </div>
+    </section>
+
+    {/* Section: Editorial Navigation Cards */}
+    <section class="py-12 bg-ragazza-bg pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                {/* Card 1: Menu */}
+                <a href={`/${lang}/menu`} class="group relative h-[450px] overflow-hidden reveal opacity-0 translate-y-8 transition-all duration-1000">
+                    <div class="absolute inset-0 bg-ragazza-primary/20 transition-all duration-700 group-hover:bg-ragazza-dark/40 z-10"></div>
+                    <div class="absolute inset-0 bg-ragazza-secondary transition-transform duration-1000 group-hover:scale-105"></div>
+                    <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
+                        <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.menu.title}</h3>
+                        <p class="font-lora text-white/80 italic">{heroData.cards.menu.subtitle}</p>
+                    </div>
+                </a>
+
+                {/* Card 2: Gallery */}
+                <a href={`/${lang}/gallery`} class="group relative h-[450px] overflow-hidden reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">
+                    <div class="absolute inset-0 bg-ragazza-accent/20 transition-all duration-700 group-hover:bg-ragazza-dark/40 z-10"></div>
+                    <div class="absolute inset-0 bg-ragazza-primary transition-transform duration-1000 group-hover:scale-105"></div>
+                    <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
+                        <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.gallery.title}</h3>
+                        <p class="font-lora text-white/80 italic">{heroData.cards.gallery.subtitle}</p>
+                    </div>
+                </a>
+
+                {/* Card 3: Reservations */}
+                <a href="#contact" class="group relative h-[450px] overflow-hidden md:col-span-2 lg:col-span-1 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200">
+                    <div class="absolute inset-0 bg-ragazza-dark/20 transition-all duration-700 group-hover:bg-ragazza-dark/60 z-10"></div>
+                    <div class="absolute inset-0 bg-[#4a1f1f] transition-transform duration-1000 group-hover:scale-105"></div>
+                    <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
+                        <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.reservations.title}</h3>
+                        <p class="font-lora text-white/80 italic">{heroData.cards.reservations.subtitle}</p>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <Contact lang={lang} />
+    <Footer lang={lang} />
+</Layout>
+
+

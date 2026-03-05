@@ -1,0 +1,32 @@
+---
+// src/components/sections/MenuSection.astro
+import type { MenuCategory } from '../../types/menu';
+import MenuCard from '../ui/MenuCard.astro';
+
+interface Props {
+    category: MenuCategory;
+    lang?: string;
+}
+
+const { category, lang = 'es' } = Astro.props;
+const labelsData = await import(`../../data/${lang}/labels.json`).then(m => m.default);
+---
+
+<section class="mb-16 scroll-mt-24 reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out" id={category.id}>
+    <header class="mb-8 text-center sm:text-left border-b border-ragazza-primary/20 pb-4">
+        <h2 class="font-cinzel text-3xl md:text-4xl text-ragazza-primary uppercase tracking-wider">
+            {category.title}
+        </h2>
+        {category.description && (
+                <p class="font-lora text-ragazza-secondary/70 mt-2 italic">
+                    {category.description}
+                </p>
+        )}
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-2">
+        {category.items.map((item) => (
+                <MenuCard item={item} vegetarianLabel={labelsData.menu.vegetarian} optionsLabel={labelsData.menu.options} />
+        ))}
+    </div>
+</section>

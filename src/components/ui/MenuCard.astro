@@ -1,0 +1,71 @@
+---
+// src/components/ui/MenuCard.astro
+import type { MenuItem } from '../../types/menu';
+import { formatPrice } from '../../utils/currency';
+
+interface Props {
+    item: MenuItem;
+    vegetarianLabel?: string;
+    optionsLabel?: string;
+}
+
+const { item, vegetarianLabel = 'Vegetariano', optionsLabel = 'Opciones' } = Astro.props;
+---
+
+<article class="flex flex-col sm:flex-row gap-4 py-6 border-b border-ragazza-primary/10 last:border-b-0 group">
+
+    {/* Image Placeholder (Will be connected to Cloudflare R2 later) */}
+    {item.image && (
+            <div class="shrink-0 w-full sm:w-32 h-32 bg-ragazza-primary/5 rounded-md overflow-hidden relative">
+                <div class="absolute inset-0 flex items-center justify-center text-ragazza-primary/20">
+                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            </div>
+    )}
+
+    <div class="flex-1 flex flex-col justify-center">
+
+        <div class="flex justify-between items-start gap-4">
+            <h3 class="font-cinzel text-lg md:text-xl font-bold text-ragazza-primary group-hover:text-ragazza-accent transition-colors duration-300">
+                {item.name}
+            </h3>
+            <span class="font-lora font-medium text-ragazza-dark whitespace-nowrap">
+        {formatPrice(item.price)}
+      </span>
+        </div>
+
+        {item.description && (
+                <p class="font-lora text-ragazza-secondary/80 mt-2 text-sm leading-relaxed">
+                    {item.description}
+                </p>
+        )}
+
+        {/* Metadata & Badges Area */}
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+
+            {item.isVegetarian && (
+                    <span class="inline-flex items-center gap-1 text-xs font-lora font-medium text-ragazza-accent bg-ragazza-accent/10 px-2 py-1 rounded-full">
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 22C12 22 20 16 20 8.5C20 4.91 17.09 2 13.5 2C12.44 2 11.45 2.25 10.55 2.7C9.65 2.25 8.66 2 7.6 2C4.01 2 1.1 4.91 1.1 8.5C1.1 16 9.1 22 9.1 22H12Z"/>
+          </svg>
+          {vegetarianLabel}
+        </span>
+            )}
+
+            {item.sauceOptions && (
+                    <span class="text-xs font-lora text-ragazza-primary/70 italic border border-ragazza-primary/20 px-2 py-1 rounded-full">
+          {optionsLabel}: {item.sauceOptions.join(', ')}
+        </span>
+            )}
+
+            {item.notes && (
+                    <span class="text-xs font-lora text-ragazza-primary/70 bg-white px-2 py-1 rounded shadow-sm border border-ragazza-primary/5">
+          {item.notes}
+        </span>
+            )}
+
+        </div>
+    </div>
+</article>

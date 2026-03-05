@@ -1,0 +1,53 @@
+---
+// src/components/ui/GalleryItem.astro
+
+export interface GalleryMedia {
+    type: 'image' | 'video';
+    src: string;
+    alt: string;
+}
+
+interface Props {
+    item: GalleryMedia;
+    index: number;
+}
+
+const { item, index } = Astro.props;
+// Calculamos el delay de la animación de entrada para que aparezcan en cascada
+const delay = index * 75;
+---
+
+<article
+        class="break-inside-avoid relative group overflow-hidden bg-ragazza-secondary mb-6 reveal opacity-0 translate-y-8 transition-all duration-1000 shadow-sm hover:shadow-2xl"
+        style={`transition-delay: ${delay}ms`}
+>
+
+    {/* Overlay decorativo con degradado que aparece en Hover para contrastar el texto */}
+    <div class="absolute inset-0 bg-gradient-to-t from-ragazza-dark/90 via-ragazza-dark/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none flex items-end p-6 md:p-8">
+    <span class="text-white font-cinzel tracking-wider text-sm md:text-base transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out drop-shadow-md">
+      {item.alt}
+    </span>
+    </div>
+
+    {/* Renderizado Condicional: Video o Imagen */}
+    {item.type === 'video' ? (
+            <video
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    class="w-full h-auto object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+            >
+                <source src={item.src} type="video/mp4" />
+                Tu navegador no soporta videos.
+            </video>
+    ) : (
+            <img
+                    src={item.src}
+                    alt={item.alt}
+                    loading="lazy"
+                    class="w-full h-auto object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+            />
+    )}
+
+</article>

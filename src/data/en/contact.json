@@ -1,0 +1,21 @@
+{
+  "location": {
+    "label": "Address",
+    "city": "Villavicencio",
+    "state": "Meta",
+    "country": "Colombia"
+  },
+  "family": {
+    "title": "Family Tradition",
+    "founded": "Founded in 1985.",
+    "owners": "Attended by Carolina and Mauricio.",
+    "philosophy": "\"Homemade\""
+  },
+  "whatsapp": {
+    "label": "Reservations via WhatsApp",
+    "description": "We attend to your reservations and inquiries directly with personalized service.",
+    "phoneNumber": "573133494150",
+    "message": "Hi La Ragazza, I would like to make a reservation or inquire about the menu."
+  }
+}
+

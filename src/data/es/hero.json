@@ -1,0 +1,26 @@
+{
+  "subtitle": "Un rincón de Italia en los Llanos desde 1985",
+  "philosophy": "Fatto en casa",
+  "viewMenu": "Ver Menú",
+  "reserveTable": "Reservar Mesa",
+  "essence": {
+    "title": "La verdadera tradición no se inventa,<br/>se hereda.",
+    "description": "Desde 1985, la familia López Cortés ha mantenido intacta la filosofía de cocinar \"como en casa\". Cada pasta es fabricada a mano, cada salsa respeta los tiempos de cocción lentos y cada cliente es recibido como parte de la familia.",
+    "ctaText": "Descubra nuestra historia",
+    "ctaLink": "/es/about"
+  },
+  "cards": {
+    "menu": {
+      "title": "La Carta",
+      "subtitle": "Pastas, carnes y vinos"
+    },
+    "gallery": {
+      "title": "El Ambiente",
+      "subtitle": "Un rincón de Italia"
+    },
+    "reservations": {
+      "title": "Reservaciones",
+      "subtitle": "Atención personalizada"
+    }
+  }
+}

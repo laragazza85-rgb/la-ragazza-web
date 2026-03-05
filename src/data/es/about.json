@@ -1,0 +1,28 @@
+{
+  "header": {
+    "label": "Tradición Familiar",
+    "title": "Nuestra Historia"
+  },
+  "philosophy": {
+    "title": "La Filosofía \"Fatto en Casa\"",
+    "description": "Desde 1985, La Ragazza ha sido mucho más que un restaurante; es la extensión de nuestro propio comedor. Creemos firmemente que la verdadera gastronomía italiana no admite atajos ni procesos industriales.",
+    "promise": "Nuestra promesa es simple: todo se prepara desde cero al momento de su orden, sin químicos ni conservantes. Es una labor que requiere tiempo y paciencia, pero es el único camino para garantizar el auténtico sabor de Italia en los Llanos."
+  },
+  "mauricio": {
+    "label": "El Anfitrión",
+    "name": "Mauricio",
+    "paragraphs": [
+      "Con una sonrisa siempre dispuesta y un conocimiento profundo de cada detalle, Mauricio es el corazón de la sala. Su pasión por el servicio al cliente asegura que cada visita a La Ragazza se sienta como llegar a casa.",
+      "Atento a las necesidades de cada comensal, se encarga de que la experiencia sea impecable, recomendando el vino perfecto de nuestra cava para acompañar la velada y asegurándose de que la tradición de la familia López Cortés se transmita en cada detalle."
+    ]
+  },
+  "carolina": {
+    "label": "El Alma de la Cocina",
+    "name": "Carolina López",
+    "paragraphs": [
+      "Carolina es la guardiana absoluta de nuestras recetas. Bajo su mando, la cocina rechaza lo prefabricado; sus manos dan forma a las pastas artesanales y vigilan el fuego lento donde las salsas toman su carácter inconfundible.",
+      "Para ella, cocinar es un acto de amor y respeto por el comensal. Su rigor y perfeccionismo garantizan que ningún plato salga a la mesa si no cumple con los altos estándares y la esencia auténtica que ha definido a La Ragazza durante casi cuatro décadas."
+    ]
+  }
+}
+

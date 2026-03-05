@@ -1,0 +1,70 @@
+{
+  "averageRating": 4.5,
+  "reviewCount": 218,
+  "reviews": [
+    {
+      "reviewId": "Ci9DQUlRQUNvZENodHljRjlvT21Od1ExODRUMHhoZGpKUFVqZFBabEV4VHpGNlpHYxAB",
+      "reviewerName": "Marta Villalobos",
+      "text_es": "Es un sitio muy especial, con una tradición maravillosa de calidad y buen servicio",
+      "text_en": "It is a very special place, with a wonderful tradition of quality and good service",
+      "stars": 5,
+      "reviewDate": "A month ago"
+    },
+    {
+      "reviewId": "Ci9DQUlRQUNvZENodHljRjlvT25kVWExbHBOM2N3UlVGa05HazRWV0p0Ukd0WFptYxAB",
+      "reviewerName": "Juan Luis González Torres",
+      "text_es": "El mejor restaurante de Villavicencio Mauricio es lo máximo 🇮🇹🍕🍝",
+      "text_en": "The best restaurant of Villavicencio Mauricio is the best 🇮🇹🍕🍝",
+      "stars": 5,
+      "reviewDate": "A month ago"
+    },
+    {
+      "reviewId": "ChdDSUhNMG9nS0VJQ0FnSURRNnRfSXpRRRAB",
+      "reviewerName": "Mario Garcia",
+      "text_es": "Excelente atención, delicioso menú, Lasagna exquisita.",
+      "text_en": "Excellent service, delicious menu, exquisite Lasagna.",
+      "stars": 5,
+      "reviewDate": "Edited 2 months ago"
+    },
+    {
+      "reviewId": "Ci9DQUlRQUNvZENodHljRjlvT2pSbVpWRkhRbVV5ZW5Sa04zQnJWbUZyYm10S2RWRRAB",
+      "reviewerName": "Diego Rodriguez Florez",
+      "text_es": "✨ Un bocado de esta lasagna y ya estaba en Italia 🇮🇹🍷… Entre el gratinado perfecto, el pan recién horneado, la copa de vino y la música en vivo, sentí que viajé sin moverme de la mesa. 🎶✨ Gracias volveré!",
+      "text_en": "✨ One bite of this lasagna and I was already in Italy 🇮🇹🍷... Between the perfect gratin, the freshly baked bread, the glass of wine and the live music, I felt like I travelled without moving from the table. 🎶✨ Thank you I will be back!",
+      "stars": 5,
+      "reviewDate": "5 months ago"
+    },
+    {
+      "reviewId": "ChdDSUhNMG9nS0VJQ0FnSUNnODhTQjF3RRAB",
+      "reviewerName": "Alejandro Jiménez",
+      "text_es": "La mejor comida italiana de Villavicencio",
+      "text_en": "The best Italian food in Villavicencio",
+      "stars": 5,
+      "reviewDate": "Edited 6 months ago"
+    },
+    {
+      "reviewId": "Ci9DQUlRQUNvZENodHljRjlvT2xwR1JsWkVZVzlzVFZCUmVHZDJRVWR4YXpGelVWRRAB",
+      "reviewerName": "Jorge Guativa",
+      "text_es": "Un clásico italiano de la ciudad de Villavicencio que nunca te da decepcion en sus platos sencillos muy deliciosos que se mira que son igual de elaborados con amor que con que te atienden y te acogen haciendo sentir como parte de la familia, ya que es idoneo para ir con la familia para compartir.",
+      "text_en": "A classic Italian restaurant in the city of Villavicencio that never lets you down with its simple and delicious dishes that are just as well prepared with love as with the way they serve and welcome you, making you feel like part of the family, as it is ideal to go with the family to share.",
+      "stars": 5,
+      "reviewDate": "7 months ago"
+    },
+    {
+      "reviewId": "Ci9DQUlRQUNvZENodHljRjlvT2tkaFEwZzJOaTB4YTI1Q1NFUm9UbkZ0T1hwRVZXYxAB",
+      "reviewerName": "Hakan Karaduman",
+      "text_es": "El mejor restaurante de Villao, incluyendo otros de primera categoría. Gran chef y camarera y buena música.",
+      "text_en": "Best restaurant in Villao, including other top-class ones. Great chef and waitress and great music.",
+      "stars": 5,
+      "reviewDate": "8 months ago"
+    },
+    {
+      "reviewId": "ChdDSUhNMG9nS0VLYlBuTzM1a08yWnh3RRAB",
+      "reviewerName": "Erol Isaac Zabicki Duardo",
+      "text_es": "Excelente opción, la verdadera comida italiana. Sabores de 1000 y una atención de familia. Muchas gracias 👌",
+      "text_en": "Excellent choice, real Italian food. Flavours of 1000 and family service. Thank you very much 👌",
+      "stars": 5,
+      "reviewDate": "9 months ago"
+    }
+  ]
+}

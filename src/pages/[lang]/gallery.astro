@@ -1,0 +1,58 @@
+---
+// src/pages/[lang]/gallery.astro
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/ui/Footer.astro';
+import Contact from '../../components/sections/Contact.astro';
+import Reviews from '../../components/sections/Reviews.astro';
+import GalleryItem from '../../components/ui/GalleryItem.astro';
+import type { GalleryMedia } from '../../types/gallery';
+
+export function getStaticPaths() {
+    return [
+        { params: { lang: 'es' } },
+        { params: { lang: 'en' } }
+    ];
+}
+
+const { lang } = Astro.params;
+
+// Importar datos del JSON
+const galleryData = await import(`../../data/${lang}/gallery.json`).then(m => m.default);
+const galleryItems: GalleryMedia[] = galleryData.items;
+---
+
+<Layout
+        title={lang === 'es'
+            ? 'Galería y Testimonios | La Ragazza Ristorante'
+            : 'Gallery & Testimonials | La Ragazza Ristorante'}
+        description={lang === 'es'
+            ? 'Descubra nuestro ambiente familiar y lea lo que nuestros clientes opinan sobre la mejor pasta tradicional en Villavicencio.'
+            : 'Discover our family atmosphere and read what our customers say about the best traditional pasta in Villavicencio.'}
+        solidBg={true}
+>
+    {/* Gallery Header */}
+    <div class="pt-40 pb-20 bg-ragazza-bg text-center px-4 relative overflow-hidden">
+        <div class="absolute top-0 right-1/4 w-[500px] h-[500px] bg-ragazza-accent/5 rounded-full blur-3xl -z-10"></div>
+        <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold reveal opacity-0 translate-y-8 transition-all duration-1000">{galleryData.header.label}</span>
+        <h1 class="font-cinzel text-5xl md:text-7xl text-ragazza-dark mt-4 mb-6 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">{galleryData.header.title}</h1>
+        <div class="w-16 h-[2px] bg-ragazza-accent mx-auto mt-8 mb-8 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200"></div>
+        <p class="font-lora text-ragazza-secondary/80 max-w-2xl mx-auto italic reveal opacity-0 translate-y-8 transition-all duration-1000 delay-300">
+            {galleryData.header.description}
+        </p>
+    </div>
+
+    {/* Masonry Section */}
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-ragazza-bg pb-32">
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-6">
+            {galleryItems.map((item, index) => (
+                    <GalleryItem item={item} index={index} />
+            ))}
+        </div>
+    </main>
+
+    <Reviews lang={lang} />
+    <Contact lang={lang} />
+    <Footer lang={lang} />
+</Layout>
+
+

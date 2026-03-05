@@ -1,0 +1,103 @@
+---
+// src/layouts/Layout.astro
+import '../styles/global.css';
+import Header from '../components/ui/Header.astro';
+import {
+    buildAlternateLinks,
+    buildCanonicalUrl,
+    buildRestaurantJsonLd,
+    buildXDefault,
+    type Locale,
+} from '../utils/seo';
+
+interface Props {
+    title: string;
+    description: string;
+    solidBg?: boolean;
+    ogImage?: string;
+}
+
+const { title, description, solidBg = false, ogImage = '/Logo.png' } = Astro.props;
+const lang = (Astro.params.lang || Astro.currentLocale || 'es') as Locale;
+
+const baseOrigin = Astro.site?.toString();
+const canonicalUrl = buildCanonicalUrl(Astro.url.pathname, baseOrigin, lang);
+const alternateLinks = buildAlternateLinks(Astro.url.pathname, baseOrigin);
+const xDefaultUrl = buildXDefault(Astro.url.pathname, baseOrigin);
+const socialImageUrl = baseOrigin ? new URL(ogImage, baseOrigin).toString() : ogImage;
+const jsonLd = buildRestaurantJsonLd({
+    lang,
+    pageUrl: canonicalUrl,
+    imageUrl: socialImageUrl,
+});
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <link rel="canonical" href={canonicalUrl} />
+
+    {alternateLinks.map((link) => (
+        <link rel="alternate" href={link.href} hreflang={link.hreflang} />
+    ))}
+    <link rel="alternate" href={xDefaultUrl} hreflang="x-default" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:site_name" content="La Ragazza Ristorante" />
+    <meta property="og:locale" content={lang === 'es' ? 'es_CO' : 'en_US'} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+</head>
+
+<body class="selection:bg-ragazza-primary selection:text-white overflow-x-hidden">
+
+<Header lang={lang as any} solidBg={solidBg} />
+
+<slot />
+
+<script>
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -10% 0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.remove('opacity-0', 'translate-y-8');
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.reveal').forEach((el) => {
+            observer.observe(el);
+        });
+    });
+</script>
+
+</body>
+</html>

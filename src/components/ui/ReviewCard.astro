@@ -1,0 +1,34 @@
+---
+export interface Props {
+    reviewerName: string;
+    text: string;
+    stars: number;
+}
+const { reviewerName, text, stars } = Astro.props;
+---
+<article class="w-full shrink-0 p-8 md:p-16 flex flex-col justify-center items-center text-center bg-white min-h-96">
+    {/* Estrellas dinámicas basadas en rating */}
+    <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+        {[...Array(5)].map((_, i) => (
+            i < stars ? (
+                <svg width="28" height="28" viewBox="0 0 24 24" style="fill: #F59E0B;">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+            ) : (
+                <svg width="28" height="28" viewBox="0 0 24 24" style="fill: #E5E7EB;">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+            )
+        ))}
+    </div>
+    {/* Texto */}
+    <p class="font-lora text-xl md:text-2xl italic leading-relaxed mb-10 max-w-2xl flex-grow flex items-center"
+       style="color: #331717 !important;">
+        "{text}"
+    </p>
+    {/* Autor */}
+    <div class="flex flex-col items-center">
+        <span class="font-cinzel font-bold tracking-wider text-lg"
+              style="color: #662a2a !important;">{reviewerName}</span>
+    </div>
+</article>

@@ -1,0 +1,173 @@
+---
+// src/components/sections/Reviews.astro
+import ReviewCard from '../ui/ReviewCard.astro';
+
+interface Props {
+    lang?: string;
+}
+
+interface Review {
+    reviewerName: string;
+    text: string;
+    stars: number;
+}
+
+const lang = (Astro.props.lang || 'es') as 'es' | 'en';
+
+// Importar datos de reseñas desde JSON centralizado
+const reviewsRawData = await import(`../../data/reviews/reviews.json`).then(m => m.default);
+
+// Importar textos de la sección desde JSON de idioma
+const sectionTexts = await import(`../../data/${lang}/reviews.json`).then(m => m.default);
+
+// Mapear reviews al formato esperado, usando el idioma correcto
+let reviews: Review[] = reviewsRawData.reviews.map((review: any) => ({
+    reviewerName: review.reviewerName,
+    text: lang === 'es' ? review.text_es : review.text_en,
+    stars: review.stars
+}));
+
+// Randomizar el orden de las reseñas
+reviews = reviews.sort(() => Math.random() - 0.5);
+
+const GOOGLE_MAPS_LINK = sectionTexts.googleMapsLink;
+---
+
+<section class="py-24 bg-ragazza-secondary text-ragazza-bg overflow-hidden relative">
+    {/* Fondo decorativo */}
+    <div class="absolute top-0 right-0 w-64 h-64 bg-ragazza-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-0">
+
+        <div class="text-center mb-16 reveal opacity-0 translate-y-8 transition-all duration-1000">
+            <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold">{sectionTexts.section.label}</span>
+            <h2 class="font-cinzel text-4xl md:text-5xl mt-4 mb-6 text-white">{sectionTexts.section.title}</h2>
+            <div class="w-16 h-[2px] bg-ragazza-accent mx-auto mb-8"></div>
+        </div>
+
+        {/* Contenedor del Carrusel (1 por 1) */}
+        <div class="relative max-w-4xl mx-auto mb-20 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">
+
+            {/* Botones de Navegación con flechas */}
+            <button id="prev-review" aria-label="Reseña anterior" class="absolute left-0 md:-left-16 top-1/2 -translate-y-1/2 z-20 p-2 text-white/50 hover:text-ragazza-accent transition-colors bg-ragazza-dark/80 md:bg-transparent rounded-full backdrop-blur-sm cursor-pointer">
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            <button id="next-review" aria-label="Siguiente reseña" class="absolute right-0 md:-right-16 top-1/2 -translate-y-1/2 z-20 p-2 text-white/50 hover:text-ragazza-accent transition-colors bg-ragazza-dark/80 md:bg-transparent rounded-full backdrop-blur-sm cursor-pointer">
+                <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+
+            {/* Track Container */}
+            <div class="overflow-hidden bg-white shadow-2xl relative mx-8 md:mx-0">
+                <div id="reviews-track" class="flex transition-transform duration-700 ease-in-out">
+                    {reviews.map((review: Review) => (
+                            <ReviewCard {...review} />
+                    ))}
+                </div>
+            </div>
+        </div>
+
+        {/* CTA Maps con margen superior (mt-12) corregido */}
+        <div class="text-center mt-12 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200">
+            <a href={GOOGLE_MAPS_LINK} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 font-cinzel font-bold text-sm tracking-widest uppercase text-white hover:text-ragazza-accent transition-colors group">
+                <span class="border-b border-transparent group-hover:border-ragazza-accent pb-1 transition-colors">{sectionTexts.cta}</span>
+                <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+{/* Lógica Vanilla JS embebida */}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const track = document.getElementById('reviews-track');
+        const prevBtn = document.getElementById('prev-review');
+        const nextBtn = document.getElementById('next-review');
+
+        if (!track || !prevBtn || !nextBtn) return;
+
+        let currentIndex = 0;
+        const totalReviews = track.children.length;
+        let autoPlayInterval: number | ReturnType<typeof setInterval>;
+        let isTransitioning = false;
+
+        // Función para actualizar el carousel
+        const updateCarousel = (smooth: boolean = true) => {
+            if (smooth) {
+                track.style.transition = 'transform 0.7s ease-in-out';
+            } else {
+                track.style.transition = 'none';
+            }
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        };
+
+        // Navegar a siguiente
+        const goNext = () => {
+            if (isTransitioning) return;
+
+            currentIndex++;
+            updateCarousel(true);
+
+            // Si llegamos al final, resetear al inicio sin animación
+            if (currentIndex >= totalReviews) {
+                isTransitioning = true;
+                setTimeout(() => {
+                    currentIndex = 0;
+                    updateCarousel(false);
+                    isTransitioning = false;
+                }, 700);
+            }
+        };
+
+        // Navegar a anterior
+        const goPrev = () => {
+            if (isTransitioning) return;
+
+            currentIndex--;
+
+            // Si llegamos antes del inicio, ir al final sin animación
+            if (currentIndex < 0) {
+                currentIndex = totalReviews - 1;
+                updateCarousel(false);
+                isTransitioning = true;
+                setTimeout(() => {
+                    currentIndex = totalReviews - 2;
+                    updateCarousel(true);
+                    isTransitioning = false;
+                }, 50);
+            } else {
+                updateCarousel(true);
+            }
+        };
+
+        // Event listeners para botones
+        nextBtn.addEventListener('click', () => {
+            goNext();
+            resetAutoPlay();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            goPrev();
+            resetAutoPlay();
+        });
+
+        // Auto-play (8 segundos)
+        const startAutoPlay = () => {
+            autoPlayInterval = setInterval(goNext, 8000);
+        };
+
+        const resetAutoPlay = () => {
+            clearInterval(autoPlayInterval);
+            startAutoPlay();
+        };
+
+        startAutoPlay();
+    });
+</script>
