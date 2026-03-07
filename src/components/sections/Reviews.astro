@@ -95,7 +95,7 @@ const GOOGLE_MAPS_LINK = sectionTexts.googleMapsLink;
 
         let currentIndex = 0;
         const totalReviews = track.children.length;
-        let autoPlayInterval: number | ReturnType<typeof setInterval>;
+        let autoPlayInterval: number | undefined;
         let isTransitioning = false;
 
         // Función para actualizar el carousel
@@ -160,11 +160,13 @@ const GOOGLE_MAPS_LINK = sectionTexts.googleMapsLink;
 
         // Auto-play (8 segundos)
         const startAutoPlay = () => {
-            autoPlayInterval = setInterval(goNext, 8000);
+            autoPlayInterval = window.setInterval(goNext, 8000);
         };
 
         const resetAutoPlay = () => {
-            clearInterval(autoPlayInterval);
+            if (autoPlayInterval !== undefined) {
+                window.clearInterval(autoPlayInterval);
+            }
             startAutoPlay();
         };
 
