@@ -2,9 +2,11 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
+const siteUrl = process.env.PUBLIC_SITE_URL || 'https://la-ragazza-web.vercel.app';
+
 export default defineConfig({
   // Define PUBLIC_SITE_URL en tu entorno de deploy para URLs absolutas correctas.
-  site: process.env.PUBLIC_SITE_URL,
+  site: siteUrl,
   vite: {
     plugins: [tailwindcss()],
   },

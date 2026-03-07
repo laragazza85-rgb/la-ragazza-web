@@ -14,11 +14,29 @@ interface Review {
 
 const lang = (Astro.props.lang || 'es') as 'es' | 'en';
 
-// Importar datos de reseñas desde JSON centralizado
+// Importar datos de resenas desde JSON centralizado
 const reviewsRawData = await import(`../../data/reviews/reviews.json`).then(m => m.default);
 
-// Importar textos de la sección desde JSON de idioma
-const sectionTexts = await import(`../../data/${lang}/reviews.json`).then(m => m.default);
+const SECTION_TEXTS = {
+    es: {
+        section: {
+            label: 'Nuestros Clientes',
+            title: 'La Familia Crece',
+        },
+        cta: 'Leer nuestras resenas en Google',
+        googleMapsLink: 'https://maps.google.com/?q=La+Ragazza+Ristorante+Villavicencio',
+    },
+    en: {
+        section: {
+            label: 'Our Customers',
+            title: 'The Family Grows',
+        },
+        cta: 'Read our reviews on Google',
+        googleMapsLink: 'https://maps.google.com/?q=La+Ragazza+Ristorante+Villavicencio',
+    },
+} as const;
+
+const sectionTexts = SECTION_TEXTS[lang];
 
 // Mapear reviews al formato esperado, usando el idioma correcto
 let reviews: Review[] = reviewsRawData.reviews.map((review: any) => ({

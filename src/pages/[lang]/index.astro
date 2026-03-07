@@ -19,10 +19,12 @@ const heroData = await import(`../../data/${lang}/hero.json`).then(m => m.defaul
 ---
 
 <Layout
-        title="La Ragazza Ristorante | Villavicencio"
+        title={lang === 'es'
+            ? 'La Ragazza Ristorante | Restaurante italiano familiar y artesanal en Villavicencio'
+            : 'La Ragazza Ristorante | Family Italian restaurant in Villavicencio'}
         description={lang === 'es'
-            ? 'Un rincón de Italia en los Llanos desde 1985. Pasta hecha en casa, un asunto de tradición familiar en Villavicencio.'
-            : 'A corner of Italy in the Llanos since 1985. Homemade pasta, a matter of family tradition in Villavicencio.'}
+            ? 'Restaurante de comida italiana familiar y artesanal en Villavicencio. Pasta hecha en casa desde 1985 en La Ragazza Ristorante.'
+            : 'Family-style Italian restaurant in Villavicencio with homemade pasta and artisanal recipes since 1985 at La Ragazza Ristorante.'}
 >
     <Hero lang={lang} />
 

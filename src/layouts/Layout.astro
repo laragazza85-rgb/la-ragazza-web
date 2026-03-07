@@ -7,6 +7,7 @@ import {
     buildCanonicalUrl,
     buildRestaurantJsonLd,
     buildXDefault,
+    SITE_URL,
     type Locale,
 } from '../utils/seo';
 
@@ -20,11 +21,11 @@ interface Props {
 const { title, description, solidBg = false, ogImage = '/Logo.png' } = Astro.props;
 const lang = (Astro.params.lang || Astro.currentLocale || 'es') as Locale;
 
-const baseOrigin = Astro.site?.toString();
+const baseOrigin = Astro.site?.toString() ?? SITE_URL;
 const canonicalUrl = buildCanonicalUrl(Astro.url.pathname, baseOrigin, lang);
 const alternateLinks = buildAlternateLinks(Astro.url.pathname, baseOrigin);
 const xDefaultUrl = buildXDefault(Astro.url.pathname, baseOrigin);
-const socialImageUrl = baseOrigin ? new URL(ogImage, baseOrigin).toString() : ogImage;
+const socialImageUrl = new URL(ogImage, baseOrigin).toString();
 const jsonLd = buildRestaurantJsonLd({
     lang,
     pageUrl: canonicalUrl,
@@ -37,7 +38,10 @@ const jsonLd = buildRestaurantJsonLd({
 <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
+    <meta name="keywords" content="familiar, artesanal, italiano, comida italiana, familia, pasta, hecho en casa" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
@@ -49,18 +53,21 @@ const jsonLd = buildRestaurantJsonLd({
     ))}
     <link rel="alternate" href={xDefaultUrl} hreflang="x-default" />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="restaurant" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:alt" content="Plato de comida italiana artesanal en La Ragazza" />
     <meta property="og:site_name" content="La Ragazza Ristorante" />
     <meta property="og:locale" content={lang === 'es' ? 'es_CO' : 'en_US'} />
+    <meta property="og:locale:alternate" content={lang === 'es' ? 'en_US' : 'es_CO'} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:url" content={canonicalUrl} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
 
@@ -101,3 +108,4 @@ const jsonLd = buildRestaurantJsonLd({
 
 </body>
 </html>
+
