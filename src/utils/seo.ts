@@ -48,16 +48,14 @@ export function buildXDefault(pathname: string, baseOrigin?: string): string {
 export function buildRestaurantJsonLd(params: {
   lang: Locale;
   pageUrl: string;
-  imageUrl: string;
 }) {
-  const { lang, pageUrl, imageUrl } = params;
+  const { lang, pageUrl } = params;
 
   return {
     '@context': 'https://schema.org',
     '@type': 'Restaurant',
     '@id': `${SITE_URL}/#restaurant`,
     name: BUSINESS_NAME,
-    image: imageUrl,
     url: SITE_URL,
     mainEntityOfPage: pageUrl,
     telephone: BUSINESS_PHONE,

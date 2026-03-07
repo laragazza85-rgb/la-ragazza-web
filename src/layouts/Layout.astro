@@ -15,15 +15,12 @@ interface Props {
     title: string;
     description: string;
     solidBg?: boolean;
-    ogImage?: string;
 }
 
 const lang = (Astro.params.lang || Astro.currentLocale || 'es') as Locale;
-const defaultOgImage = lang === 'en' ? '/og-image-en.svg' : '/og-image.svg';
-const { title, description, solidBg = false, ogImage = defaultOgImage } = Astro.props;
+const { title, description, solidBg = false } = Astro.props;
 
 const contactData = await import(`../data/${lang}/contact.json`).then((m) => m.default);
-const reserveHref = `/${lang}/#contact`;
 const whatsappMessage = encodeURIComponent(contactData.whatsapp.message || '');
 const whatsappHref = `https://wa.me/${contactData.whatsapp.phoneNumber}?text=${whatsappMessage}`;
 
@@ -31,11 +28,9 @@ const baseOrigin = Astro.site?.toString() ?? SITE_URL;
 const canonicalUrl = buildCanonicalUrl(Astro.url.pathname, baseOrigin, lang);
 const alternateLinks = buildAlternateLinks(Astro.url.pathname, baseOrigin);
 const xDefaultUrl = buildXDefault(Astro.url.pathname, baseOrigin);
-const socialImageUrl = new URL(ogImage, baseOrigin).toString();
 const jsonLd = buildRestaurantJsonLd({
     lang,
     pageUrl: canonicalUrl,
-    imageUrl: socialImageUrl,
 });
 ---
 
@@ -68,11 +63,6 @@ const jsonLd = buildRestaurantJsonLd({
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:image" content={socialImageUrl} />
-    <meta property="og:image:alt" content="La Ragazza - Comida Italiana Artesanal en Villavicencio" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/svg+xml" />
     <meta property="og:site_name" content="Restaurante La Ragazza" />
     <meta property="og:locale" content={lang === 'es' ? 'es_CO' : 'en_US'} />
     <meta property="og:locale:alternate" content={lang === 'es' ? 'en_US' : 'es_CO'} />
@@ -80,7 +70,6 @@ const jsonLd = buildRestaurantJsonLd({
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={socialImageUrl} />
     <meta name="twitter:url" content={canonicalUrl} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
