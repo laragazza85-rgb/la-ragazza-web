@@ -3,14 +3,18 @@ export default function middleware(request: Request) {
 
   // Only redirect from root to avoid loops.
   if (url.pathname !== '/') {
-    return;
+    return fetch(request);
   }
 
   const acceptLanguage = (request.headers.get('accept-language') || '').toLowerCase();
   const destination = acceptLanguage.startsWith('en') ? '/en/' : '/es/';
 
-  const response = Response.redirect(new URL(destination, url), 307);
-  response.headers.set('Cache-Control', 'no-store');
-  response.headers.set('Vary', 'Accept-Language');
-  return response;
+  return new Response(null, {
+    status: 307,
+    headers: {
+      Location: new URL(destination, url).toString(),
+      'Cache-Control': 'no-store',
+      Vary: 'Accept-Language',
+    },
+  });
 }
