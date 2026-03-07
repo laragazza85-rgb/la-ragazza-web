@@ -6,7 +6,7 @@
         {
           "type": "header",
           "key": "accept-language",
-          "value": "^\\s*en(?:-|;|,|$)"
+          "value": "^en"
         }
       ],
       "destination": "/en/",
