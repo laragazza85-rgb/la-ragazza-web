@@ -1,0 +1,19 @@
+services:
+  web:
+    image: ${IMAGE:-localhost/la-ragazza-web:local}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-https://la-ragazza-web.vercel.app}
+    container_name: ${CONTAINER_NAME:-la-ragazza-web}
+    ports:
+      - "${PORT:-8080}:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
