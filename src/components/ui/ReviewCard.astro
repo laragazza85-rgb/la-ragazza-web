@@ -6,7 +6,7 @@ export interface Props {
 }
 const { reviewerName, text, stars } = Astro.props;
 ---
-<article class="w-full shrink-0 p-8 md:p-16 flex flex-col justify-center items-center text-center bg-white min-h-96">
+<article class="card-elegant w-full shrink-0 p-8 md:p-16 flex flex-col justify-center items-center text-center bg-white min-h-96">
     {/* Estrellas dinámicas basadas en rating */}
     <div style="display: flex; gap: 8px; margin-bottom: 24px;">
         {[...Array(5)].map((_, i) => (

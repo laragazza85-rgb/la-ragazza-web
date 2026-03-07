@@ -54,7 +54,7 @@ const filterLabels = lang === 'es'
         <h1 class="font-cinzel text-5xl md:text-7xl text-ragazza-dark mt-4 mb-6 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">
             {lang === 'es' ? 'Menú' : 'Menu'}
         </h1>
-        <div class="w-16 h-[2px] bg-ragazza-accent mx-auto mt-8 mb-8 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200"></div>
+        <div class="sauce-line mx-auto mt-8 mb-8 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200"></div>
         <p class="font-lora text-ragazza-secondary/80 max-w-2xl mx-auto italic reveal opacity-0 translate-y-8 transition-all duration-1000 delay-300">
             {lang === 'es'
                 ? 'Cada plato cuenta la historia de la tradición italiana en los Llanos. Todo hecho a mano, sin prisas.'
@@ -66,12 +66,12 @@ const filterLabels = lang === 'es'
     <main class="bg-ragazza-bg pb-24">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-10 flex flex-wrap items-center gap-2 sm:gap-3 justify-center sm:justify-start" id="menu-filters">
-                <button type="button" data-filter="all" class="menu-filter-btn border border-ragazza-primary/30 bg-ragazza-primary text-white px-3 py-2 font-cinzel text-xs uppercase tracking-widest transition-colors">{filterLabels.all}</button>
-                <button type="button" data-filter="vegetarian" class="menu-filter-btn border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.vegetarian}</button>
-                <button type="button" data-filter="pastas" class="menu-filter-btn border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.pastas}</button>
-                <button type="button" data-filter="wines" class="menu-filter-btn border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.wines}</button>
-                <button type="button" data-filter="desserts" class="menu-filter-btn border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.desserts}</button>
-                <button type="button" data-filter="drinks" class="menu-filter-btn border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.drinks}</button>
+                <button type="button" data-filter="all" class="menu-filter-btn btn-elegant border border-ragazza-primary/30 bg-ragazza-primary text-white px-3 py-2 font-cinzel text-xs uppercase tracking-widest transition-colors">{filterLabels.all}</button>
+                <button type="button" data-filter="vegetarian" class="menu-filter-btn btn-elegant border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.vegetarian}</button>
+                <button type="button" data-filter="pastas" class="menu-filter-btn btn-elegant border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.pastas}</button>
+                <button type="button" data-filter="wines" class="menu-filter-btn btn-elegant border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.wines}</button>
+                <button type="button" data-filter="desserts" class="menu-filter-btn btn-elegant border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.desserts}</button>
+                <button type="button" data-filter="drinks" class="menu-filter-btn btn-elegant border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.drinks}</button>
             </div>
 
             {menuData.map((section: any) => (

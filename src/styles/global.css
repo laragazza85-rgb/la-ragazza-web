@@ -26,3 +26,190 @@
         background-color: #331717;
     }
 }
+
+/* Animated title underline that simulates sauce spilling left-to-right. */
+.sauce-line {
+    position: relative;
+    width: 4rem;
+    height: 0.25rem;
+    border-radius: 999px;
+    overflow: hidden;
+    background: linear-gradient(90deg, #5f8b4d 0%, #749f62 55%, #8ab87a 100%);
+    transform-origin: left center;
+    animation: sauce-fill 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.sauce-line::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -0.75rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 28% 38%, #a8cf99 0 22%, transparent 24%),
+      radial-gradient(circle at 64% 62%, #7aa969 0 30%, transparent 33%),
+      radial-gradient(circle at 48% 35%, #5f8b4d 0 40%, transparent 43%);
+    filter: blur(0.2px);
+    transform: translateY(-50%);
+    animation: sauce-splash 0.9s ease-out both;
+}
+
+@keyframes sauce-fill {
+    0% {
+        transform: scaleX(0.08);
+        opacity: 0.5;
+    }
+    65% {
+        transform: scaleX(1.03);
+        opacity: 1;
+    }
+    100% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+}
+
+@keyframes sauce-splash {
+    0% {
+        left: -0.8rem;
+        opacity: 0;
+    }
+    22% {
+        opacity: 0.95;
+    }
+    75% {
+        left: calc(100% - 0.15rem);
+        opacity: 0.9;
+    }
+    100% {
+        left: calc(100% + 0.45rem);
+        opacity: 0;
+    }
+}
+
+/* Elegant motion utilities shared across sections/components. */
+@keyframes elegant-fade-up {
+    0% {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes elegant-float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes elegant-sheen {
+    0% {
+        transform: translateX(-130%);
+        opacity: 0;
+    }
+    22% {
+        opacity: 0.25;
+    }
+    55% {
+        opacity: 0.35;
+    }
+    100% {
+        transform: translateX(160%);
+        opacity: 0;
+    }
+}
+
+.motion-fade-up {
+    animation: elegant-fade-up 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.motion-float {
+    animation: elegant-float 6.2s ease-in-out infinite;
+}
+
+.card-elegant {
+    transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+}
+
+.card-elegant:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 28px rgba(51, 23, 23, 0.14);
+}
+
+.menu-item-card {
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.menu-item-card::before {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border-radius: 0.9rem;
+    pointer-events: none;
+    background: radial-gradient(circle at 14% 50%, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0) 62%);
+    opacity: 0;
+    transition: opacity 300ms ease, transform 300ms ease;
+    transform: scale(0.98);
+}
+
+.menu-item-card:hover::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.menu-item-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-elegant {
+    position: relative;
+    overflow: hidden;
+    transition: transform 250ms ease, box-shadow 250ms ease;
+}
+
+.btn-elegant::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 50%;
+    background: linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.28) 45%, transparent 100%);
+    pointer-events: none;
+    animation: elegant-sheen 4.8s ease-in-out infinite;
+}
+
+.btn-elegant:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(51, 23, 23, 0.2);
+}
+
+.link-elegant {
+    transition: color 250ms ease, letter-spacing 250ms ease;
+}
+
+.link-elegant:hover {
+    letter-spacing: 0.06em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .motion-fade-up,
+    .motion-float,
+    .btn-elegant::after,
+    .btn-elegant,
+    .card-elegant,
+    .link-elegant,
+    .sauce-line,
+    .sauce-line::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
