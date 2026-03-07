@@ -1,4 +1,4 @@
-export function middleware(request: Request) {
+export default function middleware(request: Request) {
   const url = new URL(request.url);
 
   // Only redirect from root to avoid loops.
@@ -9,5 +9,8 @@ export function middleware(request: Request) {
   const acceptLanguage = (request.headers.get('accept-language') || '').toLowerCase();
   const destination = acceptLanguage.startsWith('en') ? '/en/' : '/es/';
 
-  return Response.redirect(new URL(destination, url), 307);
+  const response = Response.redirect(new URL(destination, url), 307);
+  response.headers.set('Cache-Control', 'no-store');
+  response.headers.set('Vary', 'Accept-Language');
+  return response;
 }
