@@ -2,6 +2,7 @@
 // src/components/ui/Header.astro
 import { useTranslations } from '../../i18n/utils';
 import { ui } from '../../i18n/ui';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 
 interface Props {
     lang?: string;
@@ -51,6 +52,8 @@ const navItems = [
                 <a href="#contact" class="hidden md:inline-flex border border-white/50 px-6 py-2.5 font-cinzel text-xs uppercase tracking-widest hover:bg-white hover:text-ragazza-primary transition-all duration-300">
                     {labelsData.header.reserve}
                 </a>
+
+                <LanguageSwitcher lang={lang} />
 
                 <button id="mobile-menu-btn" class="md:hidden p-2 text-white hover:text-ragazza-accent transition-colors" aria-label="Menu">
                     <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
