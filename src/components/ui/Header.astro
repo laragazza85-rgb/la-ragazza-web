@@ -26,11 +26,11 @@ const navItems = [
         id="main-header"
         class="fixed w-full top-0 z-50 transition-all duration-500 border-b text-white border-white/10 bg-ragazza-dark"
 >
-    <div class="w-full px-3 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16 sm:h-20 md:h-24 transition-all duration-500" id="header-container">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20 sm:h-24 md:h-28 transition-all duration-500" id="header-container">
 
             {/* Logo Tipográfico */}
-            <a href={`/${lang}/`} class="font-cinzel text-xl sm:text-2xl md:text-3xl font-bold tracking-widest z-50 hover:text-ragazza-accent transition-colors whitespace-nowrap">
+            <a href={`/${lang}/`} class="font-cinzel text-2xl sm:text-3xl md:text-4xl font-bold tracking-widest z-50 hover:text-ragazza-accent transition-colors whitespace-nowrap">
                 LA RAGAZZA
             </a>
 
@@ -50,11 +50,13 @@ const navItems = [
                     {labelsData.header.reserve}
                 </a>
 
-                <LanguageSwitcher lang={lang} />
+                <div class="hidden md:block">
+                    <LanguageSwitcher lang={lang} />
+                </div>
 
                 <button id="mobile-menu-btn" class="md:hidden p-2 text-white hover:text-ragazza-accent transition-colors" aria-label="Menu">
-                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                 </button>
             </div>
@@ -63,13 +65,21 @@ const navItems = [
     </div>
 
     {/* Menú Mobile Desplegable */}
-    <div id="mobile-menu" class="md:hidden fixed inset-0 top-16 sm:top-20 bg-ragazza-secondary/95 backdrop-blur-md max-h-screen overflow-y-auto z-40 translate-y-full transition-transform duration-500">
-        <nav class="flex flex-col px-6 py-6">
+    <div id="mobile-menu" class="md:hidden fixed inset-0 top-20 sm:top-24 bg-ragazza-secondary/95 backdrop-blur-md max-h-screen overflow-y-auto z-40 translate-y-full transition-transform duration-500">
+        <nav class="flex flex-col px-6 py-8">
             {navItems.map(item => (
-                    <a href={item.path} class="font-cinzel text-lg sm:text-xl uppercase tracking-widest text-white border-b border-white/10 py-4 hover:text-ragazza-accent transition-colors">
+                    <a href={item.path} class="font-cinzel text-2xl sm:text-3xl uppercase tracking-widest text-white border-b border-white/10 py-6 hover:text-ragazza-accent transition-colors">
                         {item.name}
                     </a>
             ))}
+
+            {/* Language Switcher y Reserve Button en el menú móvil */}
+            <div class="pt-8 pb-4 flex justify-between items-center">
+                <a href="#contact" class="border border-white/50 px-4 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-white hover:text-ragazza-primary transition-all duration-300 text-white">
+                    {labelsData.header.reserve}
+                </a>
+                <LanguageSwitcher lang={lang} />
+            </div>
         </nav>
     </div>
 </header>
@@ -87,7 +97,7 @@ const navItems = [
                 isMenuOpen = false;
                 mobileMenu?.classList.add('translate-y-full');
                 mobileMenu?.classList.remove('translate-y-0');
-                mobileBtn.innerHTML = '<svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>';
+                mobileBtn.innerHTML = '<svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>';
             }
         };
 
@@ -98,11 +108,11 @@ const navItems = [
 
             if (isDesktop()) {
                 if (scrolled) {
-                    headerContainer?.classList.remove('md:h-24');
-                    headerContainer?.classList.add('md:h-20');
-                } else {
+                    headerContainer?.classList.remove('md:h-28');
                     headerContainer?.classList.add('md:h-24');
-                    headerContainer?.classList.remove('md:h-20');
+                } else {
+                    headerContainer?.classList.add('md:h-28');
+                    headerContainer?.classList.remove('md:h-24');
                 }
                 return;
             }
@@ -129,7 +139,7 @@ const navItems = [
             if (isMenuOpen) {
                 mobileMenu?.classList.remove('translate-y-full');
                 mobileMenu?.classList.add('translate-y-0');
-                mobileBtn.innerHTML = '<svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>';
+                mobileBtn.innerHTML = '<svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
             } else {
                 closeMenu();
             }
