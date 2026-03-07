@@ -1,5 +1,20 @@
 ---
-// Redirigir a la página en el idioma por defecto (español)
-return Astro.redirect('/es/');
+const defaultLocalePath = '/es/';
 ---
 
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      const preferredLocalePath = (navigator.language || '').toLowerCase().startsWith('en')
+        ? '/en/'
+        : '/es/';
+      window.location.replace(preferredLocalePath);
+    </script>
+    <noscript>
+      <meta http-equiv="refresh" content={`0;url=${defaultLocalePath}`} />
+    </noscript>
+  </head>
+  <body></body>
+</html>
