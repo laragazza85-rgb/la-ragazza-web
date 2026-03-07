@@ -53,14 +53,12 @@ const aboutData = await import(`../../data/${lang}/about.json`).then(m => m.defa
 
                 {/* Photo Container */}
                 <div class="relative h-[450px] lg:h-[600px] w-full group reveal opacity-0 translate-y-8 transition-all duration-1000">
-                    {/* Decorative Element */}
                     <div class="absolute inset-0 bg-ragazza-primary/10 transition-transform duration-700 group-hover:-translate-x-6 group-hover:-translate-y-6"></div>
 
-                    {/* Photo */}
                     <div class="absolute inset-0 bg-ragazza-secondary flex items-center justify-center overflow-hidden shadow-2xl border border-ragazza-primary/10">
-                        {/* ⚠️ When you have Mauricio's photo, change src and remove span */}
-                        <img src="" alt="Mauricio López Cortés" class="w-full h-full object-cover opacity-60 mix-blend-overlay transition-transform duration-1000 group-hover:scale-105" />
-                        <span class="font-cinzel text-white/50 text-xl tracking-widest absolute">Mauricio Photo</span>
+                        <div class="w-full h-full flex items-center justify-center">
+                            <span class="font-cinzel text-white/50 text-xl tracking-widest">Mauricio Photo</span>
+                        </div>
                     </div>
                 </div>
 
@@ -95,14 +93,12 @@ const aboutData = await import(`../../data/${lang}/about.json`).then(m => m.defa
 
                 {/* Photo Container */}
                 <div class="order-1 md:order-2 relative h-[450px] lg:h-[600px] w-full group reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200">
-                    {/* Decorative Element (Reverse) */}
                     <div class="absolute inset-0 bg-ragazza-accent/10 transition-transform duration-700 group-hover:translate-x-6 group-hover:-translate-y-6"></div>
 
-                    {/* Photo */}
                     <div class="absolute inset-0 bg-ragazza-dark flex items-center justify-center overflow-hidden shadow-2xl border border-ragazza-primary/10">
-                        {/* ⚠️ When you have Carolina's photo, change src and remove span */}
-                        <img src="" alt="Carolina López" class="w-full h-full object-cover opacity-60 mix-blend-overlay transition-transform duration-1000 group-hover:scale-105" />
-                        <span class="font-cinzel text-white/50 text-xl tracking-widest absolute">Carolina Photo</span>
+                        <div class="w-full h-full flex items-center justify-center">
+                            <span class="font-cinzel text-white/50 text-xl tracking-widest">Carolina Photo</span>
+                        </div>
                     </div>
                 </div>
 

@@ -26,115 +26,117 @@ const heroData = await import(`../../data/${lang}/hero.json`).then(m => m.defaul
             ? 'Restaurante de comida italiana familiar y artesanal en Villavicencio. Pasta hecha en casa desde 1985. Reserva tu mesa en La Ragazza.'
             : 'Family-style Italian restaurant in Villavicencio with homemade pasta and artisanal recipes since 1985. Book your table at La Ragazza.'}
 >
-    <Hero lang={lang} />
+    <main>
+        <Hero lang={lang} />
 
-    {/* New SEO Content Section */}
-    <section class="py-16 bg-white px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl mx-auto">
-            <article class="prose prose-lg max-w-none">
-                {lang === 'es' ? (
-                    <>
-                        <h2 class="font-cinzel text-3xl text-ragazza-primary mb-6">Restaurante Italiano en Villavicencio desde 1985</h2>
+        {/* New SEO Content Section */}
+        <section class="py-16 bg-white px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <article class="prose prose-lg max-w-none">
+                    {lang === 'es' ? (
+                        <>
+                            <h2 class="font-cinzel text-3xl text-ragazza-primary mb-6">Restaurante Italiano en Villavicencio desde 1985</h2>
 
-                        <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                            <strong>La Ragazza</strong> es un restaurante de <strong>comida italiana artesanal</strong> ubicado en el corazón de <strong>Villavicencio</strong>, Meta.
-                            Desde 1985, nuestra familia López Cortés prepara <strong>pasta fresca hecha en casa</strong> siguiendo recetas tradicionales italianas.
-                        </p>
+                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
+                                <strong>La Ragazza</strong> es un restaurante de <strong>comida italiana artesanal</strong> ubicado en el corazón de <strong>Villavicencio</strong>, Meta.
+                                Desde 1985, nuestra familia López Cortés prepara <strong>pasta fresca hecha en casa</strong> siguiendo recetas tradicionales italianas.
+                            </p>
 
-                        <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                            Nuestro <strong>menú</strong> incluye lasañas, ravioles, tournedos y postres como panna cotta.
-                            Cada plato se elabora con ingredientes frescos y el amor de la cocina <strong>familiar</strong> italiana.
-                            Somos el lugar perfecto para <strong>reservar</strong> una mesa especial en Villavicencio.
-                        </p>
+                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
+                                Nuestro <strong>menú</strong> incluye lasañas, ravioles, tournedos y postres como panna cotta.
+                                Cada plato se elabora con ingredientes frescos y el amor de la cocina <strong>familiar</strong> italiana.
+                                Somos el lugar perfecto para <strong>reservar</strong> una mesa especial en Villavicencio.
+                            </p>
 
-                        <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                            Ven a descubrir la <strong>galería</strong> de nuestros platos y conoce por qué La Ragazza es el <strong>rincón de Italia</strong> favorito en los Llanos.
-                            <a href={`/${lang}/menu`} class="text-ragazza-primary hover:text-ragazza-accent font-semibold">Explora nuestro menú completo</a> y
-                            <a href="#contact" class="text-ragazza-primary hover:text-ragazza-accent font-semibold ml-2">reserva tu mesa</a> hoy.
-                        </p>
-                    </>
-                ) : (
-                    <>
-                        <h2 class="font-cinzel text-3xl text-ragazza-primary mb-6">Italian Restaurant in Villavicencio since 1985</h2>
+                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
+                                Ven a descubrir la <strong>galería</strong> de nuestros platos y conoce por qué La Ragazza es el <strong>rincón de Italia</strong> favorito en los Llanos.
+                                <a href={`/${lang}/menu`} class="text-ragazza-primary hover:text-ragazza-accent font-semibold">Explora nuestro menú completo</a> y
+                                <a href="#contact" class="text-ragazza-primary hover:text-ragazza-accent font-semibold ml-2">reserva tu mesa</a> hoy.
+                            </p>
+                        </>
+                    ) : (
+                        <>
+                            <h2 class="font-cinzel text-3xl text-ragazza-primary mb-6">Italian Restaurant in Villavicencio since 1985</h2>
 
-                        <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                            <strong>La Ragazza</strong> is an <strong>artisanal Italian restaurant</strong> located in the heart of <strong>Villavicencio</strong>, Meta.
-                            Since 1985, our López Cortés family has been preparing <strong>fresh homemade pasta</strong> following traditional Italian recipes.
-                        </p>
+                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
+                                <strong>La Ragazza</strong> is an <strong>artisanal Italian restaurant</strong> located in the heart of <strong>Villavicencio</strong>, Meta.
+                                Since 1985, our López Cortés family has been preparing <strong>fresh homemade pasta</strong> following traditional Italian recipes.
+                            </p>
 
-                        <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                            Our <strong>menu</strong> includes lasagnas, ravioli, tournedos, and desserts like panna cotta.
-                            Each dish is crafted with fresh ingredients and the love of Italian <strong>family</strong> cooking.
-                            We are the perfect place to <strong>book</strong> a special table in Villavicencio.
-                        </p>
+                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
+                                Our <strong>menu</strong> includes lasagnas, ravioli, tournedos, and desserts like panna cotta.
+                                Each dish is crafted with fresh ingredients and the love of Italian <strong>family</strong> cooking.
+                                We are the perfect place to <strong>book</strong> a special table in Villavicencio.
+                            </p>
 
-                        <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                            Come discover the <strong>gallery</strong> of our dishes and see why La Ragazza is the favorite <strong>corner of Italy</strong> in Los Llanos.
-                            <a href={`/${lang}/menu`} class="text-ragazza-primary hover:text-ragazza-accent font-semibold">Explore our full menu</a> and
-                            <a href="#contact" class="text-ragazza-primary hover:text-ragazza-accent font-semibold ml-2">book your table</a> today.
-                        </p>
-                    </>
-                )}
-            </article>
-        </div>
-    </section>
-
-    {/* Section: The Essence (Initial Storytelling) */}
-    <section class="py-24 bg-ragazza-bg px-4 sm:px-6 lg:px-8 text-center reveal opacity-0 translate-y-8 transition-all duration-1000">
-        <div class="max-w-3xl mx-auto">
-            <svg class="w-8 h-8 mx-auto text-ragazza-accent mb-6 opacity-80" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-            <h2 class="font-cinzel text-3xl md:text-5xl text-ragazza-primary leading-tight mb-8">
-                <Fragment set:html={heroData.essence.title} />
-            </h2>
-            <p class="font-lora text-lg md:text-xl text-ragazza-secondary/80 italic leading-relaxed">
-                {heroData.essence.description}
-            </p>
-            <a href={heroData.essence.ctaLink} class="inline-block mt-10 font-cinzel text-sm text-ragazza-primary font-bold uppercase tracking-widest border-b border-ragazza-primary pb-1 hover:text-ragazza-accent hover:border-ragazza-accent transition-colors">
-                {heroData.essence.ctaText}
-            </a>
-        </div>
-    </section>
-
-    {/* Section: Editorial Navigation Cards */}
-    <section class="py-12 bg-ragazza-bg pb-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-                {/* Card 1: Menu */}
-                <a href={`/${lang}/menu`} class="group relative h-[450px] overflow-hidden reveal opacity-0 translate-y-8 transition-all duration-1000">
-                    <div class="absolute inset-0 bg-ragazza-primary/20 transition-all duration-700 group-hover:bg-ragazza-dark/40 z-10"></div>
-                    <div class="absolute inset-0 bg-ragazza-secondary transition-transform duration-1000 group-hover:scale-105"></div>
-                    <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
-                        <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.menu.title}</h3>
-                        <p class="font-lora text-white/80 italic">{heroData.cards.menu.subtitle}</p>
-                    </div>
-                </a>
-
-                {/* Card 2: Gallery */}
-                <a href={`/${lang}/gallery`} class="group relative h-[450px] overflow-hidden reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">
-                    <div class="absolute inset-0 bg-ragazza-accent/20 transition-all duration-700 group-hover:bg-ragazza-dark/40 z-10"></div>
-                    <div class="absolute inset-0 bg-ragazza-primary transition-transform duration-1000 group-hover:scale-105"></div>
-                    <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
-                        <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.gallery.title}</h3>
-                        <p class="font-lora text-white/80 italic">{heroData.cards.gallery.subtitle}</p>
-                    </div>
-                </a>
-
-                {/* Card 3: Reservations */}
-                <a href="#contact" class="group relative h-[450px] overflow-hidden md:col-span-2 lg:col-span-1 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200">
-                    <div class="absolute inset-0 bg-ragazza-dark/20 transition-all duration-700 group-hover:bg-ragazza-dark/60 z-10"></div>
-                    <div class="absolute inset-0 bg-[#4a1f1f] transition-transform duration-1000 group-hover:scale-105"></div>
-                    <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
-                        <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.reservations.title}</h3>
-                        <p class="font-lora text-white/80 italic">{heroData.cards.reservations.subtitle}</p>
-                    </div>
-                </a>
-
+                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
+                                Come discover the <strong>gallery</strong> of our dishes and see why La Ragazza is the favorite <strong>corner of Italy</strong> in Los Llanos.
+                                <a href={`/${lang}/menu`} class="text-ragazza-primary hover:text-ragazza-accent font-semibold">Explore our full menu</a> and
+                                <a href="#contact" class="text-ragazza-primary hover:text-ragazza-accent font-semibold ml-2">book your table</a> today.
+                            </p>
+                        </>
+                    )}
+                </article>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <Contact lang={lang} />
+        {/* Section: The Essence (Initial Storytelling) */}
+        <section class="py-24 bg-ragazza-bg px-4 sm:px-6 lg:px-8 text-center reveal opacity-0 translate-y-8 transition-all duration-1000">
+            <div class="max-w-3xl mx-auto">
+                <svg class="w-8 h-8 mx-auto text-ragazza-accent mb-6 opacity-80" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                <h2 class="font-cinzel text-3xl md:text-5xl text-ragazza-primary leading-tight mb-8">
+                    <Fragment set:html={heroData.essence.title} />
+                </h2>
+                <p class="font-lora text-lg md:text-xl text-ragazza-secondary/80 italic leading-relaxed">
+                    {heroData.essence.description}
+                </p>
+                <a href={heroData.essence.ctaLink} class="inline-block mt-10 font-cinzel text-sm text-ragazza-primary font-bold uppercase tracking-widest border-b border-ragazza-primary pb-1 hover:text-ragazza-accent hover:border-ragazza-accent transition-colors">
+                    {heroData.essence.ctaText}
+                </a>
+            </div>
+        </section>
+
+        {/* Section: Editorial Navigation Cards */}
+        <section class="py-12 bg-ragazza-bg pb-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    {/* Card 1: Menu */}
+                    <a href={`/${lang}/menu`} class="group relative h-[450px] overflow-hidden reveal opacity-0 translate-y-8 transition-all duration-1000">
+                        <div class="absolute inset-0 bg-ragazza-primary/20 transition-all duration-700 group-hover:bg-ragazza-dark/40 z-10"></div>
+                        <div class="absolute inset-0 bg-ragazza-secondary transition-transform duration-1000 group-hover:scale-105"></div>
+                        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
+                            <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.menu.title}</h3>
+                            <p class="font-lora text-white/80 italic">{heroData.cards.menu.subtitle}</p>
+                        </div>
+                    </a>
+
+                    {/* Card 2: Gallery */}
+                    <a href={`/${lang}/gallery`} class="group relative h-[450px] overflow-hidden reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">
+                        <div class="absolute inset-0 bg-ragazza-accent/20 transition-all duration-700 group-hover:bg-ragazza-dark/40 z-10"></div>
+                        <div class="absolute inset-0 bg-ragazza-primary transition-transform duration-1000 group-hover:scale-105"></div>
+                        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
+                            <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.gallery.title}</h3>
+                            <p class="font-lora text-white/80 italic">{heroData.cards.gallery.subtitle}</p>
+                        </div>
+                    </a>
+
+                    {/* Card 3: Reservations */}
+                    <a href="#contact" class="group relative h-[450px] overflow-hidden md:col-span-2 lg:col-span-1 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200">
+                        <div class="absolute inset-0 bg-ragazza-dark/20 transition-all duration-700 group-hover:bg-ragazza-dark/60 z-10"></div>
+                        <div class="absolute inset-0 bg-[#4a1f1f] transition-transform duration-1000 group-hover:scale-105"></div>
+                        <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
+                            <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.reservations.title}</h3>
+                            <p class="font-lora text-white/80 italic">{heroData.cards.reservations.subtitle}</p>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <Contact lang={lang} />
+    </main>
     <Footer lang={lang} />
 </Layout>
 

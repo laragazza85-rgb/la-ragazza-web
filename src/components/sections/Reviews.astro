@@ -25,6 +25,10 @@ const SECTION_TEXTS = {
         },
         cta: 'Leer nuestras reseñas en Google',
         googleMapsLink: 'https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7',
+        controls: {
+            prev: 'Reseña anterior',
+            next: 'Siguiente reseña',
+        },
     },
     en: {
         section: {
@@ -33,6 +37,10 @@ const SECTION_TEXTS = {
         },
         cta: 'Read our reviews on Google',
         googleMapsLink: 'https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7',
+        controls: {
+            prev: 'Previous review',
+            next: 'Next review',
+        },
     },
 } as const;
 
@@ -67,13 +75,13 @@ const GOOGLE_MAPS_LINK = sectionTexts.googleMapsLink;
         <div class="relative max-w-4xl mx-auto mb-20 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">
 
             {/* Botones de Navegación con flechas */}
-            <button id="prev-review" aria-label="Reseña anterior" class="absolute left-0 md:-left-16 top-1/2 -translate-y-1/2 z-20 p-2 text-white/50 hover:text-ragazza-accent transition-colors bg-ragazza-dark/80 md:bg-transparent rounded-full backdrop-blur-sm cursor-pointer">
+            <button id="prev-review" aria-label={sectionTexts.controls.prev} class="absolute left-0 md:-left-16 top-1/2 -translate-y-1/2 z-20 p-2 text-white/50 hover:text-ragazza-accent transition-colors bg-ragazza-dark/80 md:bg-transparent rounded-full backdrop-blur-sm cursor-pointer">
                 <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
                 </svg>
             </button>
 
-            <button id="next-review" aria-label="Siguiente reseña" class="absolute right-0 md:-right-16 top-1/2 -translate-y-1/2 z-20 p-2 text-white/50 hover:text-ragazza-accent transition-colors bg-ragazza-dark/80 md:bg-transparent rounded-full backdrop-blur-sm cursor-pointer">
+            <button id="next-review" aria-label={sectionTexts.controls.next} class="absolute right-0 md:-right-16 top-1/2 -translate-y-1/2 z-20 p-2 text-white/50 hover:text-ragazza-accent transition-colors bg-ragazza-dark/80 md:bg-transparent rounded-full backdrop-blur-sm cursor-pointer">
                 <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
                 </svg>
@@ -83,7 +91,7 @@ const GOOGLE_MAPS_LINK = sectionTexts.googleMapsLink;
             <div class="overflow-hidden bg-white shadow-2xl relative mx-8 md:mx-0">
                 <div id="reviews-track" class="flex transition-transform duration-700 ease-in-out">
                     {reviews.map((review: Review) => (
-                            <ReviewCard {...review} />
+                            <ReviewCard reviewerName={review.reviewerName} text={review.text} stars={review.stars} />
                     ))}
                 </div>
             </div>
@@ -113,9 +121,9 @@ const GOOGLE_MAPS_LINK = sectionTexts.googleMapsLink;
 
         let currentIndex = 0;
         const totalReviews = track.children.length;
-        let autoPlayInterval;
+        let autoPlayInterval: ReturnType<typeof setInterval> | null = null;
         let isTransitioning = false;
-        let clickTimeout;
+        let clickTimeout: ReturnType<typeof setTimeout> | null = null;
 
         // Función para actualizar el carousel
         const updateCarousel = (smooth = true) => {
