@@ -1,10 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "functions": {
-    "middleware.ts": {
-      "runtime": "edge"
-    }
-  },
   "routes": [
     {
       "src": "^/$",
