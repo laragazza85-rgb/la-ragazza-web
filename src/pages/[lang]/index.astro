@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/sections/Hero.astro';
 import Contact from '../../components/sections/Contact.astro';
 import Footer from '../../components/ui/Footer.astro';
+import FaqSection from '../../components/sections/FaqSection.astro';
 
 export function getStaticPaths() {
     return [
@@ -30,7 +31,7 @@ const heroData = await import(`../../data/${lang}/hero.json`).then(m => m.defaul
         <Hero lang={lang} />
 
         {/* New SEO Content Section */}
-        <section class="py-16 bg-white px-4 sm:px-6 lg:px-8">
+        <section class="pt-12 sm:pt-16 pb-16 bg-white px-4 sm:px-6 lg:px-8">
             <div class="max-w-4xl mx-auto">
                 <article class="prose prose-lg max-w-none">
                     {lang === 'es' ? (
@@ -135,9 +136,9 @@ const heroData = await import(`../../data/${lang}/hero.json`).then(m => m.defaul
             </div>
         </section>
 
+        <FaqSection lang={lang} />
         <Contact lang={lang} />
     </main>
     <Footer lang={lang} />
 </Layout>
-
 

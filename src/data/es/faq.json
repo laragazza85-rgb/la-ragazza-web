@@ -1,0 +1,23 @@
+{
+  "label": "Preguntas Frecuentes",
+  "title": "Resolvemos tus dudas",
+  "items": [
+    {
+      "question": "¿Necesito reservar con anticipación?",
+      "answer": "Recomendamos reservar por WhatsApp, especialmente en fines de semana y fechas especiales."
+    },
+    {
+      "question": "¿Tienen opciones vegetarianas?",
+      "answer": "Sí. Contamos con varias preparaciones vegetarianas en pastas, lasagnas y entradas."
+    },
+    {
+      "question": "¿Hacen domicilios?",
+      "answer": "Sí. Puedes pedir información y disponibilidad de domicilios por nuestro WhatsApp oficial."
+    },
+    {
+      "question": "¿Qué métodos de pago aceptan?",
+      "answer": "Aceptamos diferentes métodos de pago. Escríbenos para confirmar opciones disponibles al momento de tu visita o pedido."
+    }
+  ]
+}
+

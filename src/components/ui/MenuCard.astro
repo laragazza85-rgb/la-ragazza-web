@@ -12,7 +12,11 @@ interface Props {
 const { item, vegetarianLabel = 'Vegetariano', optionsLabel = 'Opciones' } = Astro.props;
 ---
 
-<article class="flex flex-col sm:flex-row gap-4 py-6 border-b border-ragazza-primary/10 last:border-b-0 group">
+<article
+    class="menu-item-card flex flex-col sm:flex-row gap-4 py-6 border-b border-ragazza-primary/10 last:border-b-0 group"
+    data-menu-item
+    data-vegetarian={item.isVegetarian ? 'true' : 'false'}
+>
 
     {/* Image Placeholder (Will be connected to Cloudflare R2 later) */}
     {item.image && (

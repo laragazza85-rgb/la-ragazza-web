@@ -12,6 +12,15 @@ const t = useTranslations(lang);
 // Importar datos desde JSON
 const contactData = await import(`../../data/${lang}/contact.json`).then(m => m.default);
 
+const mapLink = contactData.location.mapLink || 'https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7';
+const mapEmbedUrl = contactData.location.mapEmbedUrl || '';
+const wazeLink = contactData.location.wazeLink || 'https://www.waze.com/ul?navigate=yes&to=place.w.187695145.1876689310.17328548';
+const aboutUrl = `/${lang}/about`;
+
+const mapLabels = lang === 'es'
+    ? { title: 'Como llegar', google: 'Google Maps', waze: 'Waze' }
+    : { title: 'How to get there', google: 'Google Maps', waze: 'Waze' };
+
 // Configuración de WhatsApp
 const phoneNumber = contactData.whatsapp.phoneNumber;
 const message = encodeURIComponent(contactData.whatsapp.message);
@@ -31,14 +40,29 @@ const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
             {/* Address */}
             <div class="flex flex-col items-center md:items-start">
-                <div class="w-12 h-12 bg-ragazza-bg rounded-full flex items-center justify-center text-ragazza-primary mb-4">
+                <a
+                    href={mapLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={lang === 'es' ? 'Abrir ubicación en Google Maps' : 'Open location in Google Maps'}
+                    class="w-12 h-12 bg-ragazza-bg rounded-full flex items-center justify-center text-ragazza-primary mb-4 hover:bg-ragazza-primary hover:text-white transition-colors duration-300"
+                >
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                </div>
+                </a>
                 <h3 class="font-cinzel text-xl text-ragazza-dark font-bold mb-2">{contactData.location.label}</h3>
                 <p class="font-lora text-ragazza-secondary/80 leading-relaxed">
+                    <a
+                        href={mapLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="underline decoration-ragazza-primary/40 underline-offset-4 hover:text-ragazza-primary transition-colors duration-300"
+                    >
+                        {contactData.location.streetAddress}
+                    </a>
+                    <br/>
                     {contactData.location.city}, {contactData.location.state}<br/>
                     {contactData.location.country}
                 </p>
@@ -46,11 +70,15 @@ const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
             {/* Philosophy / Family Info */}
             <div class="flex flex-col items-center md:items-start">
-                <div class="w-12 h-12 bg-ragazza-bg rounded-full flex items-center justify-center text-ragazza-primary mb-4">
+                <a
+                    href={aboutUrl}
+                    aria-label={lang === 'es' ? 'Ir a nuestra historia' : 'Go to our story'}
+                    class="w-12 h-12 bg-ragazza-bg rounded-full flex items-center justify-center text-ragazza-primary mb-4 hover:bg-ragazza-primary hover:text-white transition-colors duration-300"
+                >
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
-                </div>
+                </a>
                 <h3 class="font-cinzel text-xl text-ragazza-dark font-bold mb-2">{contactData.family.title}</h3>
                 <p class="font-lora text-ragazza-secondary/80 leading-relaxed italic">
                     {contactData.family.founded}<br/>
@@ -104,5 +132,44 @@ const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
             </div>
 
         </div>
+
+        {mapEmbedUrl && (
+            <div class="mt-14">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+                    <h3 class="font-cinzel text-2xl text-ragazza-primary">{mapLabels.title}</h3>
+                    <div class="flex items-center gap-3">
+                        <a
+                            href={mapLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center border border-ragazza-primary/40 px-4 py-2 font-cinzel text-xs uppercase tracking-widest text-ragazza-primary hover:bg-ragazza-primary hover:text-white transition-colors duration-300"
+                        >
+                            {mapLabels.google}
+                        </a>
+                        <a
+                            href={wazeLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center border border-ragazza-primary/40 px-4 py-2 font-cinzel text-xs uppercase tracking-widest text-ragazza-primary hover:bg-ragazza-primary hover:text-white transition-colors duration-300"
+                        >
+                            {mapLabels.waze}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden rounded-xl border border-ragazza-primary/10 shadow-sm">
+                    <iframe
+                        src={mapEmbedUrl}
+                        class="w-full h-[320px] md:h-[420px]"
+                        style="border:0;"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        allowfullscreen
+                        title={lang === 'es' ? 'Mapa de La Ragazza' : 'La Ragazza map'}
+                    ></iframe>
+                </div>
+            </div>
+        )}
     </div>
 </section>
+

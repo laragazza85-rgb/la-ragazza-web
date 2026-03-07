@@ -1,0 +1,22 @@
+{
+  "label": "What is New",
+  "title": "Events and Promotions",
+  "items": [
+    {
+      "name": "Executive Lunch",
+      "description": "Tuesday to Friday at noon: selected dishes with a drink included.",
+      "badge": "Tuesday to Friday"
+    },
+    {
+      "name": "Wine Night",
+      "description": "Suggested pairings with signature dishes for special dinners.",
+      "badge": "Saturdays"
+    },
+    {
+      "name": "Family Celebrations",
+      "description": "Personalized attention for birthdays, anniversaries, and small gatherings.",
+      "badge": "All year"
+    }
+  ]
+}
+

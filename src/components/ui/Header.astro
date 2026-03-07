@@ -5,47 +5,66 @@ import LanguageSwitcher from './LanguageSwitcher.astro';
 
 interface Props {
     lang?: string;
-    solidBg?: boolean;
 }
 
 const lang = (Astro.props.lang || 'es') as 'es' | 'en';
 const t = useTranslations(lang);
-const solidBg = Astro.props.solidBg ?? false;
 const labelsData = await import(`../../data/${lang}/labels.json`).then(m => m.default);
+
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';
+const isActivePath = (path: string) => {
+    const normalizedTarget = normalizePath(path);
+    const homePath = `/${lang}`;
+
+    if (normalizedTarget === homePath) {
+        return currentPath === homePath;
+    }
+
+    return currentPath === normalizedTarget || currentPath.startsWith(`${normalizedTarget}/`);
+};
 
 const navItems = [
     { name: t('nav.home'), path: `/${lang}/` },
     { name: t('nav.about'), path: `/${lang}/about` },
     { name: t('nav.menu'), path: `/${lang}/menu` },
     { name: t('nav.gallery'), path: `/${lang}/gallery` },
-];
+].map((item) => ({ ...item, active: isActivePath(item.path) }));
+
+const reserveHref = `/${lang}/#contact`;
 ---
 
 <header
-        id="main-header"
-        class="fixed w-full top-0 z-50 transition-all duration-500 border-b text-white border-white/10 bg-ragazza-dark"
+    id="main-header"
+    class="fixed w-full top-0 z-50 transition-all duration-500 border-b text-white border-white/10 bg-ragazza-dark"
 >
     <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20 sm:h-24 md:h-28 transition-all duration-500" id="header-container">
-
-            {/* Logo Tipográfico */}
             <a href={`/${lang}/`} class="font-cinzel text-2xl sm:text-3xl md:text-4xl font-bold tracking-widest z-50 hover:text-ragazza-accent transition-colors whitespace-nowrap">
                 LA RAGAZZA
             </a>
 
-            {/* Menú Desktop */}
             <nav class="hidden md:flex space-x-10">
-                {navItems.map(item => (
-                        <a href={item.path} class="font-cinzel text-sm uppercase tracking-widest hover:text-ragazza-accent transition-colors relative group">
-                            {item.name}
-                            <span class="absolute -bottom-2 left-0 w-0 h-[1px] bg-ragazza-accent transition-all duration-300 group-hover:w-full"></span>
-                        </a>
+                {navItems.map((item) => (
+                    <a
+                        href={item.path}
+                        aria-current={item.active ? 'page' : undefined}
+                        class:list={[
+                            'font-cinzel text-sm uppercase tracking-widest transition-colors relative group',
+                            item.active ? 'text-ragazza-accent' : 'hover:text-ragazza-accent',
+                        ]}
+                    >
+                        {item.name}
+                        <span class:list={[
+                            'absolute -bottom-2 left-0 h-px bg-ragazza-accent transition-all duration-300',
+                            item.active ? 'w-full' : 'w-0 group-hover:w-full',
+                        ]}></span>
+                    </a>
                 ))}
             </nav>
 
-            {/* Botón CTA y Hamburguesa Mobile */}
-            <div class="flex items-center gap-6 z-50">
-                <a href="#contact" class="hidden md:inline-flex border border-white/50 px-6 py-2.5 font-cinzel text-xs uppercase tracking-widest hover:bg-white hover:text-ragazza-primary transition-all duration-300">
+            <div class="flex items-center gap-4 md:gap-6 z-50">
+                <a href={reserveHref} class="hidden md:inline-flex border border-white/50 px-6 py-2.5 font-cinzel text-xs uppercase tracking-widest hover:bg-white hover:text-ragazza-primary transition-all duration-300">
                     {labelsData.header.reserve}
                 </a>
 
@@ -59,22 +78,26 @@ const navItems = [
                     </svg>
                 </button>
             </div>
-
         </div>
     </div>
 
-    {/* Menú Mobile Desplegable */}
     <div id="mobile-menu" class="md:hidden fixed inset-0 top-20 sm:top-24 bg-ragazza-dark max-h-screen overflow-y-auto z-40 translate-y-full transition-transform duration-500">
         <nav class="flex flex-col px-6 py-8">
-            {navItems.map(item => (
-                    <a href={item.path} class="font-cinzel text-2xl sm:text-3xl uppercase tracking-widest text-white border-b border-white/10 py-6 hover:text-ragazza-accent transition-colors">
-                        {item.name}
-                    </a>
+            {navItems.map((item) => (
+                <a
+                    href={item.path}
+                    aria-current={item.active ? 'page' : undefined}
+                    class:list={[
+                        'font-cinzel text-2xl sm:text-3xl uppercase tracking-widest border-b border-white/10 py-6 transition-colors',
+                        item.active ? 'text-ragazza-accent' : 'text-white hover:text-ragazza-accent',
+                    ]}
+                >
+                    {item.name}
+                </a>
             ))}
 
-            {/* Language Switcher y Reserve Button en el menú móvil */}
-            <div class="pt-8 pb-4 flex justify-between items-center">
-                <a href="#contact" class="border border-white/50 px-4 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-white hover:text-ragazza-primary transition-all duration-300 text-white">
+            <div class="pt-8 pb-4 flex justify-between items-center gap-3">
+                <a href={reserveHref} class="border border-white/50 px-4 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-white hover:text-ragazza-primary transition-all duration-300 text-white">
                     {labelsData.header.reserve}
                 </a>
                 <LanguageSwitcher lang={lang} />
@@ -83,9 +106,8 @@ const navItems = [
     </div>
 </header>
 
-<script define:vars={{ solidBg }}>
+<script>
     document.addEventListener('DOMContentLoaded', () => {
-        const header = document.getElementById('main-header');
         const headerContainer = document.getElementById('header-container');
         const mobileBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -117,7 +139,6 @@ const navItems = [
         };
 
         const closeMenu = () => setMenuState(false);
-
         const isDesktop = () => window.innerWidth >= 768;
 
         const applyHeaderState = () => {
@@ -136,8 +157,7 @@ const navItems = [
 
         applyHeaderState();
 
-        // Debounce scroll for better INP
-        let scrollTimeout;
+        let scrollTimeout = null;
         window.addEventListener('scroll', () => {
             if (scrollTimeout) return;
             scrollTimeout = setTimeout(() => {
@@ -146,8 +166,7 @@ const navItems = [
             }, 100);
         }, { passive: true });
 
-        // Use requestIdleCallback for resize
-        let resizeTimeout;
+        let resizeTimeout = null;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {

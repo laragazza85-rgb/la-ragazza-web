@@ -12,7 +12,11 @@ const { category, lang = 'es' } = Astro.props;
 const labelsData = await import(`../../data/${lang}/labels.json`).then(m => m.default);
 ---
 
-<section class="mb-16 scroll-mt-24 reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out" id={category.id}>
+<section
+    class="menu-category-section mb-16 scroll-mt-24 reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out"
+    id={category.id}
+    data-menu-category={category.id}
+>
     <header class="mb-8 text-center sm:text-left border-b border-ragazza-primary/20 pb-4">
         <h2 class="font-cinzel text-3xl md:text-4xl text-ragazza-primary uppercase tracking-wider">
             {category.title}

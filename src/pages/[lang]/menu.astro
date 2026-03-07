@@ -16,6 +16,24 @@ const { lang } = Astro.params;
 
 // Importar datos del menú
 const menuData = await import(`../../data/${lang}/menu.json`).then(m => m.default);
+
+const filterLabels = lang === 'es'
+    ? {
+        all: 'Todo',
+        vegetarian: 'Vegetariano',
+        pastas: 'Pastas',
+        wines: 'Vinos',
+        desserts: 'Postres',
+        drinks: 'Bebidas',
+      }
+    : {
+        all: 'All',
+        vegetarian: 'Vegetarian',
+        pastas: 'Pasta',
+        wines: 'Wines',
+        desserts: 'Desserts',
+        drinks: 'Drinks',
+      };
 ---
 
 <Layout
@@ -47,6 +65,15 @@ const menuData = await import(`../../data/${lang}/menu.json`).then(m => m.defaul
     {/* Menu Sections */}
     <main class="bg-ragazza-bg pb-24">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-10 flex flex-wrap items-center gap-2 sm:gap-3 justify-center sm:justify-start" id="menu-filters">
+                <button type="button" data-filter="all" class="menu-filter-btn border border-ragazza-primary/30 bg-ragazza-primary text-white px-3 py-2 font-cinzel text-xs uppercase tracking-widest transition-colors">{filterLabels.all}</button>
+                <button type="button" data-filter="vegetarian" class="menu-filter-btn border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.vegetarian}</button>
+                <button type="button" data-filter="pastas" class="menu-filter-btn border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.pastas}</button>
+                <button type="button" data-filter="wines" class="menu-filter-btn border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.wines}</button>
+                <button type="button" data-filter="desserts" class="menu-filter-btn border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.desserts}</button>
+                <button type="button" data-filter="drinks" class="menu-filter-btn border border-ragazza-primary/30 text-ragazza-primary px-3 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-ragazza-primary hover:text-white transition-colors">{filterLabels.drinks}</button>
+            </div>
+
             {menuData.map((section: any) => (
                 <MenuSection category={section} lang={lang} />
             ))}
@@ -56,3 +83,61 @@ const menuData = await import(`../../data/${lang}/menu.json`).then(m => m.defaul
     <Contact lang={lang} />
     <Footer lang={lang} />
 </Layout>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        type FilterKey = 'all' | 'vegetarian' | 'pastas' | 'wines' | 'desserts' | 'drinks';
+
+        const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('.menu-filter-btn'));
+        const sections = Array.from(document.querySelectorAll<HTMLElement>('.menu-category-section'));
+
+        const categoryGroups: Record<Exclude<FilterKey, 'all' | 'vegetarian'>, string[]> = {
+            pastas: ['lasagna', 'spaguetti-tallarin', 'ravioli', 'caneloni'],
+            wines: ['vinos'],
+            desserts: ['postres'],
+            drinks: ['bebidas-sin-alcohol', 'bebidas-con-alcohol'],
+        };
+
+        const setActiveButton = (filter: FilterKey) => {
+            buttons.forEach((button) => {
+                const isActive = button.dataset.filter === filter;
+                button.classList.toggle('bg-ragazza-primary', isActive);
+                button.classList.toggle('text-white', isActive);
+                button.classList.toggle('text-ragazza-primary', !isActive);
+            });
+        };
+
+        const applyFilter = (filter: FilterKey) => {
+            sections.forEach((section) => {
+                const categoryId = section.dataset.menuCategory || '';
+                const items = Array.from(section.querySelectorAll<HTMLElement>('[data-menu-item]'));
+
+                items.forEach((item) => {
+                    item.classList.remove('hidden');
+                });
+
+                let sectionVisible = true;
+
+                if (filter === 'vegetarian') {
+                    items.forEach((item) => {
+                        const isVegetarian = item.dataset.vegetarian === 'true';
+                        item.classList.toggle('hidden', !isVegetarian);
+                    });
+                    sectionVisible = items.some((item) => item.dataset.vegetarian === 'true');
+                } else if (filter !== 'all') {
+                    sectionVisible = categoryGroups[filter].includes(categoryId);
+                }
+
+                section.classList.toggle('hidden', !sectionVisible);
+            });
+        };
+
+        buttons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const filter = (button.dataset.filter as FilterKey | undefined) || 'all';
+                setActiveButton(filter);
+                applyFilter(filter);
+            });
+        });
+    });
+</script>

@@ -1,15 +1,22 @@
 {
   "location": {
     "label": "Dirección",
+    "streetAddress": "Calle 19 #39-66, Barrio Camoa",
     "city": "Villavicencio",
     "state": "Meta",
-    "country": "Colombia"
+    "country": "Colombia",
+    "mapLink": "https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7",
+    "wazeLink": "https://www.waze.com/ul?navigate=yes&to=place.w.187695145.1876689310.17328548",
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.42822969437!2d-73.640488725024!3d4.135852395837936!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3e2e0dd4ef0e2b%3A0x620e030c40531d13!2sLa%20Ragazza!5e0!3m2!1ses!2sco!4v1772854114551!5m2!1ses!2sco",
+    "latitude": 4.135852395837936,
+    "longitude": -73.640488725024
   },
   "family": {
     "title": "Tradición Familiar",
     "founded": "Fundado en 1985.",
     "owners": "Atendido por Carolina y Mauricio.",
-    "philosophy": "\"Fatto en casa\""
+    "philosophy": "\"Fatto en casa\"",
+    "cta": "Tradición Familiar"
   },
   "whatsapp": {
     "label": "Reservas y Domicilios por WhatsApp",
@@ -18,4 +25,3 @@
     "message": ""
   }
 }
-

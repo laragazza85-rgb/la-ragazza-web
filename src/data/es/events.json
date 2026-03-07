@@ -1,0 +1,22 @@
+{
+  "label": "Novedades",
+  "title": "Eventos y Promociones",
+  "items": [
+    {
+      "name": "Almuerzo Ejecutivo",
+      "description": "De martes a viernes al mediodía: opciones seleccionadas con bebida incluida.",
+      "badge": "Martes a Viernes"
+    },
+    {
+      "name": "Noche de Vinos",
+      "description": "Sugerencias de maridaje con platos de la casa para cenas especiales.",
+      "badge": "Sábados"
+    },
+    {
+      "name": "Celebraciones Familiares",
+      "description": "Atención personalizada para cumpleaños, aniversarios y reuniones íntimas.",
+      "badge": "Todo el año"
+    }
+  ]
+}
+

@@ -15,6 +15,7 @@ interface Props {
 const { item, index } = Astro.props;
 // Calculamos el delay de la animación de entrada para que aparezcan en cascada
 const delay = index * 75;
+const eagerLoad = index < 2;
 ---
 
 <article
@@ -36,6 +37,7 @@ const delay = index * 75;
                     loop
                     muted
                     playsinline
+                    preload={eagerLoad ? 'auto' : 'metadata'}
                     class="w-full h-auto object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
             >
                 <source src={item.src} type="video/mp4" />
@@ -45,7 +47,9 @@ const delay = index * 75;
             <img
                     src={item.src}
                     alt={item.alt}
-                    loading="lazy"
+                    loading={eagerLoad ? 'eager' : 'lazy'}
+                    fetchpriority={eagerLoad ? 'high' : 'auto'}
+                    decoding="async"
                     class="w-full h-auto object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
             />
     )}

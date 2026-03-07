@@ -1,0 +1,23 @@
+{
+  "label": "Frequently Asked Questions",
+  "title": "Quick answers before your visit",
+  "items": [
+    {
+      "question": "Do I need a reservation in advance?",
+      "answer": "We recommend booking via WhatsApp, especially on weekends and special dates."
+    },
+    {
+      "question": "Do you have vegetarian options?",
+      "answer": "Yes. We offer several vegetarian dishes across starters, pasta, and lasagna options."
+    },
+    {
+      "question": "Do you offer delivery?",
+      "answer": "Yes. Contact us on WhatsApp to confirm delivery coverage and availability."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept different payment methods. Message us to confirm current options for dine-in or delivery."
+    }
+  ]
+}
+
