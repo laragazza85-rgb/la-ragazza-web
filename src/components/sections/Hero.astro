@@ -10,29 +10,29 @@ const lang = (Astro.props.lang || 'es') as 'es' | 'en';
 const heroData = await import(`../../data/${lang}/hero.json`).then(m => m.default);
 ---
 
-<header class="relative min-h-[85vh] flex flex-col items-center justify-center text-center px-4 py-20 overflow-hidden bg-ragazza-secondary">
+<header class="relative h-[60vh] sm:h-[70vh] md:h-[85vh] flex flex-col items-center justify-center text-center px-4 py-12 sm:py-20 overflow-hidden bg-ragazza-secondary">
     {/* Fondo con degradado radial cinematográfico */}
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-ragazza-primary/40 via-ragazza-dark/80 to-ragazza-dark z-0"></div>
 
     {/* Contenido principal */}
     <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
 
-        <h1 class="font-cinzel text-5xl md:text-7xl lg:text-8xl text-white font-bold tracking-tight mb-6 drop-shadow-lg">
+        <h1 class="font-cinzel text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-white font-bold tracking-tight mb-4 sm:mb-6 drop-shadow-lg">
             La Ragazza
         </h1>
 
-        <div class="w-24 h-[1px] bg-ragazza-accent mb-8"></div>
+        <div class="w-16 sm:w-24 h-[1px] bg-ragazza-accent mb-4 sm:mb-8"></div>
 
-        <p class="font-lora text-xl md:text-2xl text-white/90 italic font-light max-w-2xl leading-relaxed">
+        <p class="font-lora text-sm sm:text-lg md:text-xl lg:text-2xl text-white/90 italic font-light max-w-2xl leading-relaxed">
             {heroData.subtitle}
         </p>
 
-        <div class="mt-12 flex flex-col sm:flex-row gap-4">
+        <div class="mt-8 sm:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4">
             {/* Enlace dinámico basado en el idioma */}
-            <a href={`/${lang}/menu`} class="px-8 py-3 bg-white text-ragazza-primary font-cinzel font-bold tracking-wider hover:bg-ragazza-bg transition-colors duration-300">
+            <a href={`/${lang}/menu`} class="px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm bg-white text-ragazza-primary font-cinzel font-bold tracking-wider hover:bg-ragazza-bg transition-colors duration-300">
                 {heroData.viewMenu}
             </a>
-            <a href="#contact" class="px-8 py-3 bg-transparent border border-white text-white font-cinzel font-bold tracking-wider hover:bg-white/10 transition-colors duration-300">
+            <a href="#contact" class="px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm bg-transparent border border-white text-white font-cinzel font-bold tracking-wider hover:bg-white/10 transition-colors duration-300">
                 {heroData.reserveTable}
             </a>
         </div>

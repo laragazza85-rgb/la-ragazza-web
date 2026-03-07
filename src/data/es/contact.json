@@ -12,10 +12,10 @@
     "philosophy": "\"Fatto en casa\""
   },
   "whatsapp": {
-    "label": "Reservas por WhatsApp",
+    "label": "Reservas y Domicilios por WhatsApp",
     "description": "Atendemos sus reservaciones y consultas directamente de forma personalizada.",
     "phoneNumber": "573133494150",
-    "message": "Hola La Ragazza, me gustaría reservar una mesa o consultar la carta."
+    "message": ""
   }
 }
 

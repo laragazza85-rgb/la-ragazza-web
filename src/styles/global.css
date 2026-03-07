@@ -20,3 +20,9 @@
         @apply bg-ragazza-bg text-ragazza-dark font-lora antialiased;
     }
 }
+
+@media (max-width: 767px) {
+    #main-header {
+        background-color: #331717;
+    }
+}

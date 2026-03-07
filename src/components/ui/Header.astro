@@ -24,16 +24,13 @@ const navItems = [
 
 <header
         id="main-header"
-        class:list={[
-            "fixed w-full top-0 z-50 transition-all duration-500 border-b text-white border-white/10",
-            solidBg ? "bg-ragazza-dark" : "bg-transparent"
-        ]}
+        class="fixed w-full top-0 z-50 transition-all duration-500 border-b text-white border-white/10 bg-ragazza-dark"
 >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-24 transition-all duration-500" id="header-container">
+    <div class="w-full px-3 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16 sm:h-20 md:h-24 transition-all duration-500" id="header-container">
 
             {/* Logo Tipográfico */}
-            <a href={`/${lang}/`} class="font-cinzel text-2xl md:text-3xl font-bold tracking-widest z-50 hover:text-ragazza-accent transition-colors">
+            <a href={`/${lang}/`} class="font-cinzel text-xl sm:text-2xl md:text-3xl font-bold tracking-widest z-50 hover:text-ragazza-accent transition-colors whitespace-nowrap">
                 LA RAGAZZA
             </a>
 
@@ -66,12 +63,14 @@ const navItems = [
     </div>
 
     {/* Menú Mobile Desplegable */}
-    <div id="mobile-menu" class="fixed inset-0 bg-ragazza-secondary/95 backdrop-blur-md transform translate-x-full transition-transform duration-500 md:hidden pt-32 px-8 flex flex-col gap-8 z-40">
-        {navItems.map(item => (
-                <a href={item.path} class="font-cinzel text-3xl uppercase tracking-widest text-white border-b border-white/10 pb-4 hover:text-ragazza-accent transition-colors">
-                    {item.name}
-                </a>
-        ))}
+    <div id="mobile-menu" class="md:hidden fixed inset-0 top-16 sm:top-20 bg-ragazza-secondary/95 backdrop-blur-md max-h-screen overflow-y-auto z-40 translate-y-full transition-transform duration-500">
+        <nav class="flex flex-col px-6 py-6">
+            {navItems.map(item => (
+                    <a href={item.path} class="font-cinzel text-lg sm:text-xl uppercase tracking-widest text-white border-b border-white/10 py-4 hover:text-ragazza-accent transition-colors">
+                        {item.name}
+                    </a>
+            ))}
+        </nav>
     </div>
 </header>
 
@@ -83,35 +82,61 @@ const navItems = [
         const mobileMenu = document.getElementById('mobile-menu');
         let isMenuOpen = false;
 
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                // Al scrollear hacia abajo, agregamos el efecto blur y la transparencia oscura
-                header?.classList.add('bg-ragazza-dark/90', 'backdrop-blur-md');
-                // Solo quitamos el transparente si no es solidBg
-                if (!solidBg) header?.classList.remove('bg-transparent');
-
-                headerContainer?.classList.remove('h-24');
-                headerContainer?.classList.add('h-20');
-            } else {
-                // Al volver arriba, quitamos el efecto
-                header?.classList.remove('bg-ragazza-dark/90', 'backdrop-blur-md');
-                // Solo regresamos a transparente si NO es una página de fondo sólido
-                if (!solidBg) header?.classList.add('bg-transparent');
-
-                headerContainer?.classList.add('h-24');
-                headerContainer?.classList.remove('h-20');
+        const closeMenu = () => {
+            if (isMenuOpen) {
+                isMenuOpen = false;
+                mobileMenu?.classList.add('translate-y-full');
+                mobileMenu?.classList.remove('translate-y-0');
+                mobileBtn.innerHTML = '<svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>';
             }
+        };
+
+        const isDesktop = () => window.innerWidth >= 768;
+
+        const applyHeaderState = () => {
+            const scrolled = window.scrollY > 50;
+
+            if (isDesktop()) {
+                if (scrolled) {
+                    headerContainer?.classList.remove('md:h-24');
+                    headerContainer?.classList.add('md:h-20');
+                } else {
+                    headerContainer?.classList.add('md:h-24');
+                    headerContainer?.classList.remove('md:h-20');
+                }
+                return;
+            }
+
+            // Mobile
+            if (scrolled) {
+                header?.classList.add('backdrop-blur-md');
+            } else {
+                header?.classList.remove('backdrop-blur-md');
+            }
+        };
+
+        applyHeaderState();
+
+        window.addEventListener('scroll', () => {
+            applyHeaderState();
+            closeMenu();
         });
+
+        window.addEventListener('resize', applyHeaderState);
 
         mobileBtn?.addEventListener('click', () => {
             isMenuOpen = !isMenuOpen;
             if (isMenuOpen) {
-                mobileMenu?.classList.remove('translate-x-full');
+                mobileMenu?.classList.remove('translate-y-full');
+                mobileMenu?.classList.add('translate-y-0');
                 mobileBtn.innerHTML = '<svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>';
             } else {
-                mobileMenu?.classList.add('translate-x-full');
-                mobileBtn.innerHTML = '<svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>';
+                closeMenu();
             }
+        });
+
+        mobileMenu?.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', closeMenu);
         });
     });
 </script>
