@@ -4,8 +4,7 @@
     {
       "source": "/",
       "destination": "/es/",
-      "permanent": true,
-      "statusCode": 301
+      "permanent": true
     }
   ]
 }
