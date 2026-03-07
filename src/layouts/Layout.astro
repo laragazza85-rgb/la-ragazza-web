@@ -53,12 +53,14 @@ const jsonLd = buildRestaurantJsonLd({
     ))}
     <link rel="alternate" href={xDefaultUrl} hreflang="x-default" />
 
-    <meta property="og:type" content="restaurant" />
+    <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImageUrl} />
     <meta property="og:image:alt" content="Plato de comida italiana artesanal en La Ragazza" />
+    <meta property="og:image:width" content="1080" />
+    <meta property="og:image:height" content="1080" />
     <meta property="og:site_name" content="La Ragazza Ristorante" />
     <meta property="og:locale" content={lang === 'es' ? 'es_CO' : 'en_US'} />
     <meta property="og:locale:alternate" content={lang === 'es' ? 'en_US' : 'es_CO'} />
@@ -92,18 +94,26 @@ const jsonLd = buildRestaurantJsonLd({
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.remove('opacity-0', 'translate-y-8');
-                entry.target.classList.add('opacity-100', 'translate-y-0');
+                requestAnimationFrame(() => {
+                    entry.target.classList.remove('opacity-0', 'translate-y-8');
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                });
                 observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
-    document.addEventListener('DOMContentLoaded', () => {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.reveal').forEach((el) => {
+                observer.observe(el);
+            });
+        });
+    } else {
         document.querySelectorAll('.reveal').forEach((el) => {
             observer.observe(el);
         });
-    });
+    }
 </script>
 
 </body>

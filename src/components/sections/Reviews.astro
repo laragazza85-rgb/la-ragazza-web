@@ -23,8 +23,8 @@ const SECTION_TEXTS = {
             label: 'Nuestros Clientes',
             title: 'La Familia Crece',
         },
-        cta: 'Leer nuestras resenas en Google',
-        googleMapsLink: 'https://maps.google.com/?q=La+Ragazza+Ristorante+Villavicencio',
+        cta: 'Leer nuestras reseñas en Google',
+        googleMapsLink: 'https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7',
     },
     en: {
         section: {
@@ -32,7 +32,7 @@ const SECTION_TEXTS = {
             title: 'The Family Grows',
         },
         cta: 'Read our reviews on Google',
-        googleMapsLink: 'https://maps.google.com/?q=La+Ragazza+Ristorante+Villavicencio',
+        googleMapsLink: 'https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7',
     },
 } as const;
 
@@ -113,17 +113,20 @@ const GOOGLE_MAPS_LINK = sectionTexts.googleMapsLink;
 
         let currentIndex = 0;
         const totalReviews = track.children.length;
-        let autoPlayInterval: number | undefined;
+        let autoPlayInterval;
         let isTransitioning = false;
+        let clickTimeout;
 
         // Función para actualizar el carousel
-        const updateCarousel = (smooth: boolean = true) => {
+        const updateCarousel = (smooth = true) => {
             if (smooth) {
                 track.style.transition = 'transform 0.7s ease-in-out';
             } else {
                 track.style.transition = 'none';
             }
-            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            requestAnimationFrame(() => {
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            });
         };
 
         // Navegar a siguiente
@@ -165,25 +168,37 @@ const GOOGLE_MAPS_LINK = sectionTexts.googleMapsLink;
             }
         };
 
-        // Event listeners para botones
-        nextBtn.addEventListener('click', () => {
-            goNext();
-            resetAutoPlay();
-        });
+        // Debounce click events
+        const handleNext = () => {
+            if (clickTimeout) return;
+            clickTimeout = setTimeout(() => {
+                goNext();
+                resetAutoPlay();
+                clickTimeout = null;
+            }, 50);
+        };
 
-        prevBtn.addEventListener('click', () => {
-            goPrev();
-            resetAutoPlay();
-        });
+        const handlePrev = () => {
+            if (clickTimeout) return;
+            clickTimeout = setTimeout(() => {
+                goPrev();
+                resetAutoPlay();
+                clickTimeout = null;
+            }, 50);
+        };
+
+        // Event listeners para botones
+        nextBtn.addEventListener('click', handleNext, { passive: true });
+        prevBtn.addEventListener('click', handlePrev, { passive: true });
 
         // Auto-play (8 segundos)
         const startAutoPlay = () => {
-            autoPlayInterval = window.setInterval(goNext, 8000);
+            autoPlayInterval = setInterval(goNext, 8000);
         };
 
         const resetAutoPlay = () => {
-            if (autoPlayInterval !== undefined) {
-                window.clearInterval(autoPlayInterval);
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
             }
             startAutoPlay();
         };

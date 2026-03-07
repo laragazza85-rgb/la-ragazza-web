@@ -103,6 +103,7 @@ const navItems = [
                     mobileBtn.innerHTML = closeIcon;
                     mobileBtn.setAttribute('aria-expanded', 'true');
                 }
+                document.body.style.overflow = 'hidden';
                 return;
             }
 
@@ -112,6 +113,7 @@ const navItems = [
                 mobileBtn.innerHTML = menuIcon;
                 mobileBtn.setAttribute('aria-expanded', 'false');
             }
+            document.body.style.overflow = '';
         };
 
         const closeMenu = () => setMenuState(false);
@@ -129,32 +131,39 @@ const navItems = [
                     headerContainer?.classList.add('md:h-28');
                     headerContainer?.classList.remove('md:h-24');
                 }
-                return;
             }
-
-            // Keep mobile header stable; backdrop/filter can break fixed child menu behavior on some mobile browsers.
-            header?.classList.remove('backdrop-blur-md');
         };
 
         applyHeaderState();
 
+        // Debounce scroll for better INP
+        let scrollTimeout;
         window.addEventListener('scroll', () => {
-            applyHeaderState();
-        });
+            if (scrollTimeout) return;
+            scrollTimeout = setTimeout(() => {
+                applyHeaderState();
+                scrollTimeout = null;
+            }, 100);
+        }, { passive: true });
 
+        // Use requestIdleCallback for resize
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            applyHeaderState();
-            if (isDesktop()) {
-                closeMenu();
-            }
-        });
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                applyHeaderState();
+                if (isDesktop()) {
+                    closeMenu();
+                }
+            }, 150);
+        }, { passive: true });
 
         mobileBtn?.addEventListener('click', () => {
             setMenuState(!isMenuOpen);
         });
 
         mobileMenu?.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', closeMenu);
+            link.addEventListener('click', closeMenu, { passive: true });
         });
     });
 </script>
