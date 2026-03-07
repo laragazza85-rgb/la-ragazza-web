@@ -1,9 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "routes": [
+  "redirects": [
     {
-      "src": "^/$",
-      "middlewarePath": "middleware"
+      "source": "/",
+      "destination": "/es/",
+      "permanent": true,
+      "statusCode": 301
     }
   ]
 }

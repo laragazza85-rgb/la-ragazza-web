@@ -18,7 +18,7 @@ interface Props {
     ogImage?: string;
 }
 
-const { title, description, solidBg = false, ogImage = '/Logo.png' } = Astro.props;
+const { title, description, solidBg = false, ogImage = '/og-image.svg' } = Astro.props;
 const lang = (Astro.params.lang || Astro.currentLocale || 'es') as Locale;
 
 const baseOrigin = Astro.site?.toString() ?? SITE_URL;
@@ -42,7 +42,12 @@ const jsonLd = buildRestaurantJsonLd({
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/Logo.png" />
+
     <meta name="generator" content={Astro.generator} />
 
     <title>{title}</title>
@@ -58,9 +63,10 @@ const jsonLd = buildRestaurantJsonLd({
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImageUrl} />
-    <meta property="og:image:alt" content="Plato de comida italiana artesanal en La Ragazza" />
-    <meta property="og:image:width" content="1080" />
-    <meta property="og:image:height" content="1080" />
+    <meta property="og:image:alt" content="La Ragazza - Comida Italiana Artesanal en Villavicencio" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/svg+xml" />
     <meta property="og:site_name" content="La Ragazza Ristorante" />
     <meta property="og:locale" content={lang === 'es' ? 'es_CO' : 'en_US'} />
     <meta property="og:locale:alternate" content={lang === 'es' ? 'en_US' : 'es_CO'} />
@@ -75,7 +81,24 @@ const jsonLd = buildRestaurantJsonLd({
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+    </noscript>
+
+    <!-- Google Analytics 4 (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DN31EQS43S"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-DN31EQS43S');
+    </script>
 </head>
 
 <body class="selection:bg-ragazza-primary selection:text-white overflow-x-hidden pt-16 sm:pt-20 md:pt-0">

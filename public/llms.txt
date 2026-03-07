@@ -1,0 +1,50 @@
+# La Ragazza Ristorante
+
+## About
+La Ragazza is an authentic Italian restaurant in Villavicencio, Meta, Colombia. Family-owned and operated since 1985, specializing in homemade pasta and traditional Italian recipes.
+
+## Core Information
+- **Name:** La Ragazza Ristorante
+- **Type:** Italian Restaurant (Family-style, Artisanal)
+- **Location:** Calle 19 #39-66, Barrio Camoa, Villavicencio, Meta, Colombia
+- **Phone:** +57 313 349 4150
+- **Price Range:** $$ (50,000-60,000 COP per person)
+- **Established:** 1985
+
+## Hours
+- Monday: Closed
+- Tuesday - Friday: 12:00-15:00, 18:00-21:30
+- Saturday: 12:00-15:30, 18:00-21:30
+- Sunday: 12:00-17:30
+
+## Specialties
+- Homemade fresh pasta (100% artisanal)
+- Traditional Italian lasagna
+- Tournedos (beef tenderloin)
+- Italian desserts (Panna Cotta, Tiramisu)
+- House wine selection
+
+## Keywords
+Italian restaurant Villavicencio, homemade pasta, artisanal Italian food, family restaurant Colombia, authentic Italian cuisine, La Ragazza, pasta fresca, comida italiana casera, restaurante familiar
+
+## Menu
+Full menu available at: https://la-ragazza-web.vercel.app/es/menu
+
+## Reservations
+Contact via WhatsApp: +57 313 349 4150
+
+## Social Media
+- Instagram: https://www.instagram.com/laragazza85/
+- Facebook: https://www.facebook.com/laragazza85/
+
+## Customer Reviews
+Average Rating: 4.5/5 (218 reviews on Google)
+Customers praise the authentic Italian flavors, family atmosphere, and homemade quality.
+
+## Language Support
+- Spanish (primary)
+- English
+
+## Contact Page
+https://la-ragazza-web.vercel.app/es/#contact
+
