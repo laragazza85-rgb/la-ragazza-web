@@ -7,6 +7,7 @@ For implementation details, see the dedicated docs:
 
 - `docs/architecture.md`
 - `docs/development.md`
+- `docs/website-workflow.md`
 
 ---
 
@@ -69,6 +70,24 @@ Read `docs/development.md` for:
 - reviews CSV -> JSON process,
 - build and release routines,
 - troubleshooting commands.
+
+### Website Workflow
+
+Read `docs/website-workflow.md` for:
+
+- complete end-to-end request flow (user → CDN → static file),
+- language detection and redirect layers,
+- page-by-page data flow,
+- component assembly and layout tree,
+- partial contact form validation flow,
+- full build process step by step,
+- Vercel deployment workflow,
+- Docker local/staging workflow,
+- content editing workflow,
+- reviews CSV → JSON pipeline,
+- SEO generation flow,
+- design system tokens,
+- complete route map and file dependency map.
 
 ---
 

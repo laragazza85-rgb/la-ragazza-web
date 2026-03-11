@@ -1,0 +1,49 @@
+{
+  "label": "Partial delivery",
+  "title": "Contact us",
+  "description": "Demo form with required validations. It does not send data to any API.",
+  "fields": {
+    "name": {
+      "label": "Full name",
+      "placeholder": "Ex: Jane Doe"
+    },
+    "email": {
+      "label": "Email",
+      "placeholder": "Ex: jane@email.com"
+    },
+    "phone": {
+      "label": "Phone",
+      "placeholder": "+57 3227318822",
+      "hint": "Include country code first. Example: +57 3227318822"
+    },
+    "inquiryType": {
+      "label": "Inquiry type",
+      "placeholder": "Select one option",
+      "options": [
+        { "value": "reservations", "label": "Reservations" },
+        { "value": "events", "label": "Events" },
+        { "value": "menu", "label": "Menu and dishes" },
+        { "value": "other", "label": "Other" }
+      ]
+    },
+    "message": {
+      "label": "Message",
+      "placeholder": "Tell us how we can help you (minimum 10 characters)"
+    }
+  },
+  "actions": {
+    "submit": "Submit form"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "invalidEmail": "Enter a valid email with @ and .com ending.",
+    "invalidPhone": "Phone must start with +country code, for example +57 3227318822.",
+    "shortMessage": "Message must be at least 10 characters long.",
+    "shortName": "Name must be at least 2 characters long.",
+    "fullNameWords": "Please enter first and last name (at least two words).",
+    "inquiryRequired": "Please select an inquiry type.",
+    "error": "Failed submission. Please check highlighted fields and try again.",
+    "success": "Success: we captured your information and validation passed."
+  },
+  "footnote": "This form only validates and captures data locally for the partial delivery."
+}

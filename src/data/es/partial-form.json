@@ -1,0 +1,49 @@
+{
+  "label": "Entrega parcial",
+  "title": "Contactanos",
+  "description": "Formulario de demostracion con validaciones obligatorias. No envia informacion a ninguna API.",
+  "fields": {
+    "name": {
+      "label": "Nombre completo",
+      "placeholder": "Ej: Juan Perez"
+    },
+    "email": {
+      "label": "Correo electronico",
+      "placeholder": "Ej: juan@email.com"
+    },
+    "phone": {
+      "label": "Telefono",
+      "placeholder": "+57 3227318822",
+      "hint": "Incluye el indicativo al inicio. Ejemplo: +57 3227318822"
+    },
+    "inquiryType": {
+      "label": "Tipo de consulta",
+      "placeholder": "Selecciona una opcion",
+      "options": [
+        { "value": "reservas", "label": "Reservas" },
+        { "value": "eventos", "label": "Eventos" },
+        { "value": "menu", "label": "Menu y platos" },
+        { "value": "otro", "label": "Otro" }
+      ]
+    },
+    "message": {
+      "label": "Mensaje",
+      "placeholder": "Cuentanos en que te podemos ayudar (minimo 10 caracteres)"
+    }
+  },
+  "actions": {
+    "submit": "Enviar formulario"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio.",
+    "invalidEmail": "Ingresa un correo valido con @ y terminacion .com.",
+    "invalidPhone": "El telefono debe empezar con +codigo de pais, por ejemplo +57 3227318822.",
+    "shortMessage": "El mensaje debe tener al menos 10 caracteres.",
+    "shortName": "El nombre debe tener al menos 2 caracteres.",
+    "fullNameWords": "Ingresa nombre y apellido (minimo dos palabras).",
+    "inquiryRequired": "Selecciona el tipo de consulta.",
+    "error": "No se pudo enviar. Revisa los campos marcados e intenta de nuevo.",
+    "success": "Exitoso: recibimos tu informacion y paso la validacion."
+  },
+  "footnote": "Este formulario solo valida y captura datos localmente para la entrega parcial."
+}
