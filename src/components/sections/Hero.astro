@@ -16,7 +16,7 @@ const heroData = await import(`../../data/${lang}/hero.json`).then(m => m.defaul
     <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center motion-fade-up">
 
         <h1 class="font-cinzel text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-white font-bold tracking-tight mb-4 sm:mb-6 drop-shadow-lg" style="animation-delay: 0.08s;">
-            {lang === 'es' ? 'Restaurante Italiano La Ragazza' : 'La Ragazza Italian Restaurant'}
+            {heroData.title}
         </h1>
 
         <div class="sauce-line mx-auto mb-4 sm:mb-8"></div>

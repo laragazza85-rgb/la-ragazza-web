@@ -1,8 +1,15 @@
 {
+  "seo": {
+    "title": "Galeria y resenas de comida italiana en Villavicencio | La Ragazza",
+    "description": "Descubre el ambiente familiar de La Ragazza y las resenas de clientes sobre nuestra comida italiana artesanal en Villavicencio."
+  },
   "header": {
     "label": "Nuestro Ambiente",
-    "title": "Galería",
-    "description": "Un recorrido visual por nuestros platos elaborados a mano y el cálido rincón italiano que hemos creado para usted."
+    "title": "Galeria",
+    "description": "Un recorrido visual por nuestros platos elaborados a mano y el calido rincon italiano que hemos creado para usted."
+  },
+  "media": {
+    "videoNotSupported": "Tu navegador no soporta videos."
   },
   "items": [
     {
@@ -27,4 +34,3 @@
     }
   ]
 }
-

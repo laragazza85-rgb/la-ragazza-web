@@ -1,0 +1,20 @@
+{
+  "seo": {
+    "title": "Italian Artisanal Menu | La Ragazza Villavicencio",
+    "description": "Explore La Ragazza's artisanal Italian menu: homemade pasta, lasagnas, meats, and desserts in Villavicencio."
+  },
+  "header": {
+    "label": "Our Recipes",
+    "title": "Menu",
+    "description": "Each dish tells the story of Italian tradition in the Llanos. Everything handmade, unhurried."
+  },
+  "filters": {
+    "all": "All",
+    "vegetarian": "Vegetarian",
+    "pastas": "Pasta",
+    "wines": "Wines",
+    "desserts": "Desserts",
+    "drinks": "Drinks"
+  }
+}
+

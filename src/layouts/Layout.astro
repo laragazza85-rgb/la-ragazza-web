@@ -21,6 +21,7 @@ const lang = (Astro.params.lang || Astro.currentLocale || 'es') as Locale;
 const { title, description, solidBg = false } = Astro.props;
 
 const contactData = await import(`../data/${lang}/contact.json`).then((m) => m.default);
+const labelsData = await import(`../data/${lang}/labels.json`).then((m) => m.default);
 const whatsappMessage = encodeURIComponent(contactData.whatsapp.message || '');
 const whatsappHref = `https://wa.me/${contactData.whatsapp.phoneNumber}?text=${whatsappMessage}`;
 
@@ -39,7 +40,7 @@ const jsonLd = buildRestaurantJsonLd({
 <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
-    <meta name="keywords" content="familiar, artesanal, italiano, comida italiana, familia, pasta, hecho en casa" />
+    <meta name="keywords" content={labelsData.layout.metaKeywords} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
@@ -63,7 +64,7 @@ const jsonLd = buildRestaurantJsonLd({
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:site_name" content="Restaurante La Ragazza" />
+    <meta property="og:site_name" content={labelsData.layout.siteName} />
     <meta property="og:locale" content={lang === 'es' ? 'es_CO' : 'en_US'} />
     <meta property="og:locale:alternate" content={lang === 'es' ? 'en_US' : 'es_CO'} />
 
@@ -113,7 +114,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     href={whatsappHref}
     target="_blank"
     rel="noopener noreferrer"
-    aria-label={lang === 'es' ? 'Abrir WhatsApp' : 'Open WhatsApp'}
+    aria-label={labelsData.layout.whatsappAria}
     class="md:hidden fixed right-4 bottom-6 z-40 inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg hover:bg-[#128C7E] transition-colors duration-300"
 >
     <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

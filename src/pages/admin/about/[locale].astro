@@ -1,0 +1,203 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+
+export const prerender = false;
+
+const localeParam = Astro.params.locale === 'en' ? 'en' : Astro.params.locale === 'es' ? 'es' : null;
+
+if (!localeParam) {
+  return Astro.redirect('/admin/about');
+}
+
+type AboutPersonParagraph = {
+  paragraphOrder: number;
+  paragraphText: string;
+};
+
+type AboutPerson = {
+  personKey: string;
+  sortOrder: number;
+  label: string;
+  personName: string;
+  mediaPlaceholder: string;
+  paragraphs: AboutPersonParagraph[];
+};
+
+type AboutPayload = {
+  page: {
+    headerLabel: string;
+    headerTitle: string;
+    philosophyTitle: string;
+    philosophyDescription: string;
+    philosophyPromise: string;
+  };
+  people: AboutPerson[];
+};
+
+type ApiResponse = {
+  ok: boolean;
+  data?: AboutPayload;
+  error?: string;
+};
+
+const response = await fetch(`${Astro.url.origin}/api/admin/about/${localeParam}`);
+const payload = (await response.json()) as ApiResponse;
+const data = payload.data;
+---
+
+<AdminLayout title={`Admin | About ${localeParam}`}>
+  <section class="rounded-xl border border-ragazza-primary/15 bg-white p-6 shadow-sm">
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <p class="font-cinzel text-xs uppercase tracking-[0.2em] text-ragazza-accent">Seccion 3</p>
+        <h3 class="font-cinzel text-2xl text-ragazza-primary">Editar About ({localeParam.toUpperCase()})</h3>
+      </div>
+      <a href="/admin/about" class="text-sm text-ragazza-primary underline underline-offset-4">Volver al listado</a>
+    </div>
+
+    {!payload.ok || !data ? (
+      <p class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        Error cargando contenido: {payload.error ?? 'Registro no encontrado'}
+      </p>
+    ) : (
+      <form id="about-translation-form" class="space-y-7">
+        <input type="hidden" name="localeCode" value={localeParam} />
+
+        <section class="space-y-4 rounded-lg border border-ragazza-primary/10 p-4">
+          <h4 class="font-cinzel text-lg text-ragazza-primary">Cabecera y filosofia</h4>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <label class="block text-sm">
+              <span class="mb-1 block font-semibold text-ragazza-secondary/80">Header label</span>
+              <input name="headerLabel" value={data.page.headerLabel} class="w-full rounded-md border border-ragazza-primary/20 px-3 py-2" />
+            </label>
+
+            <label class="block text-sm">
+              <span class="mb-1 block font-semibold text-ragazza-secondary/80">Header title</span>
+              <input name="headerTitle" value={data.page.headerTitle} class="w-full rounded-md border border-ragazza-primary/20 px-3 py-2" />
+            </label>
+          </div>
+
+          <label class="block text-sm">
+            <span class="mb-1 block font-semibold text-ragazza-secondary/80">Philosophy title</span>
+            <input name="philosophyTitle" value={data.page.philosophyTitle} class="w-full rounded-md border border-ragazza-primary/20 px-3 py-2" />
+          </label>
+
+          <label class="block text-sm">
+            <span class="mb-1 block font-semibold text-ragazza-secondary/80">Philosophy description</span>
+            <textarea name="philosophyDescription" rows="4" class="w-full rounded-md border border-ragazza-primary/20 px-3 py-2">{data.page.philosophyDescription}</textarea>
+          </label>
+
+          <label class="block text-sm">
+            <span class="mb-1 block font-semibold text-ragazza-secondary/80">Philosophy promise</span>
+            <textarea name="philosophyPromise" rows="4" class="w-full rounded-md border border-ragazza-primary/20 px-3 py-2">{data.page.philosophyPromise}</textarea>
+          </label>
+        </section>
+
+        {data.people.map((person) => (
+          <section class="space-y-4 rounded-lg border border-ragazza-primary/10 p-4">
+            <h4 class="font-cinzel text-lg text-ragazza-primary">
+              Persona: {person.personName} <span class="text-xs uppercase text-ragazza-secondary/60">({person.personKey})</span>
+            </h4>
+
+            <input type="hidden" name={`personKey__${person.personKey}`} value={person.personKey} />
+
+            <div class="grid gap-4 md:grid-cols-3">
+              <label class="block text-sm">
+                <span class="mb-1 block font-semibold text-ragazza-secondary/80">Label</span>
+                <input name={`personLabel__${person.personKey}`} value={person.label} class="w-full rounded-md border border-ragazza-primary/20 px-3 py-2" />
+              </label>
+
+              <label class="block text-sm">
+                <span class="mb-1 block font-semibold text-ragazza-secondary/80">Name</span>
+                <input name={`personName__${person.personKey}`} value={person.personName} class="w-full rounded-md border border-ragazza-primary/20 px-3 py-2" />
+              </label>
+
+              <label class="block text-sm">
+                <span class="mb-1 block font-semibold text-ragazza-secondary/80">Media placeholder</span>
+                <input name={`mediaPlaceholder__${person.personKey}`} value={person.mediaPlaceholder} class="w-full rounded-md border border-ragazza-primary/20 px-3 py-2" />
+              </label>
+            </div>
+
+            <div class="space-y-3">
+              {person.paragraphs.map((paragraph) => (
+                <label class="block text-sm">
+                  <span class="mb-1 block font-semibold text-ragazza-secondary/80">Paragraph {paragraph.paragraphOrder}</span>
+                  <textarea
+                    name={`paragraph__${person.personKey}__${paragraph.paragraphOrder}`}
+                    rows="4"
+                    class="w-full rounded-md border border-ragazza-primary/20 px-3 py-2"
+                  >{paragraph.paragraphText}</textarea>
+                </label>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        <div class="flex items-center gap-3">
+          <button type="submit" class="rounded-md bg-ragazza-primary px-4 py-2 font-cinzel text-xs uppercase tracking-widest text-white">
+            Guardar cambios
+          </button>
+          <p id="save-status" class="text-sm text-ragazza-secondary/80"></p>
+        </div>
+      </form>
+    )}
+  </section>
+
+  <script define:vars={{ peopleTemplate: data?.people ?? [] }}>
+    const form = document.getElementById('about-translation-form');
+    const status = document.getElementById('save-status');
+
+    if (form instanceof HTMLFormElement && status) {
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        status.textContent = 'Guardando...';
+        status.classList.remove('text-red-700', 'text-green-700');
+
+        const formData = new FormData(form);
+        const localeCode = String(formData.get('localeCode') || '').toLowerCase();
+
+        const page = {
+          headerLabel: String(formData.get('headerLabel') || ''),
+          headerTitle: String(formData.get('headerTitle') || ''),
+          philosophyTitle: String(formData.get('philosophyTitle') || ''),
+          philosophyDescription: String(formData.get('philosophyDescription') || ''),
+          philosophyPromise: String(formData.get('philosophyPromise') || ''),
+        };
+
+        const people = peopleTemplate.map((person) => ({
+          personKey: person.personKey,
+          label: String(formData.get(`personLabel__${person.personKey}`) || ''),
+          personName: String(formData.get(`personName__${person.personKey}`) || ''),
+          mediaPlaceholder: String(formData.get(`mediaPlaceholder__${person.personKey}`) || ''),
+          paragraphs: person.paragraphs.map((paragraph) => ({
+            paragraphOrder: paragraph.paragraphOrder,
+            paragraphText: String(formData.get(`paragraph__${person.personKey}__${paragraph.paragraphOrder}`) || ''),
+          })),
+        }));
+
+        try {
+          const response = await fetch(`/api/admin/about/${localeCode}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ page, people }),
+          });
+
+          if (!response.ok) {
+            const body = await response.json().catch(() => ({ error: 'Error desconocido' }));
+            status.textContent = `Error: ${body.error || 'No se pudo guardar'}`;
+            status.classList.add('text-red-700');
+            return;
+          }
+
+          status.textContent = 'Cambios guardados correctamente';
+          status.classList.add('text-green-700');
+        } catch (error) {
+          status.textContent = error instanceof Error ? error.message : 'Error de red';
+          status.classList.add('text-red-700');
+        }
+      });
+    }
+  </script>
+</AdminLayout>
+

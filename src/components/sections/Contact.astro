@@ -17,10 +17,7 @@ const mapEmbedUrl = contactData.location.mapEmbedUrl || '';
 const wazeLink = contactData.location.wazeLink || 'https://www.waze.com/ul?navigate=yes&to=place.w.187695145.1876689310.17328548';
 const aboutUrl = `/${lang}/about`;
 
-const mapLabels = lang === 'es'
-    ? { title: 'Como llegar', google: 'Google Maps', waze: 'Waze' }
-    : { title: 'How to get there', google: 'Google Maps', waze: 'Waze' };
-
+const mapLabels = contactData.ui.map;
 // Configuración de WhatsApp
 const phoneNumber = contactData.whatsapp.phoneNumber;
 const message = encodeURIComponent(contactData.whatsapp.message);
@@ -32,7 +29,7 @@ const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
         <div class="text-center mb-16">
             <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold">{t('contact.title')}</span>
-            <h2 class="font-cinzel text-4xl md:text-5xl text-ragazza-primary mt-4">Restaurate La Ragazza</h2>
+            <h2 class="font-cinzel text-4xl md:text-5xl text-ragazza-primary mt-4">{contactData.ui.title}</h2>
             <div class="sauce-line mx-auto mt-6"></div>
         </div>
 
@@ -44,7 +41,7 @@ const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
                     href={mapLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={lang === 'es' ? 'Abrir ubicación en Google Maps' : 'Open location in Google Maps'}
+                    aria-label={contactData.ui.map.openAria}
                     class="w-12 h-12 bg-ragazza-bg rounded-full flex items-center justify-center text-ragazza-primary mb-4 hover:bg-ragazza-primary hover:text-white transition-colors duration-300"
                 >
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,7 +69,7 @@ const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
             <div class="flex flex-col items-center md:items-start">
                 <a
                     href={aboutUrl}
-                    aria-label={lang === 'es' ? 'Ir a nuestra historia' : 'Go to our story'}
+                    aria-label={contactData.ui.aboutAria}
                     class="w-12 h-12 bg-ragazza-bg rounded-full flex items-center justify-center text-ragazza-primary mb-4 hover:bg-ragazza-primary hover:text-white transition-colors duration-300"
                 >
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -110,7 +107,7 @@ const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
                         href="https://www.instagram.com/laragazza85/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="Instagram"
+                        aria-label={contactData.ui.social.instagramAria}
                         class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ragazza-primary/20 text-ragazza-primary hover:bg-ragazza-primary hover:text-white transition-colors duration-300"
                     >
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -121,7 +118,7 @@ const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
                         href="https://www.facebook.com/laragazza85/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="Facebook"
+                        aria-label={contactData.ui.social.facebookAria}
                         class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ragazza-primary/20 text-ragazza-primary hover:bg-ragazza-primary hover:text-white transition-colors duration-300"
                     >
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -165,7 +162,7 @@ const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
                         loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"
                         allowfullscreen
-                        title={lang === 'es' ? 'Mapa de La Ragazza' : 'La Ragazza map'}
+                        title={contactData.ui.map.iframeTitle}
                     ></iframe>
                 </div>
             </div>

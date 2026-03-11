@@ -1,0 +1,966 @@
+BEGIN;
+
+-- =========================================================
+-- 1) DDL
+-- =========================================================
+
+-- ---------- Helpers ----------
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$;
+
+-- ---------- Core i18n ----------
+CREATE TABLE locale (
+  code VARCHAR(5) PRIMARY KEY,
+  name TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- SEO por página
+CREATE TABLE seo_page (
+  page_key TEXT PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE seo_page_translation (
+  page_key TEXT NOT NULL REFERENCES seo_page(page_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (page_key, locale_code)
+);
+
+CREATE INDEX idx_seo_page_translation_locale ON seo_page_translation(locale_code);
+
+-- ---------- About ----------
+CREATE TABLE about_page (
+  page_key TEXT PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE about_page_translation (
+  page_key TEXT NOT NULL REFERENCES about_page(page_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  header_label TEXT NOT NULL,
+  header_title TEXT NOT NULL,
+  philosophy_title TEXT NOT NULL,
+  philosophy_description TEXT NOT NULL,
+  philosophy_promise TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (page_key, locale_code)
+);
+
+CREATE TABLE about_person (
+  person_key TEXT PRIMARY KEY,
+  page_key TEXT NOT NULL REFERENCES about_page(page_key) ON DELETE CASCADE,
+  sort_order INTEGER NOT NULL CHECK (sort_order > 0),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (page_key, sort_order)
+);
+
+CREATE TABLE about_person_translation (
+  person_key TEXT NOT NULL REFERENCES about_person(person_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  label TEXT NOT NULL,
+  person_name TEXT NOT NULL,
+  media_placeholder TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (person_key, locale_code)
+);
+
+CREATE TABLE about_person_paragraph (
+  person_key TEXT NOT NULL REFERENCES about_person(person_key) ON DELETE CASCADE,
+  paragraph_order INTEGER NOT NULL CHECK (paragraph_order > 0),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (person_key, paragraph_order)
+);
+
+CREATE TABLE about_person_paragraph_translation (
+  person_key TEXT NOT NULL,
+  paragraph_order INTEGER NOT NULL,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  paragraph_text TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (person_key, paragraph_order, locale_code),
+  FOREIGN KEY (person_key, paragraph_order)
+    REFERENCES about_person_paragraph(person_key, paragraph_order)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_about_person_translation_locale ON about_person_translation(locale_code);
+CREATE INDEX idx_about_person_paragraph_translation_locale ON about_person_paragraph_translation(locale_code);
+
+-- ---------- Contact ----------
+CREATE TABLE contact_profile (
+  profile_key TEXT PRIMARY KEY,
+  street_address TEXT NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  country TEXT NOT NULL,
+  map_link TEXT NOT NULL,
+  waze_link TEXT NOT NULL,
+  map_embed_url TEXT NOT NULL,
+  latitude NUMERIC(12,9) NOT NULL,
+  longitude NUMERIC(12,9) NOT NULL,
+  whatsapp_phone_number TEXT NOT NULL,
+  whatsapp_message TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE contact_profile_translation (
+  profile_key TEXT NOT NULL REFERENCES contact_profile(profile_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  location_label TEXT NOT NULL,
+  family_title TEXT NOT NULL,
+  family_founded TEXT NOT NULL,
+  family_owners TEXT NOT NULL,
+  family_philosophy TEXT NOT NULL,
+  family_cta TEXT NOT NULL,
+  whatsapp_label TEXT NOT NULL,
+  whatsapp_description TEXT NOT NULL,
+  ui_title TEXT NOT NULL,
+  map_title TEXT NOT NULL,
+  map_google TEXT NOT NULL,
+  map_waze TEXT NOT NULL,
+  map_iframe_title TEXT NOT NULL,
+  map_open_aria TEXT NOT NULL,
+  about_aria TEXT NOT NULL,
+  social_instagram_aria TEXT NOT NULL,
+  social_facebook_aria TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (profile_key, locale_code)
+);
+
+CREATE INDEX idx_contact_profile_translation_locale ON contact_profile_translation(locale_code);
+
+-- ---------- FAQ ----------
+CREATE TABLE faq_group (
+  group_key TEXT PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE faq_group_translation (
+  group_key TEXT NOT NULL REFERENCES faq_group(group_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  label TEXT NOT NULL,
+  title TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (group_key, locale_code)
+);
+
+CREATE TABLE faq_item (
+  group_key TEXT NOT NULL REFERENCES faq_group(group_key) ON DELETE CASCADE,
+  item_order INTEGER NOT NULL CHECK (item_order > 0),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (group_key, item_order)
+);
+
+CREATE TABLE faq_item_translation (
+  group_key TEXT NOT NULL,
+  item_order INTEGER NOT NULL,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  question TEXT NOT NULL,
+  answer TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (group_key, item_order, locale_code),
+  FOREIGN KEY (group_key, item_order)
+    REFERENCES faq_item(group_key, item_order)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_faq_group_translation_locale ON faq_group_translation(locale_code);
+CREATE INDEX idx_faq_item_translation_locale ON faq_item_translation(locale_code);
+
+-- ---------- Gallery ----------
+CREATE TABLE gallery_page (
+  page_key TEXT PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE gallery_page_translation (
+  page_key TEXT NOT NULL REFERENCES gallery_page(page_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  header_label TEXT NOT NULL,
+  header_title TEXT NOT NULL,
+  header_description TEXT NOT NULL,
+  video_not_supported TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (page_key, locale_code)
+);
+
+CREATE TABLE gallery_item (
+  page_key TEXT NOT NULL REFERENCES gallery_page(page_key) ON DELETE CASCADE,
+  item_order INTEGER NOT NULL CHECK (item_order > 0),
+  media_type TEXT NOT NULL CHECK (media_type IN ('image', 'video')),
+  src TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (page_key, item_order)
+);
+
+CREATE TABLE gallery_item_translation (
+  page_key TEXT NOT NULL,
+  item_order INTEGER NOT NULL,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  alt_text TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (page_key, item_order, locale_code),
+  FOREIGN KEY (page_key, item_order)
+    REFERENCES gallery_item(page_key, item_order)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_gallery_page_translation_locale ON gallery_page_translation(locale_code);
+CREATE INDEX idx_gallery_item_translation_locale ON gallery_item_translation(locale_code);
+
+-- ---------- Home/Hero ----------
+CREATE TABLE home_page (
+  page_key TEXT PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE home_page_translation (
+  page_key TEXT NOT NULL REFERENCES home_page(page_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  subtitle TEXT NOT NULL,
+  philosophy TEXT NOT NULL,
+  view_menu_text TEXT NOT NULL,
+  reserve_table_text TEXT NOT NULL,
+  home_seo_heading TEXT NOT NULL,
+  home_seo_paragraph_one TEXT NOT NULL,
+  home_seo_paragraph_two TEXT NOT NULL,
+  p3_before_menu_link TEXT NOT NULL,
+  p3_menu_link_text TEXT NOT NULL,
+  p3_between_links TEXT NOT NULL,
+  p3_reserve_link_text TEXT NOT NULL,
+  p3_after_reserve_link TEXT NOT NULL,
+  essence_title_html TEXT NOT NULL,
+  essence_description TEXT NOT NULL,
+  essence_cta_text TEXT NOT NULL,
+  essence_cta_link TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (page_key, locale_code)
+);
+
+CREATE TABLE home_card (
+  card_key TEXT PRIMARY KEY,
+  page_key TEXT NOT NULL REFERENCES home_page(page_key) ON DELETE CASCADE,
+  sort_order INTEGER NOT NULL CHECK (sort_order > 0),
+  UNIQUE (page_key, sort_order),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE home_card_translation (
+  card_key TEXT NOT NULL REFERENCES home_card(card_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  subtitle TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (card_key, locale_code)
+);
+
+CREATE INDEX idx_home_page_translation_locale ON home_page_translation(locale_code);
+CREATE INDEX idx_home_card_translation_locale ON home_card_translation(locale_code);
+
+-- ---------- Menu catalog ----------
+CREATE TABLE menu_catalog (
+  catalog_key TEXT PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE menu_category (
+  category_key TEXT PRIMARY KEY,
+  catalog_key TEXT NOT NULL REFERENCES menu_catalog(catalog_key) ON DELETE CASCADE,
+  sort_order INTEGER NOT NULL CHECK (sort_order > 0),
+  UNIQUE (catalog_key, sort_order),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE menu_category_translation (
+  category_key TEXT NOT NULL REFERENCES menu_category(category_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (category_key, locale_code)
+);
+
+CREATE TABLE menu_item (
+  item_key TEXT PRIMARY KEY,
+  category_key TEXT NOT NULL REFERENCES menu_category(category_key) ON DELETE CASCADE,
+  sort_order INTEGER NOT NULL CHECK (sort_order > 0),
+  price INTEGER NOT NULL CHECK (price >= 0),
+  is_vegetarian BOOLEAN NOT NULL DEFAULT FALSE,
+  image_filename TEXT,
+  UNIQUE (category_key, sort_order),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE menu_item_translation (
+  item_key TEXT NOT NULL REFERENCES menu_item(item_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  notes TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (item_key, locale_code)
+);
+
+CREATE TABLE menu_item_option (
+  item_key TEXT NOT NULL REFERENCES menu_item(item_key) ON DELETE CASCADE,
+  option_order INTEGER NOT NULL CHECK (option_order > 0),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (item_key, option_order)
+);
+
+CREATE TABLE menu_item_option_translation (
+  item_key TEXT NOT NULL,
+  option_order INTEGER NOT NULL,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  option_text TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (item_key, option_order, locale_code),
+  FOREIGN KEY (item_key, option_order)
+    REFERENCES menu_item_option(item_key, option_order)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_menu_category_translation_locale ON menu_category_translation(locale_code);
+CREATE INDEX idx_menu_item_translation_locale ON menu_item_translation(locale_code);
+CREATE INDEX idx_menu_item_option_translation_locale ON menu_item_option_translation(locale_code);
+CREATE INDEX idx_menu_item_category ON menu_item(category_key);
+
+-- ---------- Menu page (header + filtros) ----------
+CREATE TABLE menu_page (
+  page_key TEXT PRIMARY KEY,
+  catalog_key TEXT NOT NULL REFERENCES menu_catalog(catalog_key) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE menu_page_translation (
+  page_key TEXT NOT NULL REFERENCES menu_page(page_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  header_label TEXT NOT NULL,
+  header_title TEXT NOT NULL,
+  header_description TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (page_key, locale_code)
+);
+
+CREATE TABLE menu_filter (
+  filter_key TEXT PRIMARY KEY,
+  page_key TEXT NOT NULL REFERENCES menu_page(page_key) ON DELETE CASCADE,
+  sort_order INTEGER NOT NULL CHECK (sort_order > 0),
+  UNIQUE (page_key, sort_order),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE menu_filter_translation (
+  filter_key TEXT NOT NULL REFERENCES menu_filter(filter_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  label TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (filter_key, locale_code)
+);
+
+CREATE INDEX idx_menu_page_translation_locale ON menu_page_translation(locale_code);
+CREATE INDEX idx_menu_filter_translation_locale ON menu_filter_translation(locale_code);
+
+-- ---------- Reviews UI ----------
+CREATE TABLE reviews_ui (
+  ui_key TEXT PRIMARY KEY,
+  google_maps_link TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE reviews_ui_translation (
+  ui_key TEXT NOT NULL REFERENCES reviews_ui(ui_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  section_label TEXT NOT NULL,
+  section_title TEXT NOT NULL,
+  cta_text TEXT NOT NULL,
+  control_prev TEXT NOT NULL,
+  control_next TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (ui_key, locale_code)
+);
+
+CREATE INDEX idx_reviews_ui_translation_locale ON reviews_ui_translation(locale_code);
+
+-- ---------- Labels/UI global ----------
+CREATE TABLE ui_text_key (
+  text_key TEXT PRIMARY KEY,
+  domain TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE ui_text_translation (
+  text_key TEXT NOT NULL REFERENCES ui_text_key(text_key) ON DELETE CASCADE,
+  locale_code VARCHAR(5) NOT NULL REFERENCES locale(code) ON DELETE CASCADE,
+  text_value TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (text_key, locale_code)
+);
+
+CREATE INDEX idx_ui_text_translation_locale ON ui_text_translation(locale_code);
+
+-- ---------- Trigger binding ----------
+DO $$
+DECLARE
+  r RECORD;
+BEGIN
+  FOR r IN
+    SELECT table_name
+    FROM information_schema.columns
+    WHERE table_schema = 'public' AND column_name = 'updated_at'
+    GROUP BY table_name
+  LOOP
+    EXECUTE format(
+      'CREATE TRIGGER trg_%I_updated_at BEFORE UPDATE ON %I FOR EACH ROW EXECUTE FUNCTION set_updated_at();',
+      r.table_name, r.table_name
+    );
+  END LOOP;
+END $$;
+
+-- =========================================================
+-- 2) DML (seed exacto desde JSON)
+-- =========================================================
+
+-- Locales
+INSERT INTO locale (code, name) VALUES
+  ('es', 'Espanol'),
+  ('en', 'English');
+
+-- SEO
+INSERT INTO seo_page (page_key) VALUES
+  ('about'),
+  ('gallery'),
+  ('home'),
+  ('menu');
+
+INSERT INTO seo_page_translation (page_key, locale_code, title, description) VALUES
+  ('about', 'en', 'Family story and Italian tradition in Villavicencio | La Ragazza', 'Discover La Ragazza since 1985: a family-run Italian restaurant with artisanal homemade cooking in Villavicencio.'),
+  ('about', 'es', 'Historia familiar y tradicion italiana en Villavicencio | La Ragazza', 'Conoce la historia de La Ragazza desde 1985: restaurante italiano familiar, artesanal y hecho en casa en Villavicencio.'),
+  ('gallery', 'en', 'Gallery and reviews of Italian food in Villavicencio | La Ragazza', 'Explore La Ragazza''s family atmosphere and customer reviews about our artisanal Italian food in Villavicencio.'),
+  ('gallery', 'es', 'Galeria y resenas de comida italiana en Villavicencio | La Ragazza', 'Descubre el ambiente familiar de La Ragazza y las resenas de clientes sobre nuestra comida italiana artesanal en Villavicencio.'),
+  ('home', 'en', 'La Ragazza | Artisanal Italian Food Villavicencio', 'Family-style Italian restaurant in Villavicencio with homemade pasta and artisanal recipes since 1985. Book your table at La Ragazza.'),
+  ('home', 'es', 'La Ragazza | Comida Italiana Artesanal Villavicencio', 'Restaurante de comida italiana familiar y artesanal en Villavicencio. Pasta hecha en casa desde 1985. Reserva tu mesa en La Ragazza.'),
+  ('menu', 'en', 'Italian Artisanal Menu | La Ragazza Villavicencio', 'Explore La Ragazza''s artisanal Italian menu: homemade pasta, lasagnas, meats, and desserts in Villavicencio.'),
+  ('menu', 'es', 'Menu Italiano Artesanal | La Ragazza Villavicencio', 'Explora el menu de comida italiana artesanal de La Ragazza: pasta hecha en casa, lasanas, carnes y postres en Villavicencio.');
+
+-- About
+INSERT INTO about_page (page_key) VALUES ('about');
+
+INSERT INTO about_page_translation (
+  page_key, locale_code, header_label, header_title,
+  philosophy_title, philosophy_description, philosophy_promise
+) VALUES
+  ('about', 'en', 'Family Tradition', 'Our Story', 'The "Fatto en Casa" Philosophy',
+   'Since 1985, La Ragazza has been much more than a restaurant; it is an extension of our own dining table. We firmly believe that true Italian gastronomy allows no shortcuts or industrial processes.',
+   'Our promise is simple: everything is prepared from scratch at the moment you order, without chemicals or preservatives. It is work that requires time and patience, but it is the only way to guarantee the authentic taste of Italy in the Llanos.'),
+  ('about', 'es', 'Tradicion Familiar', 'Nuestra Historia', 'La Filosofía "Fatto en Casa"',
+   'Desde 1985, La Ragazza ha sido mucho más que un restaurante; es la extensión de nuestro propio comedor. Creemos firmemente que la verdadera gastronomía italiana no admite atajos ni procesos industriales.',
+   'Nuestra promesa es simple: todo se prepara desde cero al momento de su orden, sin químicos ni conservantes. Es una labor que requiere tiempo y paciencia, pero es el único camino para garantizar el auténtico sabor de Italia en los Llanos.');
+
+INSERT INTO about_person (person_key, page_key, sort_order) VALUES
+  ('mauricio', 'about', 1),
+  ('carolina', 'about', 2);
+
+INSERT INTO about_person_translation (person_key, locale_code, label, person_name, media_placeholder) VALUES
+  ('mauricio', 'en', 'The Host', 'Mauricio', 'Mauricio photo'),
+  ('carolina', 'en', 'The Soul of the Kitchen', 'Carolina López', 'Carolina photo'),
+  ('mauricio', 'es', 'El Anfitrión', 'Mauricio', 'Foto de Mauricio'),
+  ('carolina', 'es', 'El Alma de la Cocina', 'Carolina López', 'Foto de Carolina');
+
+INSERT INTO about_person_paragraph (person_key, paragraph_order) VALUES
+  ('mauricio', 1), ('mauricio', 2),
+  ('carolina', 1), ('carolina', 2);
+
+INSERT INTO about_person_paragraph_translation (person_key, paragraph_order, locale_code, paragraph_text) VALUES
+  ('mauricio', 1, 'en', 'With a smile always ready and a deep knowledge of every detail, Mauricio is the heart of the dining room. His passion for customer service ensures every visit to La Ragazza feels like coming home.'),
+  ('mauricio', 2, 'en', 'Attentive to each guest''s needs, he makes sure the experience is flawless, recommending the perfect wine from our cellar and ensuring that the López Cortés family tradition is reflected in every detail.'),
+  ('carolina', 1, 'en', 'Carolina is the absolute guardian of our recipes. Under her command, the kitchen rejects anything prefabricated; her hands shape handmade pasta and watch over the slow fire where sauces develop their unmistakable character.'),
+  ('carolina', 2, 'en', 'For her, cooking is an act of love and respect for the guest. Her rigor and perfectionism guarantee that no dish leaves the kitchen unless it meets the high standards and authentic essence that have defined La Ragazza for nearly four decades.'),
+  ('mauricio', 1, 'es', 'Con una sonrisa siempre dispuesta y un conocimiento profundo de cada detalle, Mauricio es el corazón de la sala. Su pasión por el servicio al cliente asegura que cada visita a La Ragazza se sienta como llegar a casa.'),
+  ('mauricio', 2, 'es', 'Atento a las necesidades de cada comensal, se encarga de que la experiencia sea impecable, recomendando el vino perfecto de nuestra cava para acompañar la velada y asegurándose de que la tradición de la familia López Cortés se transmita en cada detalle.'),
+  ('carolina', 1, 'es', 'Carolina es la guardiana absoluta de nuestras recetas. Bajo su mando, la cocina rechaza lo prefabricado; sus manos dan forma a las pastas artesanales y vigilan el fuego lento donde las salsas toman su carácter inconfundible.'),
+  ('carolina', 2, 'es', 'Para ella, cocinar es un acto de amor y respeto por el comensal. Su rigor y perfeccionismo garantizan que ningún plato salga a la mesa si no cumple con los altos estándares y la esencia auténtica que ha definido a La Ragazza durante casi cuatro décadas.');
+
+-- Contact
+INSERT INTO contact_profile (
+  profile_key, street_address, city, state, country,
+  map_link, waze_link, map_embed_url, latitude, longitude,
+  whatsapp_phone_number, whatsapp_message
+) VALUES
+(
+  'main',
+  'Calle 19 #39-66, Barrio Camoa',
+  'Villavicencio',
+  'Meta',
+  'Colombia',
+  'https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7',
+  'https://www.waze.com/ul?navigate=yes&to=place.w.187695145.1876689310.17328548',
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.42822969437!2d-73.640488725024!3d4.135852395837936!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3e2e0dd4ef0e2b%3A0x620e030c40531d13!2sLa%20Ragazza!5e0!3m2!1ses!2sco!4v1772854114551!5m2!1ses!2sco',
+  4.135852396,
+  -73.640488725,
+  '573133494150',
+  ''
+);
+
+INSERT INTO contact_profile_translation (
+  profile_key, locale_code,
+  location_label, family_title, family_founded, family_owners, family_philosophy, family_cta,
+  whatsapp_label, whatsapp_description,
+  ui_title, map_title, map_google, map_waze, map_iframe_title, map_open_aria, about_aria,
+  social_instagram_aria, social_facebook_aria
+) VALUES
+(
+  'main', 'en',
+  'Address',
+  'Family Tradition',
+  'Founded in 1985.',
+  'Attended by Carolina and Mauricio.',
+  '"Homemade"',
+  'The Family Tradition',
+  'Reservations and Delivery via WhatsApp',
+  'We attend to your reservations and inquiries directly with personalized service.',
+  'La Ragazza Restaurant',
+  'How to get there',
+  'Google Maps',
+  'Waze',
+  'La Ragazza map',
+  'Open location in Google Maps',
+  'Go to our story',
+  'Instagram',
+  'Facebook'
+),
+(
+  'main', 'es',
+  'Dirección',
+  'Tradición Familiar',
+  'Fundado en 1985.',
+  'Atendido por Carolina y Mauricio.',
+  '"Fatto en casa"',
+  'Tradición Familiar',
+  'Reservas y Domicilios por WhatsApp',
+  'Atendemos sus reservaciones y consultas directamente de forma personalizada.',
+  'Restaurante La Ragazza',
+  'Como llegar',
+  'Google Maps',
+  'Waze',
+  'Mapa de La Ragazza',
+  'Abrir ubicacion en Google Maps',
+  'Ir a nuestra historia',
+  'Instagram',
+  'Facebook'
+);
+
+-- FAQ
+INSERT INTO faq_group (group_key) VALUES ('home_faq');
+
+INSERT INTO faq_group_translation (group_key, locale_code, label, title) VALUES
+  ('home_faq', 'en', 'Frequently Asked Questions', 'Quick answers before your visit'),
+  ('home_faq', 'es', 'Preguntas Frecuentes', 'Resolvemos tus dudas');
+
+INSERT INTO faq_item (group_key, item_order) VALUES
+  ('home_faq', 1), ('home_faq', 2), ('home_faq', 3), ('home_faq', 4);
+
+INSERT INTO faq_item_translation (group_key, item_order, locale_code, question, answer) VALUES
+  ('home_faq', 1, 'en', 'Do I need a reservation in advance?', 'We recommend booking via WhatsApp, especially on weekends and special dates.'),
+  ('home_faq', 2, 'en', 'Do you have vegetarian options?', 'Yes. We offer several vegetarian dishes across starters, pasta, and lasagna options.'),
+  ('home_faq', 3, 'en', 'Do you offer delivery?', 'Yes. Contact us on WhatsApp to confirm delivery coverage and availability.'),
+  ('home_faq', 4, 'en', 'What payment methods do you accept?', 'We accept different payment methods. Message us to confirm current options for dine-in or delivery.'),
+  ('home_faq', 1, 'es', '¿Necesito reservar con anticipación?', 'Recomendamos reservar por WhatsApp, especialmente en fines de semana y fechas especiales.'),
+  ('home_faq', 2, 'es', '¿Tienen opciones vegetarianas?', 'Sí. Contamos con varias preparaciones vegetarianas en pastas, lasagnas y entradas.'),
+  ('home_faq', 3, 'es', '¿Hacen domicilios?', 'Sí. Puedes pedir información y disponibilidad de domicilios por nuestro WhatsApp oficial.'),
+  ('home_faq', 4, 'es', '¿Qué métodos de pago aceptan?', 'Aceptamos diferentes métodos de pago. Escríbenos para confirmar opciones disponibles al momento de tu visita o pedido.');
+
+-- Gallery
+INSERT INTO gallery_page (page_key) VALUES ('gallery');
+
+INSERT INTO gallery_page_translation (page_key, locale_code, header_label, header_title, header_description, video_not_supported) VALUES
+  ('gallery', 'en', 'Our Atmosphere', 'Gallery', 'A visual journey through our handcrafted dishes and the warm Italian corner we have created for you.', 'Your browser does not support videos.'),
+  ('gallery', 'es', 'Nuestro Ambiente', 'Galeria', 'Un recorrido visual por nuestros platos elaborados a mano y el calido rincon italiano que hemos creado para usted.', 'Tu navegador no soporta videos.');
+
+INSERT INTO gallery_item (page_key, item_order, media_type, src) VALUES
+  ('gallery', 1, 'image', 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&q=80&w=800'),
+  ('gallery', 2, 'image', 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&fit=crop&q=80&w=800'),
+  ('gallery', 3, 'image', 'https://images.unsplash.com/photo-1574936145840-28808d77a0b6?auto=format&fit=crop&q=80&w=800'),
+  ('gallery', 4, 'image', 'https://images.unsplash.com/photo-1560008581-09826d1de69e?auto=format&fit=crop&q=80&w=800');
+
+INSERT INTO gallery_item_translation (page_key, item_order, locale_code, alt_text) VALUES
+  ('gallery', 1, 'en', 'Cozy interior of La Ragazza'),
+  ('gallery', 2, 'en', 'Our famous Lasagna'),
+  ('gallery', 3, 'en', 'Kneading tradition: Fatto en Casa'),
+  ('gallery', 4, 'en', 'The sweet touch: Panna Cotta'),
+  ('gallery', 1, 'es', 'Interior Acogedor de La Ragazza'),
+  ('gallery', 2, 'es', 'Nuestra Famosa Lasagna'),
+  ('gallery', 3, 'es', 'Tradición de Hecho en Casa'),
+  ('gallery', 4, 'es', 'El toque dulce: Panna Cotta');
+
+-- Home/Hero
+INSERT INTO home_page (page_key) VALUES ('home');
+
+INSERT INTO home_page_translation (
+  page_key, locale_code, title, subtitle, philosophy, view_menu_text, reserve_table_text,
+  home_seo_heading, home_seo_paragraph_one, home_seo_paragraph_two,
+  p3_before_menu_link, p3_menu_link_text, p3_between_links, p3_reserve_link_text, p3_after_reserve_link,
+  essence_title_html, essence_description, essence_cta_text, essence_cta_link
+) VALUES
+(
+  'home', 'en',
+  'La Ragazza Italian Restaurant',
+  'A corner of Italy in the Llanos since 1985',
+  'Homemade',
+  'View Menu',
+  'Book a Table',
+  'Italian Restaurant in Villavicencio since 1985',
+  'La Ragazza is an artisanal Italian restaurant located in the heart of Villavicencio, Meta. Since 1985, our Lopez Cortes family has been preparing fresh homemade pasta following traditional Italian recipes.',
+  'Our menu includes lasagnas, ravioli, tournedos, and desserts like panna cotta. Each dish is crafted with fresh ingredients and the love of Italian family cooking. We are the perfect place to book a special table in Villavicencio.',
+  'Come discover the gallery of our dishes and see why La Ragazza is the favorite corner of Italy in Los Llanos.',
+  'Explore our full menu',
+  'and',
+  'book your table',
+  'today.',
+  'True tradition is not invented,<br/>it is inherited.',
+  'Since 1985, the Lopez Cortes family has preserved the philosophy of cooking "like at home." Every pasta is kneaded by hand, every sauce respects slow cooking times, and every guest is welcomed as part of the family.',
+  'Discover our story',
+  '/en/about'
+),
+(
+  'home', 'es',
+  'Restaurante Italiano La Ragazza',
+  'Un rincon de Italia en los Llanos desde 1985',
+  'Fatto en casa',
+  'Ver Menu',
+  'Reservar Mesa',
+  'Restaurante Italiano en Villavicencio desde 1985',
+  'La Ragazza es un restaurante de comida italiana artesanal ubicado en el corazon de Villavicencio, Meta. Desde 1985, nuestra familia Lopez Cortes prepara pasta fresca hecha en casa siguiendo recetas tradicionales italianas.',
+  'Nuestro menu incluye lasanas, ravioles, tournedos y postres como panna cotta. Cada plato se elabora con ingredientes frescos y el amor de la cocina familiar italiana. Somos el lugar perfecto para reservar una mesa especial en Villavicencio.',
+  'Ven a descubrir la galeria de nuestros platos y conoce por que La Ragazza es el rincon de Italia favorito en los Llanos.',
+  'Explora nuestro menu completo',
+  'y',
+  'reserva tu mesa',
+  'hoy.',
+  'La verdadera tradicion no se inventa,<br/>se hereda.',
+  'Desde 1985, la familia Lopez Cortes ha mantenido intacta la filosofia de cocinar "como en casa". Cada pasta es fabricada a mano, cada salsa respeta los tiempos de coccion lentos y cada cliente es recibido como parte de la familia.',
+  'Descubra nuestra historia',
+  '/es/about'
+);
+
+INSERT INTO home_card (card_key, page_key, sort_order) VALUES
+  ('menu', 'home', 1),
+  ('gallery', 'home', 2),
+  ('reservations', 'home', 3);
+
+INSERT INTO home_card_translation (card_key, locale_code, title, subtitle) VALUES
+  ('menu', 'en', 'The Menu', 'Pastas, meats and wines'),
+  ('gallery', 'en', 'The Atmosphere', 'A corner of Italy'),
+  ('reservations', 'en', 'Reservations', 'Personalized service'),
+  ('menu', 'es', 'La Carta', 'Pastas, carnes y vinos'),
+  ('gallery', 'es', 'El Ambiente', 'Un rincon de Italia'),
+  ('reservations', 'es', 'Reservaciones', 'Atencion personalizada');
+
+-- Menu catalog
+INSERT INTO menu_catalog (catalog_key) VALUES ('main_menu');
+
+INSERT INTO menu_category (category_key, catalog_key, sort_order) VALUES
+  ('entradas', 'main_menu', 1),
+  ('lasagna', 'main_menu', 2),
+  ('spaguetti-tallarin', 'main_menu', 3),
+  ('ravioli', 'main_menu', 4),
+  ('caneloni', 'main_menu', 5),
+  ('alternativas', 'main_menu', 6),
+  ('adicionales', 'main_menu', 7),
+  ('postres', 'main_menu', 8),
+  ('bebidas-sin-alcohol', 'main_menu', 9),
+  ('bebidas-con-alcohol', 'main_menu', 10),
+  ('vinos', 'main_menu', 11);
+
+INSERT INTO menu_category_translation (category_key, locale_code, title) VALUES
+  ('entradas', 'en', 'Appetizers'),
+  ('lasagna', 'en', 'Lasagna'),
+  ('spaguetti-tallarin', 'en', 'Spaghetti / Fettuccine'),
+  ('ravioli', 'en', 'Ravioli (Meat Filled)'),
+  ('caneloni', 'en', 'Cannelloni (Cheese Filled)'),
+  ('alternativas', 'en', 'Other Options'),
+  ('adicionales', 'en', 'Extras'),
+  ('postres', 'en', 'Desserts'),
+  ('bebidas-sin-alcohol', 'en', 'Non-Alcoholic Drinks'),
+  ('bebidas-con-alcohol', 'en', 'Alcoholic Drinks'),
+  ('vinos', 'en', 'Wines'),
+  ('entradas', 'es', 'Entradas'),
+  ('lasagna', 'es', 'Lasagna'),
+  ('spaguetti-tallarin', 'es', 'Spaguetti / Tallarin'),
+  ('ravioli', 'es', 'Ravioli (Rellenos de Carne)'),
+  ('caneloni', 'es', 'Caneloni (Rellenos de Queso)'),
+  ('alternativas', 'es', 'Otras Alternativas'),
+  ('adicionales', 'es', 'Porciones Adicionales'),
+  ('postres', 'es', 'Postres'),
+  ('bebidas-sin-alcohol', 'es', 'Bebidas Sin Alcohol'),
+  ('bebidas-con-alcohol', 'es', 'Bebidas Con Alcohol'),
+  ('vinos', 'es', 'Vinos');
+
+INSERT INTO menu_item (item_key, category_key, sort_order, price, is_vegetarian, image_filename) VALUES
+  ('ent-1','entradas',1,9000,TRUE,'provolone.webp'),
+  ('ent-2','entradas',2,10000,FALSE,NULL),
+  ('ent-3','entradas',3,9000,TRUE,NULL),
+  ('las-1','lasagna',1,50000,FALSE,'lasagna-casa.webp'),
+  ('las-2','lasagna',2,48000,FALSE,NULL),
+  ('las-3','lasagna',3,50000,FALSE,NULL),
+  ('las-4','lasagna',4,50000,TRUE,NULL),
+  ('las-5','lasagna',5,48000,TRUE,NULL),
+  ('spa-1','spaguetti-tallarin',1,50000,FALSE,'spaguetti-casa.webp'),
+  ('spa-2','spaguetti-tallarin',2,48000,FALSE,NULL),
+  ('spa-3','spaguetti-tallarin',3,48000,FALSE,NULL),
+  ('spa-4','spaguetti-tallarin',4,51000,FALSE,NULL),
+  ('spa-5','spaguetti-tallarin',5,48000,FALSE,NULL),
+  ('spa-6','spaguetti-tallarin',6,48000,TRUE,NULL),
+  ('spa-7','spaguetti-tallarin',7,22000,TRUE,NULL),
+  ('rav-1','ravioli',1,52000,FALSE,NULL),
+  ('rav-2','ravioli',2,50000,FALSE,NULL),
+  ('rav-3','ravioli',3,53000,FALSE,NULL),
+  ('can-1','caneloni',1,50000,FALSE,NULL),
+  ('alt-1','alternativas',1,53000,FALSE,NULL),
+  ('alt-2','alternativas',2,60000,FALSE,'tournedos.webp'),
+  ('alt-3','alternativas',3,53000,FALSE,NULL),
+  ('adi-1','adicionales',1,8000,FALSE,NULL),
+  ('adi-2','adicionales',2,3000,FALSE,NULL),
+  ('adi-3','adicionales',3,8000,FALSE,NULL),
+  ('pos-1','postres',1,10000,FALSE,'pannacotta.webp'),
+  ('pos-2','postres',2,3000,FALSE,NULL),
+  ('bsa-1','bebidas-sin-alcohol',1,6000,FALSE,NULL),
+  ('bsa-2','bebidas-sin-alcohol',2,6500,FALSE,NULL),
+  ('bsa-3','bebidas-sin-alcohol',3,6000,FALSE,NULL),
+  ('bca-1','bebidas-con-alcohol',1,8000,FALSE,NULL),
+  ('bca-2','bebidas-con-alcohol',2,9000,FALSE,NULL),
+  ('bca-3','bebidas-con-alcohol',3,6500,FALSE,NULL),
+  ('vin-1','vinos',1,90000,FALSE,NULL),
+  ('vin-2','vinos',2,160000,FALSE,NULL),
+  ('vin-3','vinos',3,180000,FALSE,NULL);
+
+INSERT INTO menu_item_translation (item_key, locale_code, name, description, notes) VALUES
+  ('ent-1','en','Provolone','Tomato and Cheese Slices with Fine Herbs Baked.',NULL),
+  ('ent-2','en','Chicken and Mushroom Cream Soup',NULL,NULL),
+  ('ent-3','en','Garlic Mushrooms',NULL,NULL),
+  ('las-1','en','House Special','Bolognese Sauce, Chicken, Ham and Mushrooms.',NULL),
+  ('las-2','en','Bolognese Sauce or Chicken Sauce',NULL,NULL),
+  ('las-3','en','Red or White Chicken & Mushroom Sauce',NULL,NULL),
+  ('las-4','en','Napolitana or Bechamel Sauce','Broccoli, Mushrooms, Olives, Tomato.',NULL),
+  ('las-5','en','Napolitana or Bechamel Sauce with Mushrooms',NULL,NULL),
+  ('spa-1','en','House Special','Bolognese Sauce, Chicken, Ham and Mushrooms.',NULL),
+  ('spa-2','en','Bolognese Sauce or Chicken Sauce',NULL,NULL),
+  ('spa-3','en','Carbonara','Cream, Bacon, Beaten Egg.',NULL),
+  ('spa-4','en','Alfredo','Cream, Ham and Parmesan Cheese.',NULL),
+  ('spa-5','en','Spicy Tomato and Bacon Sauce',NULL,'With or without cream'),
+  ('spa-6','en','Garlic with Mushrooms',NULL,'With or without cream'),
+  ('spa-7','en','Al Burro','Butter.',NULL),
+  ('rav-1','en','House Special','Bolognese Sauce, Chicken, Ham and Mushrooms.',NULL),
+  ('rav-2','en','Bolognese Sauce or Chicken Sauce',NULL,NULL),
+  ('rav-3','en','Alfredo','Cream, Ham and Parmesan Cheese.',NULL),
+  ('can-1','en','Bolognese or Chicken Sauce',NULL,NULL),
+  ('alt-1','en','Mixed Plate','Pork Milanese with Spaghetti or Lasagna.',NULL),
+  ('alt-2','en','Tournedos','Bacon-wrapped Beef Medallions with Spaghetti.',NULL),
+  ('alt-3','en','Fish Fillet','Oven-baked Dorado fillet in Napolitana sauce with mushrooms, Parmesan cheese and French fries.',NULL),
+  ('adi-1','en','French Fries',NULL,NULL),
+  ('adi-2','en','Parmesan Cheese',NULL,NULL),
+  ('adi-3','en','Personal Sauce Portion',NULL,NULL),
+  ('pos-1','en','Panna Cotta',NULL,NULL),
+  ('pos-2','en','Coconut Candies',NULL,NULL),
+  ('bsa-1','en','Soda or Lemonade with or without Sugar',NULL,'350 mL'),
+  ('bsa-2','en','Mr. Tea Peach or Lemon',NULL,'500 mL'),
+  ('bsa-3','en','Still or Sparkling Water Bottle',NULL,'600 mL'),
+  ('bca-1','en','Águila Light Beer',NULL,NULL),
+  ('bca-2','en','Club Colombia Beer',NULL,NULL),
+  ('bca-3','en','Kola y Pola',NULL,NULL),
+  ('vin-1','en','House Wine','Spanish Tempranillo.',NULL),
+  ('vin-2','en','Santa Helena Wine','Chilean.',NULL),
+  ('vin-3','en','Dubonet','Sweet, French.',NULL),
+
+  ('ent-1','es','Provolone','Rodajas de Tomate y Queso con Finas Hierbas al Horno.',NULL),
+  ('ent-2','es','Crema de Pollo y Champiñones',NULL,NULL),
+  ('ent-3','es','Champiñones al Ajillo',NULL,NULL),
+  ('las-1','es','De la Casa','Salsa Bolognesa, Pollo, Jamón y Champiñones.',NULL),
+  ('las-2','es','Salsa Bolognesa o Salsa de Pollo',NULL,NULL),
+  ('las-3','es','Salsa Roja o Blanca de Pollo y Champiñones',NULL,NULL),
+  ('las-4','es','Salsa Napolitana o Bechamel','Brócoli, Champiñón, Aceituna, Tomate.',NULL),
+  ('las-5','es','Salsa Napolitana o Bechamel con Champiñones',NULL,NULL),
+  ('spa-1','es','De la Casa','Salsa Bolognesa, Pollo, Jamón y Champiñones.',NULL),
+  ('spa-2','es','Salsa Bolognesa o Salsa de Pollo',NULL,NULL),
+  ('spa-3','es','A la Carbonara','Crema, Tocineta, Huevo Batido.',NULL),
+  ('spa-4','es','A la Alfredo','Crema, Jamón y Queso Parmesano.',NULL),
+  ('spa-5','es','Salsa Picante con Tomate y Tocineta',NULL,'Con o Sin crema'),
+  ('spa-6','es','Al Ajo con Champiñones',NULL,'Con o Sin crema'),
+  ('spa-7','es','Al Burro','Mantequilla.',NULL),
+  ('rav-1','es','De la Casa','Salsa Bolognesa, Pollo, Jamón y Champiñones.',NULL),
+  ('rav-2','es','Salsa Bolognesa o Salsa de Pollo',NULL,NULL),
+  ('rav-3','es','A la Alfredo','Crema, Jamón y Queso Parmesano.',NULL),
+  ('can-1','es','Salsa Bolognesa o Salsa de Pollo',NULL,NULL),
+  ('alt-1','es','Plato Mixto','Milanesa de Cerdo con Spaguetti o Lasagna.',NULL),
+  ('alt-2','es','Tournedos','Medallones de Carne albardados en Tocineta con Spaguetti.',NULL),
+  ('alt-3','es','Filete de Pescado','Filete de Dorado al horno en Salsa Napolitana con Champiñones, Queso Parmesano, y Papas a la Francesa.',NULL),
+  ('adi-1','es','Papa a la francesa',NULL,NULL),
+  ('adi-2','es','Queso parmesano',NULL,NULL),
+  ('adi-3','es','Porción de salsa personal',NULL,NULL),
+  ('pos-1','es','Panna Cotta',NULL,NULL),
+  ('pos-2','es','Cocadas',NULL,NULL),
+  ('bsa-1','es','Gaseosa o Limonada con o sin Azúcar',NULL,'350mL'),
+  ('bsa-2','es','Mr. Tea de Durazno - Limón',NULL,'500 mL'),
+  ('bsa-3','es','Botella de Agua con o sin Gas',NULL,'600mL'),
+  ('bca-1','es','Águila Light',NULL,NULL),
+  ('bca-2','es','Club Colombia',NULL,NULL),
+  ('bca-3','es','Kola y Pola',NULL,NULL),
+  ('vin-1','es','Vino de la Casa','Tempranillo, Español.',NULL),
+  ('vin-2','es','Vino Santa Helena','Chileno.',NULL),
+  ('vin-3','es','Dubonet','Dulce, Francés.',NULL);
+
+INSERT INTO menu_item_option (item_key, option_order) VALUES
+  ('las-3',1), ('las-3',2),
+  ('las-4',1), ('las-4',2),
+  ('las-5',1), ('las-5',2),
+  ('can-1',1), ('can-1',2);
+
+INSERT INTO menu_item_option_translation (item_key, option_order, locale_code, option_text) VALUES
+  ('las-3',1,'en','red'),
+  ('las-3',2,'en','white'),
+  ('las-4',1,'en','napolitana'),
+  ('las-4',2,'en','bechamel'),
+  ('las-5',1,'en','napolitana'),
+  ('las-5',2,'en','bechamel'),
+  ('can-1',1,'en','red'),
+  ('can-1',2,'en','white'),
+  ('las-3',1,'es','roja'),
+  ('las-3',2,'es','blanca'),
+  ('las-4',1,'es','napolitana'),
+  ('las-4',2,'es','bechamel'),
+  ('las-5',1,'es','napolitana'),
+  ('las-5',2,'es','bechamel'),
+  ('can-1',1,'es','roja'),
+  ('can-1',2,'es','blanca');
+
+-- Menu page + filtros
+INSERT INTO menu_page (page_key, catalog_key) VALUES ('menu', 'main_menu');
+
+INSERT INTO menu_page_translation (page_key, locale_code, header_label, header_title, header_description) VALUES
+  ('menu', 'en', 'Our Recipes', 'Menu', 'Each dish tells the story of Italian tradition in the Llanos. Everything handmade, unhurried.'),
+  ('menu', 'es', 'Nuestras Recetas', 'Menu', 'Cada plato cuenta la historia de la tradicion italiana en los Llanos. Todo hecho a mano, sin prisas.');
+
+INSERT INTO menu_filter (filter_key, page_key, sort_order) VALUES
+  ('all', 'menu', 1),
+  ('vegetarian', 'menu', 2),
+  ('pastas', 'menu', 3),
+  ('wines', 'menu', 4),
+  ('desserts', 'menu', 5),
+  ('drinks', 'menu', 6);
+
+INSERT INTO menu_filter_translation (filter_key, locale_code, label) VALUES
+  ('all','en','All'),
+  ('vegetarian','en','Vegetarian'),
+  ('pastas','en','Pasta'),
+  ('wines','en','Wines'),
+  ('desserts','en','Desserts'),
+  ('drinks','en','Drinks'),
+  ('all','es','Todo'),
+  ('vegetarian','es','Vegetariano'),
+  ('pastas','es','Pastas'),
+  ('wines','es','Vinos'),
+  ('desserts','es','Postres'),
+  ('drinks','es','Bebidas');
+
+-- Reviews UI
+INSERT INTO reviews_ui (ui_key, google_maps_link) VALUES
+  ('gallery_reviews', 'https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7');
+
+INSERT INTO reviews_ui_translation (
+  ui_key, locale_code, section_label, section_title, cta_text, control_prev, control_next
+) VALUES
+  ('gallery_reviews', 'en', 'Our Customers', 'The Family Grows', 'Read our reviews on Google', 'Previous review', 'Next review'),
+  ('gallery_reviews', 'es', 'Nuestros Clientes', 'La Familia Crece', 'Leer nuestras resenas en Google', 'Resena anterior', 'Siguiente resena');
+
+-- Labels globales
+INSERT INTO ui_text_key (text_key, domain) VALUES
+  ('brand.name', 'brand'),
+  ('layout.metaKeywords', 'layout'),
+  ('layout.siteName', 'layout'),
+  ('layout.whatsappAria', 'layout'),
+  ('menu.vegetarian', 'menu'),
+  ('menu.options', 'menu'),
+  ('header.reserve', 'header'),
+  ('header.mobileMenuAria', 'header'),
+  ('footer.navAria', 'footer'),
+  ('footer.copyright', 'footer'),
+  ('languageSwitcher.toEs', 'languageSwitcher'),
+  ('languageSwitcher.toEn', 'languageSwitcher');
+
+INSERT INTO ui_text_translation (text_key, locale_code, text_value) VALUES
+  ('brand.name', 'en', 'LA RAGAZZA'),
+  ('layout.metaKeywords', 'en', 'family, artisanal, italian, italian food, family restaurant, pasta, homemade'),
+  ('layout.siteName', 'en', 'La Ragazza Restaurant'),
+  ('layout.whatsappAria', 'en', 'Open WhatsApp'),
+  ('menu.vegetarian', 'en', 'Vegetarian'),
+  ('menu.options', 'en', 'Options'),
+  ('header.reserve', 'en', 'Reserve'),
+  ('header.mobileMenuAria', 'en', 'Menu'),
+  ('footer.navAria', 'en', 'Footer links'),
+  ('footer.copyright', 'en', 'La Ragazza Restaurant'),
+  ('languageSwitcher.toEs', 'en', 'Switch to Spanish'),
+  ('languageSwitcher.toEn', 'en', 'Switch to English'),
+
+  ('brand.name', 'es', 'LA RAGAZZA'),
+  ('layout.metaKeywords', 'es', 'familiar, artesanal, italiano, comida italiana, familia, pasta, hecho en casa'),
+  ('layout.siteName', 'es', 'Restaurante La Ragazza'),
+  ('layout.whatsappAria', 'es', 'Abrir WhatsApp'),
+  ('menu.vegetarian', 'es', 'Vegetariano'),
+  ('menu.options', 'es', 'Opciones'),
+  ('header.reserve', 'es', 'Reservar'),
+  ('header.mobileMenuAria', 'es', 'Menu'),
+  ('footer.navAria', 'es', 'Enlaces del pie de pagina'),
+  ('footer.copyright', 'es', 'Restaurante La Ragazza'),
+  ('languageSwitcher.toEs', 'es', 'Cambiar a español'),
+  ('languageSwitcher.toEn', 'es', 'Cambiar a ingles');
+
+COMMIT;

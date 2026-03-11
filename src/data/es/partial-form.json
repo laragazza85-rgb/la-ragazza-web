@@ -1,7 +1,12 @@
 {
+  "seo": {
+    "title": "Formulario de contacto | Entrega parcial | La Ragazza",
+    "description": "Formulario de contacto para entrega parcial con validaciones de nombre, email, telefono, tipo de consulta y mensaje."
+  },
   "label": "Entrega parcial",
   "title": "Contactanos",
   "description": "Formulario de demostracion con validaciones obligatorias. No envia informacion a ninguna API.",
+  "requiredFields": "Campos obligatorios",
   "fields": {
     "name": {
       "label": "Nombre completo",

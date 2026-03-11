@@ -1,19 +1,19 @@
 ---
-// Redirect handled by vercel.json (301 at CDN edge)
-// This page exists only as fallback; most users never see it
+const redirectsData = await import('../data/es/redirects.json').then((m) => m.default as any);
+const redirectData = redirectsData.home;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={redirectData.lang}>
 <head>
   <meta charset="UTF-8">
   <meta name="robots" content="noindex,nofollow">
-  <meta http-equiv="refresh" content="0;url=/es/">
-  <link rel="canonical" href="https://la-ragazza-web.vercel.app/es/">
-  <title>Redirigiendo... | La Ragazza</title>
+  <meta http-equiv="refresh" content={`0;url=${redirectData.path}`}>
+  <link rel="canonical" href={`https://la-ragazza-web.vercel.app${redirectData.path}`}>
+  <title>{redirectData.title}</title>
 </head>
 <body>
-  <p>Redirigiendo a la página principal...</p>
-  <script>window.location.href='/es/';</script>
+  <p>{redirectData.message}</p>
+  <script define:vars={{ redirectPath: redirectData.path }}>window.location.href=redirectPath;</script>
 </body>
 </html>

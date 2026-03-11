@@ -16,35 +16,9 @@ const lang = (Astro.props.lang || 'es') as 'es' | 'en';
 
 // Importar datos de resenas desde JSON centralizado
 const reviewsRawData = await import(`../../data/reviews/reviews.json`).then(m => m.default);
+const reviewsUiData = await import(`../../data/${lang}/reviews-ui.json`).then((m) => m.default);
 
-const SECTION_TEXTS = {
-    es: {
-        section: {
-            label: 'Nuestros Clientes',
-            title: 'La Familia Crece',
-        },
-        cta: 'Leer nuestras reseñas en Google',
-        googleMapsLink: 'https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7',
-        controls: {
-            prev: 'Reseña anterior',
-            next: 'Siguiente reseña',
-        },
-    },
-    en: {
-        section: {
-            label: 'Our Customers',
-            title: 'The Family Grows',
-        },
-        cta: 'Read our reviews on Google',
-        googleMapsLink: 'https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7',
-        controls: {
-            prev: 'Previous review',
-            next: 'Next review',
-        },
-    },
-} as const;
-
-const sectionTexts = SECTION_TEXTS[lang];
+const sectionTexts = reviewsUiData;
 
 // Mapear reviews al formato esperado, usando el idioma correcto
 let reviews: Review[] = reviewsRawData.reviews.map((review: any) => ({

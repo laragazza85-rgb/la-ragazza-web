@@ -18,14 +18,10 @@ const aboutData = await import(`../../data/${lang}/about.json`).then(m => m.defa
 ---
 
 <Layout
-        title={lang === 'es'
-            ? 'Historia familiar y tradicion italiana en Villavicencio | La Ragazza'
-            : 'Family story and Italian tradition in Villavicencio | La Ragazza'}
-        description={lang === 'es'
-            ? 'Conoce la historia de La Ragazza desde 1985: restaurante italiano familiar, artesanal y hecho en casa en Villavicencio.'
-            : 'Discover La Ragazza since 1985: a family-run Italian restaurant with artisanal homemade cooking in Villavicencio.'}
+        title={aboutData.seo.title}
+        description={aboutData.seo.description}
         solidBg={true}
->
+    >
     {/* Editorial Header */}
     <div class="pt-40 pb-20 bg-ragazza-bg text-center px-4 relative overflow-hidden">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-ragazza-primary/5 rounded-full blur-3xl -z-10"></div>
@@ -57,7 +53,7 @@ const aboutData = await import(`../../data/${lang}/about.json`).then(m => m.defa
 
                     <div class="absolute inset-0 bg-ragazza-secondary flex items-center justify-center overflow-hidden shadow-2xl border border-ragazza-primary/10">
                         <div class="w-full h-full flex items-center justify-center">
-                            <span class="font-cinzel text-white/50 text-xl tracking-widest">Mauricio Photo</span>
+                            <span class="font-cinzel text-white/50 text-xl tracking-widest">{aboutData.mediaPlaceholders.mauricio}</span>
                         </div>
                     </div>
                 </div>
@@ -97,7 +93,7 @@ const aboutData = await import(`../../data/${lang}/about.json`).then(m => m.defa
 
                     <div class="absolute inset-0 bg-ragazza-dark flex items-center justify-center overflow-hidden shadow-2xl border border-ragazza-primary/10">
                         <div class="w-full h-full flex items-center justify-center">
-                            <span class="font-cinzel text-white/50 text-xl tracking-widest">Carolina Photo</span>
+                            <span class="font-cinzel text-white/50 text-xl tracking-widest">{aboutData.mediaPlaceholders.carolina}</span>
                         </div>
                     </div>
                 </div>

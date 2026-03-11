@@ -1,0 +1,20 @@
+{
+  "seo": {
+    "title": "Menu Italiano Artesanal | La Ragazza Villavicencio",
+    "description": "Explora el menu de comida italiana artesanal de La Ragazza: pasta hecha en casa, lasanas, carnes y postres en Villavicencio."
+  },
+  "header": {
+    "label": "Nuestras Recetas",
+    "title": "Menu",
+    "description": "Cada plato cuenta la historia de la tradicion italiana en los Llanos. Todo hecho a mano, sin prisas."
+  },
+  "filters": {
+    "all": "Todo",
+    "vegetarian": "Vegetariano",
+    "pastas": "Pastas",
+    "wines": "Vinos",
+    "desserts": "Postres",
+    "drinks": "Bebidas"
+  }
+}
+

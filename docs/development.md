@@ -25,6 +25,18 @@ Open:
 
 - `http://localhost:4321`
 
+If you also want the standalone Express backend at the same time, use:
+
+```bash
+pnpm dev:full
+```
+
+Or run it separately:
+
+```bash
+pnpm dev:api
+```
+
 Build and preview locally:
 
 ```bash
@@ -127,11 +139,13 @@ Template:
 
 - `.env.example`
 
-Primary variable currently used:
+Primary variables:
 
 - `PUBLIC_SITE_URL`
+- `DATABASE_URL` (native local run)
+- `DATABASE_URL_DOCKER` (containerized run via `make dev`)
 
-Used by Astro config and SEO URL generation for canonical/sitemap consistency.
+Used by Astro config, API routes, and DB connectivity.
 
 ---
 
@@ -158,6 +172,30 @@ Docker files are for local/staging parity and alternative hosting workflows.
 
 ## 8) Troubleshooting
 
+### `curl: (56) Recv failure: Connection reset by peer` on `localhost:4321`
+
+Usually means the dev server is not actually running on `4321` (or another process holds that port).
+
+Check listeners:
+
+```bash
+ss -ltnp | grep ':4321\|:4322\|:4001'
+```
+
+Stop the stack and restart clean:
+
+```bash
+make down
+make dev
+```
+
+If needed, stop orphan local processes:
+
+```bash
+pkill -f "astro dev"
+pkill -f "server/express/index.ts"
+```
+
 ### Port already in use (prod container)
 
 Symptom: bind error on `0.0.0.0:8080`.
@@ -176,6 +214,25 @@ PORT=8081 make prod-up
 
 On Fedora, `docker` can be backed by Podman (`podman-docker`).
 Use `make` targets to avoid command drift.
+
+### `connect ECONNREFUSED 169.254.x.x:5432`
+
+That means the app container is trying to reach PostgreSQL on an unreachable host alias.
+
+Use the bundled dev database service:
+
+```bash
+make down
+make dev
+```
+
+Then verify both services are healthy:
+
+```bash
+docker compose -f docker-compose.dev.yml ps
+```
+
+`web` should connect to `db:5432` by default in containerized mode.
 
 ---
 
@@ -227,3 +284,95 @@ Use `make` targets to avoid command drift.
 - Project overview: `README.md`
 - Technical architecture: `docs/architecture.md`
 
+---
+
+## 12) Admin Dashboard (Section 1 Foundation)
+
+### What was added
+
+- SSR mode with Node adapter in `astro.config.mjs`.
+- Host-aware middleware in `src/middleware.ts`.
+- Admin UI shell in `src/layouts/AdminLayout.astro` and `src/pages/admin/index.astro`.
+- Astro API endpoint in `src/pages/api/admin/health.ts`.
+- Express backend in `server/express/index.ts` and `server/express/routes/admin.ts`.
+- Shared DB health logic in `src/server/admin/health.ts` and `src/server/db/client.ts`.
+
+### Local host mapping
+
+Add this line to `/etc/hosts`:
+
+```bash
+127.0.0.1 admin.localhost
+```
+
+Then run:
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open:
+
+- `http://admin.localhost:4321/admin`
+- `http://localhost:4321/admin`
+
+### Required env vars
+
+Use `.env.example` as template:
+
+- `DATABASE_URL`
+- `ADMIN_API_PORT`
+- `PUBLIC_SITE_URL`
+
+### Production note
+
+For production, point `admin.la-ragazza-web.com` DNS to the same SSR service and route hostnames at the reverse proxy/load balancer level.
+
+---
+
+## 13) Admin Dashboard (Section 2: Home CRUD)
+
+### New Astro API routes
+
+- `GET /api/admin/home`
+- `GET /api/admin/home/:locale`
+- `PUT /api/admin/home/:locale`
+
+These routes connect to PostgreSQL through `src/server/admin/homePageTranslations.ts`.
+
+### New admin pages
+
+- `src/pages/admin/home/index.astro` (listado por idioma)
+- `src/pages/admin/home/[locale].astro` (formulario de edicion)
+
+### Quick test flow
+
+1. Open `http://localhost:4321/admin/home`.
+2. Enter locale editor (`es` or `en`).
+3. Update one field and save.
+4. Confirm success message and refresh page.
+
+---
+
+## 14) Admin Dashboard (Section 3: About CRUD)
+
+### New Astro API routes
+
+- `GET /api/admin/about`
+- `GET /api/admin/about/:locale`
+- `PUT /api/admin/about/:locale`
+
+These routes connect to PostgreSQL through `src/server/admin/aboutTranslations.ts`.
+
+### New admin pages
+
+- `src/pages/admin/about/index.astro` (listado por idioma)
+- `src/pages/admin/about/[locale].astro` (edicion de cabecera, filosofia, personas y parrafos)
+
+### Quick test flow
+
+1. Open `http://localhost:4321/admin/about`.
+2. Enter locale editor (`es` or `en`).
+3. Update one field in page and one paragraph in a person.
+4. Save and refresh `/es/about` or `/en/about` to verify content.

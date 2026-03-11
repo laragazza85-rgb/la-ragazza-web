@@ -11,19 +11,10 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params as { lang: 'es' | 'en' };
-
-const title =
-  lang === 'es'
-    ? 'Formulario de contacto | Entrega parcial | La Ragazza'
-    : 'Contact form | Partial delivery | La Ragazza';
-
-const description =
-  lang === 'es'
-    ? 'Formulario de contacto para entrega parcial con validaciones de nombre, email, telefono, tipo de consulta y mensaje.'
-    : 'Contact form for partial delivery with validations for name, email, phone, inquiry type, and message.';
+const formData = await import(`../../data/${lang}/partial-form.json`).then((m) => m.default);
 ---
 
-<Layout title={title} description={description} solidBg={true}>
+<Layout title={formData.seo.title} description={formData.seo.description} solidBg={true}>
   <main>
     <PartialContactForm lang={lang} />
   </main>

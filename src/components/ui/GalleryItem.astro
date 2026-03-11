@@ -10,9 +10,10 @@ export interface GalleryMedia {
 interface Props {
     item: GalleryMedia;
     index: number;
+    videoNotSupportedLabel?: string;
 }
 
-const { item, index } = Astro.props;
+const { item, index, videoNotSupportedLabel = '' } = Astro.props;
 // Calculamos el delay de la animación de entrada para que aparezcan en cascada
 const delay = index * 75;
 const eagerLoad = index < 2;
@@ -41,7 +42,7 @@ const eagerLoad = index < 2;
                     class="w-full h-auto object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
             >
                 <source src={item.src} type="video/mp4" />
-                Tu navegador no soporta videos.
+                {videoNotSupportedLabel}
             </video>
     ) : (
             <img

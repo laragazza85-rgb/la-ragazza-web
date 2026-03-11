@@ -1,7 +1,12 @@
 {
+  "seo": {
+    "title": "Contact form | Partial delivery | La Ragazza",
+    "description": "Contact form for partial delivery with validations for name, email, phone, inquiry type, and message."
+  },
   "label": "Partial delivery",
   "title": "Contact us",
   "description": "Demo form with required validations. It does not send data to any API.",
+  "requiredFields": "Required fields",
   "fields": {
     "name": {
       "label": "Full name",

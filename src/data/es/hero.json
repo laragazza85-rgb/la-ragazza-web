@@ -1,11 +1,28 @@
 {
-  "subtitle": "Un rincón de Italia en los Llanos desde 1985",
+  "seo": {
+    "title": "La Ragazza | Comida Italiana Artesanal Villavicencio",
+    "description": "Restaurante de comida italiana familiar y artesanal en Villavicencio. Pasta hecha en casa desde 1985. Reserva tu mesa en La Ragazza."
+  },
+  "title": "Restaurante Italiano La Ragazza",
+  "subtitle": "Un rincon de Italia en los Llanos desde 1985",
   "philosophy": "Fatto en casa",
-  "viewMenu": "Ver Menú",
+  "viewMenu": "Ver Menu",
   "reserveTable": "Reservar Mesa",
+  "homeSeoSection": {
+    "heading": "Restaurante Italiano en Villavicencio desde 1985",
+    "paragraphOne": "La Ragazza es un restaurante de comida italiana artesanal ubicado en el corazon de Villavicencio, Meta. Desde 1985, nuestra familia Lopez Cortes prepara pasta fresca hecha en casa siguiendo recetas tradicionales italianas.",
+    "paragraphTwo": "Nuestro menu incluye lasanas, ravioles, tournedos y postres como panna cotta. Cada plato se elabora con ingredientes frescos y el amor de la cocina familiar italiana. Somos el lugar perfecto para reservar una mesa especial en Villavicencio.",
+    "paragraphThree": {
+      "beforeMenuLink": "Ven a descubrir la galeria de nuestros platos y conoce por que La Ragazza es el rincon de Italia favorito en los Llanos.",
+      "menuLinkText": "Explora nuestro menu completo",
+      "betweenLinks": "y",
+      "reserveLinkText": "reserva tu mesa",
+      "afterReserveLink": "hoy."
+    }
+  },
   "essence": {
-    "title": "La verdadera tradición no se inventa,<br/>se hereda.",
-    "description": "Desde 1985, la familia López Cortés ha mantenido intacta la filosofía de cocinar \"como en casa\". Cada pasta es fabricada a mano, cada salsa respeta los tiempos de cocción lentos y cada cliente es recibido como parte de la familia.",
+    "title": "La verdadera tradicion no se inventa,<br/>se hereda.",
+    "description": "Desde 1985, la familia Lopez Cortes ha mantenido intacta la filosofia de cocinar \"como en casa\". Cada pasta es fabricada a mano, cada salsa respeta los tiempos de coccion lentos y cada cliente es recibido como parte de la familia.",
     "ctaText": "Descubra nuestra historia",
     "ctaLink": "/es/about"
   },
@@ -16,11 +33,11 @@
     },
     "gallery": {
       "title": "El Ambiente",
-      "subtitle": "Un rincón de Italia"
+      "subtitle": "Un rincon de Italia"
     },
     "reservations": {
       "title": "Reservaciones",
-      "subtitle": "Atención personalizada"
+      "subtitle": "Atencion personalizada"
     }
   }
 }

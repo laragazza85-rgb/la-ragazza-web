@@ -8,6 +8,7 @@ interface Props {
 
 const lang = (Astro.props.lang || 'es') as 'es' | 'en';
 const t = useTranslations(lang);
+const labelsData = await import(`../../data/${lang}/labels.json`).then((m) => m.default);
 const currentYear = new Date().getFullYear();
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const normalizePath = (path: string) => path.replace(/\/+$/, '') || '/';
@@ -34,12 +35,12 @@ const footerLinks = [
     <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
 
         <div class="flex items-center gap-3">
-            <span class="font-cinzel font-bold text-xl tracking-wider">LA RAGAZZA</span>
+            <span class="font-cinzel font-bold text-xl tracking-wider">{labelsData.brand.name}</span>
             <span class="text-ragazza-bg/30 hidden md:inline">|</span>
             <span class="font-lora text-sm text-ragazza-bg/70 italic hidden md:inline">{t('footer.family')}</span>
         </div>
 
-        <nav aria-label={lang === 'es' ? 'Enlaces del pie de página' : 'Footer links'} class="flex items-center gap-5 md:gap-6">
+        <nav aria-label={labelsData.footer.navAria} class="flex items-center gap-5 md:gap-6">
             {footerLinks.map((link) => (
                 <a
                     href={link.href}
@@ -55,7 +56,7 @@ const footerLinks = [
         </nav>
 
         <div class="font-lora text-sm text-ragazza-bg/50 text-center md:text-right">
-            &copy; {currentYear} Restaurate La Ragazza. {t('footer.rights')}
+            &copy; {currentYear} {labelsData.footer.copyright}. {t('footer.rights')}
         </div>
 
     </div>

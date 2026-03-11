@@ -7,6 +7,13 @@ services:
     environment:
       NODE_ENV: development
       PUBLIC_SITE_URL: http://localhost:4321
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/la_ragazza_web
+      ADMIN_API_PORT: ${ADMIN_API_PORT:-4001}
+    depends_on:
+      db:
+        condition: service_healthy
+    extra_hosts:
+      - "host.containers.internal:host-gateway"
     volumes:
       - .:/app:Z
       - node_modules:/app/node_modules
@@ -14,8 +21,26 @@ services:
     command: >
       sh -c "corepack enable &&
              pnpm install --frozen-lockfile &&
-             pnpm dev --host 0.0.0.0 --port 4321"
+             pnpm dev"
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: la_ragazza_web
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d la_ragazza_web"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/backup:/docker-entrypoint-initdb.d/001-init.sql:ro,Z
+    ports:
+      - "5433:5432"
 
 volumes:
   node_modules:
   pnpm_store:
+  pgdata:

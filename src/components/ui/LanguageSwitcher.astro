@@ -7,26 +7,15 @@ const { lang } = Astro.props;
 const otherLang = lang === 'es' ? 'en' : 'es';
 const currentPath = Astro.url.pathname.replace(`/${lang}/`, '');
 const targetPath = `/${otherLang}/${currentPath}`;
-
-const labels = {
-  en: {
-    toggle: 'Switch to Spanish',
-    current: 'English',
-  },
-  es: {
-    toggle: 'Cambiar a inglés',
-    current: 'Español',
-  },
-};
-
-const label = labels[lang];
+const labelsData = await import(`../../data/${lang}/labels.json`).then((m) => m.default);
+const label = otherLang === 'es' ? labelsData.languageSwitcher.toEs : labelsData.languageSwitcher.toEn;
 ---
 
 <a
   href={targetPath}
   class="flex items-center gap-2 px-4 py-2 font-cinzel text-xs uppercase tracking-widest border border-white/50 hover:bg-white hover:text-ragazza-primary transition-all duration-300"
-  aria-label={label.toggle}
-  title={label.toggle}
+  aria-label={label}
+  title={label}
 >
   <span class="font-bold">{lang.toUpperCase()}</span>
   <svg
@@ -44,4 +33,3 @@ const label = labels[lang];
     />
   </svg>
 </a>
-

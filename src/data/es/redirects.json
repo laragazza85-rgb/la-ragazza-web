@@ -1,0 +1,15 @@
+{
+  "home": {
+    "lang": "es",
+    "title": "Redirigiendo... | La Ragazza",
+    "message": "Redirigiendo a la pagina principal...",
+    "path": "/es/"
+  },
+  "partialForm": {
+    "lang": "es",
+    "title": "Redirigiendo... | La Ragazza",
+    "message": "Redirigiendo al formulario...",
+    "path": "/es/entrega-parcial-form"
+  }
+}
+

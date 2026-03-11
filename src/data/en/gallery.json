@@ -1,8 +1,15 @@
 {
+  "seo": {
+    "title": "Gallery and reviews of Italian food in Villavicencio | La Ragazza",
+    "description": "Explore La Ragazza's family atmosphere and customer reviews about our artisanal Italian food in Villavicencio."
+  },
   "header": {
     "label": "Our Atmosphere",
     "title": "Gallery",
     "description": "A visual journey through our handcrafted dishes and the warm Italian corner we have created for you."
+  },
+  "media": {
+    "videoNotSupported": "Your browser does not support videos."
   },
   "items": [
     {
@@ -27,4 +34,3 @@
     }
   ]
 }
-

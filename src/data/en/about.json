@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "title": "Family story and Italian tradition in Villavicencio | La Ragazza",
+    "description": "Discover La Ragazza since 1985: a family-run Italian restaurant with artisanal homemade cooking in Villavicencio."
+  },
   "header": {
     "label": "Family Tradition",
     "title": "Our Story"
@@ -23,6 +27,9 @@
       "Carolina is the absolute guardian of our recipes. Under her command, the kitchen rejects anything prefabricated; her hands shape handmade pasta and watch over the slow fire where sauces develop their unmistakable character.",
       "For her, cooking is an act of love and respect for the guest. Her rigor and perfectionism guarantee that no dish leaves the kitchen unless it meets the high standards and authentic essence that have defined La Ragazza for nearly four decades."
     ]
+  },
+  "mediaPlaceholders": {
+    "mauricio": "Mauricio photo",
+    "carolina": "Carolina photo"
   }
 }
-

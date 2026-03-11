@@ -1,0 +1,13 @@
+{
+  "section": {
+    "label": "Our Customers",
+    "title": "The Family Grows"
+  },
+  "cta": "Read our reviews on Google",
+  "googleMapsLink": "https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7",
+  "controls": {
+    "prev": "Previous review",
+    "next": "Next review"
+  }
+}
+

@@ -1,11 +1,28 @@
 {
+  "seo": {
+    "title": "La Ragazza | Artisanal Italian Food Villavicencio",
+    "description": "Family-style Italian restaurant in Villavicencio with homemade pasta and artisanal recipes since 1985. Book your table at La Ragazza."
+  },
+  "title": "La Ragazza Italian Restaurant",
   "subtitle": "A corner of Italy in the Llanos since 1985",
   "philosophy": "Homemade",
   "viewMenu": "View Menu",
   "reserveTable": "Book a Table",
+  "homeSeoSection": {
+    "heading": "Italian Restaurant in Villavicencio since 1985",
+    "paragraphOne": "La Ragazza is an artisanal Italian restaurant located in the heart of Villavicencio, Meta. Since 1985, our Lopez Cortes family has been preparing fresh homemade pasta following traditional Italian recipes.",
+    "paragraphTwo": "Our menu includes lasagnas, ravioli, tournedos, and desserts like panna cotta. Each dish is crafted with fresh ingredients and the love of Italian family cooking. We are the perfect place to book a special table in Villavicencio.",
+    "paragraphThree": {
+      "beforeMenuLink": "Come discover the gallery of our dishes and see why La Ragazza is the favorite corner of Italy in Los Llanos.",
+      "menuLinkText": "Explore our full menu",
+      "betweenLinks": "and",
+      "reserveLinkText": "book your table",
+      "afterReserveLink": "today."
+    }
+  },
   "essence": {
     "title": "True tradition is not invented,<br/>it is inherited.",
-    "description": "Since 1985, the López Cortés family has preserved the philosophy of cooking \"like at home.\" Every pasta is kneaded by hand, every sauce respects slow cooking times, and every guest is welcomed as part of the family.",
+    "description": "Since 1985, the Lopez Cortes family has preserved the philosophy of cooking \"like at home.\" Every pasta is kneaded by hand, every sauce respects slow cooking times, and every guest is welcomed as part of the family.",
     "ctaText": "Discover our story",
     "ctaLink": "/en/about"
   },

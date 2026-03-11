@@ -23,5 +23,20 @@
     "description": "Atendemos sus reservaciones y consultas directamente de forma personalizada.",
     "phoneNumber": "573133494150",
     "message": ""
+  },
+  "ui": {
+    "title": "Restaurante La Ragazza",
+    "map": {
+      "title": "Como llegar",
+      "google": "Google Maps",
+      "waze": "Waze",
+      "iframeTitle": "Mapa de La Ragazza",
+      "openAria": "Abrir ubicacion en Google Maps"
+    },
+    "aboutAria": "Ir a nuestra historia",
+    "social": {
+      "instagramAria": "Instagram",
+      "facebookAria": "Facebook"
+    }
   }
 }

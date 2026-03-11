@@ -1,0 +1,13 @@
+{
+  "section": {
+    "label": "Nuestros Clientes",
+    "title": "La Familia Crece"
+  },
+  "cta": "Leer nuestras resenas en Google",
+  "googleMapsLink": "https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7",
+  "controls": {
+    "prev": "Resena anterior",
+    "next": "Siguiente resena"
+  }
+}
+

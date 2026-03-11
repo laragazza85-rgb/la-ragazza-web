@@ -22,14 +22,10 @@ const galleryItems: GalleryMedia[] = galleryData.items;
 ---
 
 <Layout
-        title={lang === 'es'
-            ? 'Galeria y resenas de comida italiana en Villavicencio | La Ragazza'
-            : 'Gallery and reviews of Italian food in Villavicencio | La Ragazza'}
-        description={lang === 'es'
-            ? 'Descubre el ambiente familiar de La Ragazza y las resenas de clientes sobre nuestra comida italiana artesanal en Villavicencio.'
-            : 'Explore La Ragazza\'s family atmosphere and customer reviews about our artisanal Italian food in Villavicencio.'}
+        title={galleryData.seo.title}
+        description={galleryData.seo.description}
         solidBg={true}
->
+    >
     {/* Gallery Header */}
     <div class="pt-40 pb-20 bg-ragazza-bg text-center px-4 relative overflow-hidden">
         <div class="absolute top-0 right-1/4 w-[500px] h-[500px] bg-ragazza-accent/5 rounded-full blur-3xl -z-10"></div>
@@ -45,7 +41,7 @@ const galleryItems: GalleryMedia[] = galleryData.items;
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-ragazza-bg pb-32">
         <div class="columns-1 sm:columns-2 lg:columns-3 gap-6">
             {galleryItems.map((item, index) => (
-                    <GalleryItem item={item} index={index} />
+                    <GalleryItem item={item} index={index} videoNotSupportedLabel={galleryData.media.videoNotSupported} />
             ))}
         </div>
     </main>
@@ -54,4 +50,3 @@ const galleryItems: GalleryMedia[] = galleryData.items;
     <Contact lang={lang} />
     <Footer lang={lang} />
 </Layout>
-

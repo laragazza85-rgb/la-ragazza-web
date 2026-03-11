@@ -16,49 +16,28 @@ const { lang } = Astro.params;
 
 // Importar datos del menú
 const menuData = await import(`../../data/${lang}/menu.json`).then(m => m.default);
+const menuPageData = await import(`../../data/${lang}/menu-page.json`).then(m => m.default);
 
-const filterLabels = lang === 'es'
-    ? {
-        all: 'Todo',
-        vegetarian: 'Vegetariano',
-        pastas: 'Pastas',
-        wines: 'Vinos',
-        desserts: 'Postres',
-        drinks: 'Bebidas',
-      }
-    : {
-        all: 'All',
-        vegetarian: 'Vegetarian',
-        pastas: 'Pasta',
-        wines: 'Wines',
-        desserts: 'Desserts',
-        drinks: 'Drinks',
-      };
+const filterLabels = menuPageData.filters;
 ---
 
 <Layout
-        title={lang === 'es'
-            ? 'Menú Italiano Artesanal | La Ragazza Villavicencio'
-            : 'Italian Artisanal Menu | La Ragazza Villavicencio'}
-        description={lang === 'es'
-            ? 'Explora el menu de comida italiana artesanal de La Ragazza: pasta hecha en casa, lasanas, carnes y postres en Villavicencio.'
-            : 'Explore La Ragazza\'s artisanal Italian menu: homemade pasta, lasagnas, meats, and desserts in Villavicencio.'}
+        title={menuPageData.seo.title}
+        description={menuPageData.seo.description}
         solidBg={true}
->
+    >
     {/* Menu Header */}
     <div class="pt-40 pb-20 bg-ragazza-bg text-center px-4 relative overflow-hidden">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-ragazza-primary/5 rounded-full blur-3xl -z-10"></div>
         <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold reveal opacity-0 translate-y-8 transition-all duration-1000">
-            {lang === 'es' ? 'Nuestras Recetas' : 'Our Recipes'}
+            {menuPageData.header.label}
         </span>
         <h1 class="font-cinzel text-5xl md:text-7xl text-ragazza-dark mt-4 mb-6 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">
-            {lang === 'es' ? 'Menú' : 'Menu'}
+            {menuPageData.header.title}
         </h1>
         <div class="sauce-line mx-auto mt-8 mb-8 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200"></div>
         <p class="font-lora text-ragazza-secondary/80 max-w-2xl mx-auto italic reveal opacity-0 translate-y-8 transition-all duration-1000 delay-300">
-            {lang === 'es'
-                ? 'Cada plato cuenta la historia de la tradición italiana en los Llanos. Todo hecho a mano, sin prisas.'
-                : 'Each dish tells the story of Italian tradition in the Llanos. Everything handmade, unhurried.'}
+            {menuPageData.header.description}
         </p>
     </div>
 

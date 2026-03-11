@@ -1,10 +1,26 @@
 {
+  "brand": {
+    "name": "LA RAGAZZA"
+  },
+  "layout": {
+    "metaKeywords": "family, artisanal, italian, italian food, family restaurant, pasta, homemade",
+    "siteName": "La Ragazza Restaurant",
+    "whatsappAria": "Open WhatsApp"
+  },
   "menu": {
     "vegetarian": "Vegetarian",
     "options": "Options"
   },
   "header": {
-    "reserve": "Reserve"
+    "reserve": "Reserve",
+    "mobileMenuAria": "Menu"
+  },
+  "footer": {
+    "navAria": "Footer links",
+    "copyright": "La Ragazza Restaurant"
+  },
+  "languageSwitcher": {
+    "toEs": "Switch to Spanish",
+    "toEn": "Switch to English"
   }
 }
-

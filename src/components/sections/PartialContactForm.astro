@@ -17,7 +17,7 @@ const formData = await import(`../../data/${lang}/partial-form.json`).then((m) =
     </div>
 
     <div class="rounded-2xl border border-ragazza-primary/15 bg-white/95 p-6 sm:p-8 shadow-sm card-elegant">
-      <p class="mb-4 font-lora text-xs text-ragazza-secondary/70">* {lang === 'es' ? 'Campos obligatorios' : 'Required fields'}</p>
+      <p class="mb-4 font-lora text-xs text-ragazza-secondary/70">* {formData.requiredFields}</p>
       <form id="partial-contact-form" class="space-y-5" novalidate>
         <div>
           <label for="fullName" class="font-cinzel text-xs uppercase tracking-widest text-ragazza-primary">* {formData.fields.name.label}</label>

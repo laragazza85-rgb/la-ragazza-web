@@ -20,12 +20,8 @@ const heroData = await import(`../../data/${lang}/hero.json`).then(m => m.defaul
 ---
 
 <Layout
-        title={lang === 'es'
-            ? 'La Ragazza | Comida Italiana Artesanal Villavicencio'
-            : 'La Ragazza | Artisanal Italian Food Villavicencio'}
-        description={lang === 'es'
-            ? 'Restaurante de comida italiana familiar y artesanal en Villavicencio. Pasta hecha en casa desde 1985. Reserva tu mesa en La Ragazza.'
-            : 'Family-style Italian restaurant in Villavicencio with homemade pasta and artisanal recipes since 1985. Book your table at La Ragazza.'}
+        title={heroData.seo.title}
+        description={heroData.seo.description}
 >
     <main>
         <Hero lang={lang} />
@@ -34,49 +30,23 @@ const heroData = await import(`../../data/${lang}/hero.json`).then(m => m.defaul
         <section class="pt-12 sm:pt-16 pb-16 bg-white px-4 sm:px-6 lg:px-8">
             <div class="max-w-4xl mx-auto">
                 <article class="prose prose-lg max-w-none">
-                    {lang === 'es' ? (
-                        <>
-                            <h2 class="font-cinzel text-3xl text-ragazza-primary mb-6">Restaurante Italiano en Villavicencio desde 1985</h2>
+                    <h2 class="font-cinzel text-3xl text-ragazza-primary mb-6">{heroData.homeSeoSection.heading}</h2>
 
-                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                                <strong>La Ragazza</strong> es un restaurante de <strong>comida italiana artesanal</strong> ubicado en el corazón de <strong>Villavicencio</strong>, Meta.
-                                Desde 1985, nuestra familia López Cortés prepara <strong>pasta fresca hecha en casa</strong> siguiendo recetas tradicionales italianas.
-                            </p>
+                    <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
+                        {heroData.homeSeoSection.paragraphOne}
+                    </p>
 
-                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                                Nuestro <strong>menú</strong> incluye lasañas, ravioles, tournedos y postres como panna cotta.
-                                Cada plato se elabora con ingredientes frescos y el amor de la cocina <strong>familiar</strong> italiana.
-                                Somos el lugar perfecto para <strong>reservar</strong> una mesa especial en Villavicencio.
-                            </p>
+                    <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
+                        {heroData.homeSeoSection.paragraphTwo}
+                    </p>
 
-                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                                Ven a descubrir la <strong>galería</strong> de nuestros platos y conoce por qué La Ragazza es el <strong>rincón de Italia</strong> favorito en los Llanos.
-                                <a href={`/${lang}/menu`} class="text-ragazza-primary hover:text-ragazza-accent font-semibold">Explora nuestro menú completo</a> y
-                                <a href="#contact" class="text-ragazza-primary hover:text-ragazza-accent font-semibold ml-2">reserva tu mesa</a> hoy.
-                            </p>
-                        </>
-                    ) : (
-                        <>
-                            <h2 class="font-cinzel text-3xl text-ragazza-primary mb-6">Italian Restaurant in Villavicencio since 1985</h2>
-
-                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                                <strong>La Ragazza</strong> is an <strong>artisanal Italian restaurant</strong> located in the heart of <strong>Villavicencio</strong>, Meta.
-                                Since 1985, our López Cortés family has been preparing <strong>fresh homemade pasta</strong> following traditional Italian recipes.
-                            </p>
-
-                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                                Our <strong>menu</strong> includes lasagnas, ravioli, tournedos, and desserts like panna cotta.
-                                Each dish is crafted with fresh ingredients and the love of Italian <strong>family</strong> cooking.
-                                We are the perfect place to <strong>book</strong> a special table in Villavicencio.
-                            </p>
-
-                            <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
-                                Come discover the <strong>gallery</strong> of our dishes and see why La Ragazza is the favorite <strong>corner of Italy</strong> in Los Llanos.
-                                <a href={`/${lang}/menu`} class="text-ragazza-primary hover:text-ragazza-accent font-semibold">Explore our full menu</a> and
-                                <a href="#contact" class="text-ragazza-primary hover:text-ragazza-accent font-semibold ml-2">book your table</a> today.
-                            </p>
-                        </>
-                    )}
+                    <p class="mb-4 text-ragazza-secondary/90 leading-relaxed">
+                        {heroData.homeSeoSection.paragraphThree.beforeMenuLink}{' '}
+                        <a href={`/${lang}/menu`} class="text-ragazza-primary hover:text-ragazza-accent font-semibold">{heroData.homeSeoSection.paragraphThree.menuLinkText}</a>{' '}
+                        {heroData.homeSeoSection.paragraphThree.betweenLinks}{' '}
+                        <a href="#contact" class="text-ragazza-primary hover:text-ragazza-accent font-semibold">{heroData.homeSeoSection.paragraphThree.reserveLinkText}</a>{' '}
+                        {heroData.homeSeoSection.paragraphThree.afterReserveLink}
+                    </p>
                 </article>
             </div>
         </section>

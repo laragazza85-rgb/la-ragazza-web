@@ -1,0 +1,72 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+
+type HomeSummary = {
+  pageKey: 'home';
+  localeCode: 'es' | 'en';
+  title: string;
+  subtitle: string;
+  updatedAt: string;
+};
+
+type ApiResponse = {
+  ok: boolean;
+  data?: HomeSummary[];
+  error?: string;
+};
+
+const response = await fetch(`${Astro.url.origin}/api/admin/home`);
+const payload = (await response.json()) as ApiResponse;
+const rows = payload.data ?? [];
+---
+
+<AdminLayout title="Admin | Home i18n">
+  <section class="rounded-xl border border-ragazza-primary/15 bg-white p-6 shadow-sm">
+    <div class="mb-4 flex items-center justify-between">
+      <div>
+        <p class="font-cinzel text-xs uppercase tracking-[0.2em] text-ragazza-accent">Seccion 2</p>
+        <h3 class="font-cinzel text-2xl text-ragazza-primary">Home Page Translations</h3>
+      </div>
+      <a href="/admin" class="text-sm text-ragazza-primary underline underline-offset-4">Volver al overview</a>
+    </div>
+
+    {!payload.ok && (
+      <p class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        Error cargando datos: {payload.error ?? 'Sin detalle'}
+      </p>
+    )}
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full border-collapse text-left text-sm">
+        <thead>
+          <tr class="border-b border-ragazza-primary/15 font-cinzel uppercase tracking-widest text-ragazza-primary">
+            <th class="px-3 py-3">Locale</th>
+            <th class="px-3 py-3">Title</th>
+            <th class="px-3 py-3">Subtitle</th>
+            <th class="px-3 py-3">Updated</th>
+            <th class="px-3 py-3">Accion</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((item) => (
+            <tr class="border-b border-ragazza-primary/10 text-ragazza-secondary/90">
+              <td class="px-3 py-3 font-semibold uppercase">{item.localeCode}</td>
+              <td class="px-3 py-3">{item.title}</td>
+              <td class="px-3 py-3">{item.subtitle}</td>
+              <td class="px-3 py-3">{new Date(item.updatedAt).toLocaleString('es-CO')}</td>
+              <td class="px-3 py-3">
+                <a
+                  class="rounded-md border border-ragazza-primary/30 px-3 py-1 text-xs font-semibold text-ragazza-primary hover:bg-ragazza-primary hover:text-white"
+                  href={`/admin/home/${item.localeCode}`}
+                >
+                  Editar
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</AdminLayout>
+
