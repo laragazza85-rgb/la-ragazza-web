@@ -808,5 +808,6 @@ make run           # correr imagen en http://localhost:8080
 
 ---
 
-_Última actualización: Marzo 2026 — La Ragazza Web_
+> Nota: el panel de administración personalizado y su backend/API ya no viven en este repositorio. Se separaron en el repositorio `la-ragazza-admin`. Este documento describe solo el flujo del sitio web público.
 
+_Última actualización: Marzo 2026 — La Ragazza Web_

@@ -3,33 +3,22 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "pnpm dev:web",
-    "dev:full": "concurrently \"pnpm dev:web\" \"pnpm dev:api\"",
-    "dev:web": "astro dev --host 0.0.0.0 --port 4321 --strictPort",
-    "dev:api": "tsx server/express/index.ts",
+    "dev": "astro dev --host 0.0.0.0 --port 4321 --strictPort",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "optimize:images": "node scripts/optimize-images.mjs",
-    "smoke:admin-home": "node scripts/admin-home-smoke.mjs"
+    "optimize:images": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.6",
-    "@astrojs/node": "^9.1.2",
     "@astrojs/sitemap": "^3.7.0",
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^5.17.1",
-    "express": "^4.21.2",
-    "pg": "^8.13.3",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.1",
-    "@types/express": "^5.0.1",
-    "@types/node": "^22.13.10",
-    "@types/pg": "^8.15.4",
-    "concurrently": "^9.1.2",
-    "tsx": "^4.20.5"
+    "@types/node": "^22.13.10"
   }
 }

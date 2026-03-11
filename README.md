@@ -49,6 +49,22 @@ This project was built to give La Ragazza a modern, maintainable web presence th
 
 ---
 
+## Repository Scope
+
+This repository now contains **only the public website frontend**.
+
+The custom admin dashboard and database-backed CMS/backend were split into a separate repository: `la-ragazza-admin`.
+
+That means this repo no longer contains:
+
+- `src/pages/admin`
+- `src/pages/api`
+- `src/server`
+- admin middleware / admin layout
+- embedded Express server logic
+
+---
+
 ## Documentation Map
 
 ### Architecture
