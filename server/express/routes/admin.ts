@@ -7,6 +7,12 @@ import {
   updateAboutTranslation,
 } from '../../../src/server/admin/aboutTranslations';
 import {
+  getContactDetail,
+  listContactTranslations,
+  parseContactDetailInput,
+  updateContactDetail,
+} from '../../../src/server/admin/contactProfile';
+import {
   getHomeTranslation,
   listHomeTranslations,
   parseHomeTranslationInput,
@@ -119,6 +125,49 @@ adminRouter.put('/about-translations/:locale', async (req: Request, res: Respons
       message === 'Invalid JSON payload' ||
       message.includes('must have at least one');
 
+    res.status(isBadRequest ? 400 : 500).json({ ok: false, error: message });
+  }
+});
+
+adminRouter.get('/contact-translations', async (_req: Request, res: Response) => {
+  try {
+    const rows = await listContactTranslations();
+    res.status(200).json({ ok: true, data: rows });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error instanceof Error ? error.message : 'Unexpected error' });
+  }
+});
+
+adminRouter.get('/contact-translations/:locale', async (req: Request, res: Response) => {
+  try {
+    const row = await getContactDetail(getParamAsString(req.params.locale));
+
+    if (!row) {
+      res.status(404).json({ ok: false, error: 'Not found' });
+      return;
+    }
+
+    res.status(200).json({ ok: true, data: row });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unexpected error';
+    res.status(message.startsWith('Unsupported locale') ? 400 : 500).json({ ok: false, error: message });
+  }
+});
+
+adminRouter.put('/contact-translations/:locale', async (req: Request, res: Response) => {
+  try {
+    const payload = parseContactDetailInput(req.body);
+    const row = await updateContactDetail(getParamAsString(req.params.locale), payload);
+
+    if (!row) {
+      res.status(404).json({ ok: false, error: 'Not found' });
+      return;
+    }
+
+    res.status(200).json({ ok: true, data: row });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unexpected error';
+    const isBadRequest = message.startsWith('Unsupported locale') || message.startsWith('Field') || message === 'Invalid JSON payload';
     res.status(isBadRequest ? 400 : 500).json({ ok: false, error: message });
   }
 });

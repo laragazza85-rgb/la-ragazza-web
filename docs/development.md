@@ -376,3 +376,27 @@ These routes connect to PostgreSQL through `src/server/admin/aboutTranslations.t
 2. Enter locale editor (`es` or `en`).
 3. Update one field in page and one paragraph in a person.
 4. Save and refresh `/es/about` or `/en/about` to verify content.
+
+---
+
+## 15) Admin Dashboard (Section 4: Contact CRUD)
+
+### New Astro API routes
+
+- `GET /api/admin/contact`
+- `GET /api/admin/contact/:locale`
+- `PUT /api/admin/contact/:locale`
+
+These routes connect to PostgreSQL through `src/server/admin/contactProfile.ts`.
+
+### New admin pages
+
+- `src/pages/admin/contact/index.astro` (listado por idioma)
+- `src/pages/admin/contact/[locale].astro` (edicion de perfil global + traducciones)
+
+### Quick test flow
+
+1. Open `http://localhost:4321/admin/contact`.
+2. Enter locale editor (`es` or `en`).
+3. Update one global field (`streetAddress`) and one translated field (`uiTitle`).
+4. Save and refresh `/es/` or `/en/` to verify Contact section changes.

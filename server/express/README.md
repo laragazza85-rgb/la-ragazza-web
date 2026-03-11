@@ -13,6 +13,9 @@ Backend API for the custom admin dashboard.
 - `GET /admin/about-translations` -> List about translations (`about_page_translation`)
 - `GET /admin/about-translations/:locale` -> Get one locale (`es` | `en`) with people/paragraphs
 - `PUT /admin/about-translations/:locale` -> Update page + people/paragraphs for one locale
+- `GET /admin/contact-translations` -> List contact translations (`contact_profile_translation`)
+- `GET /admin/contact-translations/:locale` -> Get one locale (`es` | `en`) with profile + translation
+- `PUT /admin/contact-translations/:locale` -> Update profile + translation for one locale
 
 ## Local Run
 
