@@ -1,0 +1,96 @@
+---
+interface Props {
+  active?: "home" | "bookings" | "requests";
+}
+
+const { active = "home" } = Astro.props;
+---
+
+<header class="admin-header" id="admin-header">
+  <div class="admin-header-inner" id="admin-header-inner">
+    <a href="/admin" class="admin-brand link-elegant" aria-label="Ir al inicio del panel">
+      <p class="admin-eyebrow">Panel interno</p>
+      <p class="admin-brand-title">La Ragazza</p>
+    </a>
+
+    <nav class="admin-nav" aria-label="Navegacion del panel">
+      <a href="/admin" class:list={["admin-nav-link", "link-elegant", active === "home" && "is-active"]}>Home</a>
+
+      <div class="admin-nav-dropdown" data-admin-only hidden>
+        <button class="admin-nav-link admin-nav-trigger link-elegant" type="button" aria-expanded="false">
+          Reservas
+          <span aria-hidden="true">▾</span>
+        </button>
+        <div class="admin-nav-menu">
+          <a href="/admin/reservas?scope=mine" class="admin-nav-item">Mis reservas</a>
+          <a href="/admin/reservas?scope=others" class="admin-nav-item">Reservas de otros</a>
+        </div>
+      </div>
+
+      <a
+        href="/admin/reservas"
+        class:list={["admin-nav-link", "link-elegant", active === "bookings" && "is-active"]}
+        data-not-admin-only
+      >
+        Reservas
+      </a>
+
+      <div class="admin-nav-dropdown" data-admin-only hidden>
+        <button class="admin-nav-link admin-nav-trigger link-elegant" type="button" aria-expanded="false">
+          Solicitudes
+          <span aria-hidden="true">▾</span>
+        </button>
+        <div class="admin-nav-menu">
+          <a href="/admin/solicitudes?scope=mine" class="admin-nav-item">Mis solicitudes</a>
+          <a href="/admin/solicitudes?scope=others" class="admin-nav-item">Solicitudes de otros</a>
+        </div>
+      </div>
+
+      <a
+        href="/admin/solicitudes"
+        class:list={["admin-nav-link", "link-elegant", active === "requests" && "is-active"]}
+        data-not-admin-only
+      >
+        Solicitudes de cambio
+      </a>
+    </nav>
+
+    <button id="admin-logout" type="button" class="admin-btn admin-btn-outline btn-elegant">Cerrar sesion</button>
+
+    <button
+      id="admin-mobile-menu-btn"
+      class="admin-mobile-menu-btn"
+      type="button"
+      aria-label="Abrir menu del panel"
+      aria-expanded="false"
+    >
+      <svg class="admin-mobile-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+
+  <div id="admin-mobile-menu" class="admin-mobile-menu" aria-hidden="true">
+    <nav class="admin-mobile-nav" aria-label="Navegacion movil del panel">
+      <a href="/admin" class:list={["admin-mobile-link", active === "home" && "is-active"]}>Home</a>
+
+      <a href="/admin/reservas?scope=mine" class="admin-mobile-link" data-admin-only hidden>Mis reservas</a>
+      <a href="/admin/reservas?scope=others" class="admin-mobile-link" data-admin-only hidden>Reservas de otros</a>
+      <a href="/admin/reservas" class:list={["admin-mobile-link", active === "bookings" && "is-active"]} data-not-admin-only>
+        Reservas
+      </a>
+
+      <a href="/admin/solicitudes?scope=mine" class="admin-mobile-link" data-admin-only hidden>Mis solicitudes</a>
+      <a href="/admin/solicitudes?scope=others" class="admin-mobile-link" data-admin-only hidden>Solicitudes de otros</a>
+      <a
+        href="/admin/solicitudes"
+        class:list={["admin-mobile-link", active === "requests" && "is-active"]}
+        data-not-admin-only
+      >
+        Solicitudes de cambio
+      </a>
+
+      <button id="admin-mobile-logout" type="button" class="admin-mobile-logout-btn">Cerrar sesion</button>
+    </nav>
+  </div>
+</header>

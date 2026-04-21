@@ -1,0 +1,82 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminHeader from '../../components/ui/AdminHeader.astro';
+---
+
+<AdminLayout title="Admin | Solicitudes de cambio">
+  <AdminHeader active="requests" />
+
+  <main class="admin-main admin-main-with-header">
+    <section class="admin-card">
+      <div class="admin-section-head">
+        <div>
+          <h1>Solicitudes de cambio de rol</h1>
+          <p id="requests-context-label" class="admin-copy">Cargando vista...</p>
+        </div>
+        <button id="request-create-btn" type="button" class="admin-mini-create-btn">+ Crear nueva</button>
+      </div>
+
+      <div class="admin-view-switch" id="requests-view-switch" data-admin-only hidden>
+        <button type="button" class="admin-view-btn" data-scope="mine">Mis solicitudes</button>
+        <button type="button" class="admin-view-btn" data-scope="others">Solicitudes de otros</button>
+      </div>
+
+      <p class="admin-status" id="request-status"></p>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table admin-table-requests">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuario</th>
+              <th>Rol solicitado</th>
+              <th>Justificacion</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="request-rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="request-modal" class="admin-modal">
+    <div class="admin-modal-shell">
+      <header class="admin-modal-head">
+        <h2 id="request-modal-title">Nueva solicitud</h2>
+        <button type="button" class="admin-modal-close" id="request-modal-close" aria-label="Cerrar">
+          ×
+        </button>
+      </header>
+
+      <div class="admin-modal-body">
+        <form id="request-form" class="admin-grid">
+          <input type="hidden" id="request_id" name="request_id" />
+
+          <div>
+            <label class="admin-label" for="requested_role">Rol solicitado</label>
+            <select class="admin-select" id="requested_role" name="requested_role" required>
+              <option value="user">user</option>
+              <option value="admin">admin</option>
+            </select>
+          </div>
+
+          <div class="admin-full">
+            <label class="admin-label" for="justification">Justificacion</label>
+            <textarea class="admin-textarea" id="justification" name="justification" rows="4" minlength="12" maxlength="1200" required></textarea>
+          </div>
+
+          <div class="admin-actions">
+            <button id="request-submit" class="admin-btn" type="submit">Guardar solicitud</button>
+            <button id="request-cancel" class="admin-btn admin-btn-muted" type="button">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <script is:inline type="module" src="/admin/nav.js"></script>
+  <script is:inline type="module" src="/admin/requests.js"></script>
+</AdminLayout>
+

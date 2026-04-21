@@ -1,0 +1,96 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminHeader from '../../components/ui/AdminHeader.astro';
+---
+
+<AdminLayout title="Admin | Reservas">
+  <AdminHeader active="bookings" />
+
+  <main class="admin-main admin-main-with-header">
+    <section class="admin-card">
+      <div class="admin-section-head">
+        <div>
+          <h1>Reservas</h1>
+          <p id="bookings-context-label" class="admin-copy">Cargando vista...</p>
+        </div>
+        <button id="booking-create-btn" type="button" class="admin-mini-create-btn">+ Crear nueva</button>
+      </div>
+
+      <div class="admin-view-switch" id="bookings-view-switch" data-admin-only hidden>
+        <button type="button" class="admin-view-btn" data-scope="mine">Mis reservas</button>
+        <button type="button" class="admin-view-btn" data-scope="others">Reservas de otros</button>
+      </div>
+
+      <p class="admin-status" id="booking-status"></p>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Personas</th>
+              <th>Comentarios</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="booking-rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="booking-modal" class="admin-modal">
+    <div class="admin-modal-shell">
+      <header class="admin-modal-head">
+        <h2 id="booking-modal-title">Nueva reserva</h2>
+        <button type="button" class="admin-modal-close" id="booking-modal-close" aria-label="Cerrar">
+          ×
+        </button>
+      </header>
+
+      <div class="admin-modal-body">
+        <form id="booking-form" class="admin-grid">
+          <input type="hidden" id="booking_id" name="booking_id" />
+
+          <div>
+            <label class="admin-label" for="nombre_cliente">Nombre cliente</label>
+            <input class="admin-input" id="nombre_cliente" name="nombre_cliente" required />
+          </div>
+
+          <div>
+            <label class="admin-label" for="fecha">Fecha</label>
+            <input class="admin-input" id="fecha" name="fecha" type="date" required />
+          </div>
+
+          <div>
+            <label class="admin-label" for="hora">Hora</label>
+            <input class="admin-input" id="hora" name="hora" type="time" required />
+          </div>
+
+          <div>
+            <label class="admin-label" for="numero_personas">Numero personas</label>
+            <input class="admin-input" id="numero_personas" name="numero_personas" type="number" min="1" required />
+          </div>
+
+          <div class="admin-full">
+            <label class="admin-label" for="comentarios">Comentarios</label>
+            <textarea class="admin-textarea" id="comentarios" name="comentarios" rows="3" maxlength="800"></textarea>
+          </div>
+
+          <div class="admin-actions">
+            <button id="booking-submit" class="admin-btn" type="submit">Guardar reserva</button>
+            <button id="booking-cancel" class="admin-btn admin-btn-muted" type="button">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <script is:inline type="module" src="/admin/nav.js"></script>
+  <script is:inline type="module" src="/admin/bookings.js"></script>
+</AdminLayout>
+

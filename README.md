@@ -13,55 +13,46 @@ For implementation details, see the dedicated docs:
 
 ## What This Project Is
 
-`la-ragazza-web` is a bilingual Astro website (`es` and `en`) that presents the restaurant's identity, menu, gallery, reviews, and contact channels.
+`la-ragazza-web` is a bilingual Astro website (`es` and `en`) that presents the restaurant's identity, menu, gallery, reviews, contact channels, and an internal admin panel.
 
 Core traits:
 
-- Static-first site built with Astro
-- Content managed from local JSON files
+- Static-first public site built with Astro
+- Admin UI built with Astro pages and shared design tokens
+- Local JSON content for the public site
+- Express + SQLite CMS for reservations and role requests
 - SEO-oriented metadata and structured data
 - Deployment target aligned with Vercel
 - Optional Docker workflows for local/staging parity
 
 ---
 
-## Why This Project Exists
+## Quick Start
 
-This project was built to give La Ragazza a modern, maintainable web presence that:
+```bash
+pnpm install
+pnpm dev
+```
 
-- communicates the brand story and family tradition,
-- makes menu and contact information easy to update,
-- supports both Spanish and English audiences,
-- performs well as a static site,
-- stays simple for future developers to maintain.
+`pnpm dev` starts:
+- Astro on `http://localhost:4321`
+- Parcial API on `http://localhost:3001`
 
----
+Then open:
+- `http://localhost:4321`
+- `http://localhost:4321/admin/login`
+- `http://localhost:4321/admin/signup`
+- `http://localhost:4321/admin`
 
-## High-Level Structure
-
-- `src/pages` - route entrypoints (`/es`, `/en`, and section pages)
-- `src/components` - UI and section building blocks
-- `src/data` - editable business content by locale
-- `src/layouts` - shared page shell and metadata wiring
-- `src/utils` - helpers (SEO, currency, review conversion)
-- `public` - static assets (favicon, OG image, llms profile)
-- Docker/Compose/Make files - reproducible local workflows
+If you only want one side:
+- `pnpm dev:web` for Astro only
+- `pnpm parcial:dev` for the API only
 
 ---
 
 ## Repository Scope
 
-This repository now contains **only the public website frontend**.
-
-The custom admin dashboard and database-backed CMS/backend were split into a separate repository: `la-ragazza-admin`.
-
-That means this repo no longer contains:
-
-- `src/pages/admin`
-- `src/pages/api`
-- `src/server`
-- admin middleware / admin layout
-- embedded Express server logic
+This repository contains the public website plus the integrated admin/CMS module.
 
 ---
 
@@ -104,16 +95,3 @@ Read `docs/website-workflow.md` for:
 - SEO generation flow,
 - design system tokens,
 - complete route map and file dependency map.
-
----
-
-## Quick Start
-
-```bash
-pnpm install
-pnpm dev
-```
-
-Then open `http://localhost:4321`.
-
-For more complete setup and Docker commands, use `docs/development.md`.

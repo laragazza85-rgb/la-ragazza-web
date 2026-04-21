@@ -1,0 +1,52 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Admin | Crear cuenta">
+  <main class="admin-auth">
+    <section class="admin-auth-grid">
+      <article class="admin-auth-brand">
+        <p class="admin-eyebrow">Panel interno</p>
+        <h1>La Ragazza</h1>
+        <p>Crea tu cuenta de usuario para gestionar reservas y solicitudes de rol.</p>
+      </article>
+
+      <article class="admin-auth-panel">
+        <h2>Crear cuenta</h2>
+        <p class="admin-copy">El registro inicial crea una cuenta con rol de usuario.</p>
+
+        <form id="signup-form" class="admin-form" data-mode="signup">
+          <div>
+            <label class="admin-label" for="signup-email">Email</label>
+            <input class="admin-input" id="signup-email" name="email" type="email" autocomplete="email" required />
+          </div>
+
+
+          <div>
+            <label class="admin-label" for="signup-password">Contrasena</label>
+            <input
+              class="admin-input"
+              id="signup-password"
+              name="password"
+              type="password"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            />
+          </div>
+
+          <button class="admin-btn" type="submit">Crear cuenta</button>
+        </form>
+
+        <p class="admin-status" id="auth-status"></p>
+
+        <p>
+          Ya tienes una cuenta?
+          <a href="/admin/login">Iniciar sesion</a>
+        </p>
+      </article>
+    </section>
+  </main>
+
+  <script is:inline type="module" src="/admin/auth.js"></script>
+</AdminLayout>

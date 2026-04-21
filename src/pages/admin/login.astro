@@ -1,0 +1,52 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Admin | Iniciar sesion">
+  <main class="admin-auth">
+    <section class="admin-auth-grid">
+      <article class="admin-auth-brand">
+        <p class="admin-eyebrow">Panel interno</p>
+        <h1>La Ragazza</h1>
+        <p>Accede al dashboard de reservas y operaciones con una interfaz alineada al sitio principal.</p>
+      </article>
+
+      <article class="admin-auth-panel">
+        <h2>Iniciar sesion</h2>
+        <p class="admin-copy">Usa tu email para entrar al panel.</p>
+
+        <form id="login-form" class="admin-form" data-mode="login">
+          <div>
+            <label class="admin-label" for="login-email">Email</label>
+            <input class="admin-input" id="login-email" name="email" type="email" autocomplete="email" required />
+          </div>
+
+          <div>
+            <label class="admin-label" for="login-password">Contrasena</label>
+            <input
+              class="admin-input"
+              id="login-password"
+              name="password"
+              type="password"
+              minlength="8"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+
+          <button class="admin-btn" type="submit">Entrar al panel</button>
+        </form>
+
+        <p class="admin-status" id="auth-status"></p>
+
+        <p>
+          No tienes una cuenta?
+          <a href="/admin/signup">Crear cuenta</a>
+        </p>
+      </article>
+    </section>
+  </main>
+
+  <script is:inline type="module" src="/admin/auth.js"></script>
+</AdminLayout>
+

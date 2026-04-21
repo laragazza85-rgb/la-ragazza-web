@@ -1,0 +1,55 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminHeader from '../../components/ui/AdminHeader.astro';
+---
+
+<AdminLayout title="Admin | Home">
+  <AdminHeader active="home" />
+
+  <main class="admin-main admin-main-with-header">
+    <section class="admin-card admin-hero-card">
+      <h1>Centro de control</h1>
+      <p id="admin-home-greeting" class="admin-copy admin-home-greeting">Hola, bienvenido</p>
+      <p class="admin-copy">
+        Accede rapidamente a tus reservas y solicitudes. El panel adapta sus vistas segun tu rol.
+      </p>
+    </section>
+
+    <section class="admin-card-grid">
+      <article class="admin-card admin-feature-card motion-fade-up">
+        <div class="admin-feature-head">
+          <h2>Reservas</h2>
+        </div>
+        <p class="admin-copy">Gestiona tus reservas activas, historial y estados.</p>
+        <a href="/admin/reservas?scope=mine" class="admin-btn admin-btn-block btn-elegant admin-quick-link">Ir a mis reservas</a>
+      </article>
+
+      <article class="admin-card admin-feature-card motion-fade-up">
+        <div class="admin-feature-head">
+          <h2>Solicitudes de acceso</h2>
+        </div>
+        <p class="admin-copy">Solicita cambios de rol y haz seguimiento de su estado.</p>
+        <a href="/admin/solicitudes?scope=mine" class="admin-btn admin-btn-block btn-elegant admin-quick-link">Ir a mis solicitudes</a>
+      </article>
+
+      <article class="admin-card admin-feature-card motion-fade-up" data-admin-only hidden>
+        <div class="admin-feature-head">
+          <h2>Reservas de otros</h2>
+        </div>
+        <p class="admin-copy">Visualiza reservas de otros usuarios y opera como supervisor.</p>
+        <a href="/admin/reservas?scope=others" class="admin-btn admin-btn-block btn-elegant admin-quick-link">Ver reservas de otros</a>
+      </article>
+
+      <article class="admin-card admin-feature-card motion-fade-up" data-admin-only hidden>
+        <div class="admin-feature-head">
+          <h2>Solicitudes de otros</h2>
+        </div>
+        <p class="admin-copy">Revisa y aprueba solicitudes de cambio de rol del equipo.</p>
+        <a href="/admin/solicitudes?scope=others" class="admin-btn admin-btn-block btn-elegant admin-quick-link">Ver solicitudes de otros</a>
+      </article>
+    </section>
+  </main>
+
+  <script is:inline type="module" src="/admin/nav.js"></script>
+  <script is:inline type="module" src="/admin/home.js"></script>
+</AdminLayout>

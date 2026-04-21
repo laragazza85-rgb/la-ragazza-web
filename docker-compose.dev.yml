@@ -7,10 +7,13 @@ services:
     environment:
       NODE_ENV: development
       PUBLIC_SITE_URL: http://localhost:4321
+      PARCIAL_API_URL: http://api:3001
       DATABASE_URL: postgresql://postgres:postgres@db:5432/la_ragazza_web
       ADMIN_API_PORT: ${ADMIN_API_PORT:-4001}
     depends_on:
       db:
+        condition: service_healthy
+      api:
         condition: service_healthy
     extra_hosts:
       - "host.containers.internal:host-gateway"
@@ -22,6 +25,33 @@ services:
       sh -c "corepack enable &&
              pnpm install --frozen-lockfile &&
              pnpm dev"
+
+  api:
+    image: node:20-alpine
+    working_dir: /app
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      PARCIAL_PORT: 3001
+      PARCIAL_API_URL: http://api:3001
+      PARCIAL_DB_PATH: /app/parcial/api/db/parcial.db
+      SESSION_SECRET: dev-secret-change-me
+      ADMIN_EMAIL: admin@laragazza.local
+      ADMIN_PASSWORD: Admin1234!
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:3001/api/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    volumes:
+      - .:/app:Z
+      - node_modules:/app/node_modules
+      - pnpm_store:/pnpm/store
+    command: >
+      sh -c "corepack enable &&
+             pnpm install --frozen-lockfile &&
+             pnpm parcial:dev"
 
   db:
     image: postgres:16-alpine
