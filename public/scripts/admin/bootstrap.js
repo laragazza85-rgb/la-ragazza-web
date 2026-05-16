@@ -14,15 +14,10 @@ function createSupabaseBrowserClient({ url, anonKey }) {
   });
 }
 
-const bootstrapScript = document.currentScript;
-
-if (!(bootstrapScript instanceof HTMLScriptElement)) {
-  throw new Error('No se encontro el bootstrap del admin.');
-}
-
-const supabaseUrl = bootstrapScript.dataset.supabaseUrl;
-const supabaseAnonKey = bootstrapScript.dataset.supabaseAnonKey;
-const publicApiBaseUrl = bootstrapScript.dataset.publicApiBaseUrl;
+const scriptUrl = new URL(import.meta.url);
+const supabaseUrl = scriptUrl.searchParams.get('supabaseUrl');
+const supabaseAnonKey = scriptUrl.searchParams.get('supabaseAnonKey');
+const publicApiBaseUrl = scriptUrl.searchParams.get('publicApiBaseUrl');
 
 window.__adminSupabase = createSupabaseBrowserClient({
   url: supabaseUrl,

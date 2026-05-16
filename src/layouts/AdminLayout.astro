@@ -11,6 +11,7 @@ const { title, description = 'Panel de administracion de La Ragazza' } = Astro.p
 const supabaseUrl = import.meta.env.SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
 const publicApiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL;
+const bootstrapUrl = `/scripts/admin/bootstrap.js?supabaseUrl=${encodeURIComponent(supabaseUrl ?? '')}&supabaseAnonKey=${encodeURIComponent(supabaseAnonKey ?? '')}&publicApiBaseUrl=${encodeURIComponent(publicApiBaseUrl ?? '')}`;
 ---
 
 <!doctype html>
@@ -37,10 +38,7 @@ const publicApiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL;
   <body class="admin-shell">
     <script
       type="module"
-      src="/scripts/admin/bootstrap.js"
-      data-supabase-url={supabaseUrl}
-      data-supabase-anon-key={supabaseAnonKey}
-      data-public-api-base-url={publicApiBaseUrl}
+      src={bootstrapUrl}
     ></script>
     <slot />
   </body>
