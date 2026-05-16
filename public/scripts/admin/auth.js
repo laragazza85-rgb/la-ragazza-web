@@ -8,7 +8,7 @@ function setStatus(target, message, isError = false) {
   target.className = `admin-status ${isError ? "error" : "success"}`;
 }
 
-export function initAdminAuthForm({ form, status, mode, supabaseUrl, supabaseAnonKey }) {
+export function initAdminAuthForm({ form, status, mode }) {
   const supabase = window.__adminSupabase;
 
   if (!supabase) {

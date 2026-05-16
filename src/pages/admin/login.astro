@@ -50,15 +50,13 @@ const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
     </section>
   </main>
 
-  <script type="module" define:vars={{ supabaseUrl, supabaseAnonKey }}>
-    import { initAdminAuthForm } from '../../scripts/admin/auth.js';
+  <script type="module">
+    import { initAdminAuthForm } from '/scripts/admin/auth.js';
 
     initAdminAuthForm({
       form: document.querySelector('#login-form'),
       status: document.querySelector('#auth-status'),
-      mode: 'login',
-      supabaseUrl,
-      supabaseAnonKey
+      mode: 'login'
     });
   </script>
 </AdminLayout>
