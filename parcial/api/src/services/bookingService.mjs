@@ -1,4 +1,5 @@
 import { HttpError } from "../utils/httpError.mjs";
+import { assertNoHtmlMarkup } from "../utils/xss.mjs";
 import { bookingRepository } from "../repositories/bookingRepository.mjs";
 
 const BOOKING_STATUS = new Set(["pending", "confirmed", "cancelled", "completed", "no_show"]);
@@ -20,6 +21,15 @@ function normalizeBookingPayload(input) {
 function validateBooking(payload) {
   if (!payload.nombreCliente || !payload.fecha || !payload.hora) {
     throw new HttpError(400, "nombre_cliente, fecha y hora son obligatorios.");
+  }
+
+  assertNoHtmlMarkup({
+    nombre_cliente: payload.nombreCliente,
+    comentarios: payload.comentarios
+  });
+
+  if (payload.nombreCliente.length > 120) {
+    throw new HttpError(400, "nombre_cliente no debe superar 120 caracteres.");
   }
 
   if (!Number.isInteger(payload.numeroPersonas) || payload.numeroPersonas <= 0) {

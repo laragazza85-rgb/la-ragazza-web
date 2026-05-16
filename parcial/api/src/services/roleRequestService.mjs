@@ -1,4 +1,5 @@
 import { HttpError } from "../utils/httpError.mjs";
+import { assertNoHtmlMarkup } from "../utils/xss.mjs";
 import { roleRequestRepository } from "../repositories/roleRequestRepository.mjs";
 
 const REQUEST_STATUS = new Set(["active", "approved", "rejected", "cancelled"]);
@@ -24,6 +25,8 @@ function validateRequestData(body) {
   if (!requestedRole || !justification) {
     throw new HttpError(400, "requested_role y justification son obligatorios.");
   }
+
+  assertNoHtmlMarkup({ justification });
 
   if (justification.length < 12) {
     throw new HttpError(400, "La justificacion debe tener al menos 12 caracteres.");
@@ -111,4 +114,3 @@ export const roleRequestService = {
     return updated;
   }
 };
-

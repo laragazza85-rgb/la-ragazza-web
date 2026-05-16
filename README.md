@@ -33,7 +33,7 @@ Repository layout (high-level)
 - `src/` — public site pages, layouts, components, localized JSON content.
 - `public/` — static JS used by admin UI (`common.js`, `bookings.js`, `requests.js`, `entityCrudPage.js`, etc.).
 - `parcial/api/src/` — Express API server (routes, services, repositories, utils, middleware).
-- `docs/` — architecture and development docs, now containing `docs/security-hardening-student.md`.
+- `docs/` — architecture, development and security docs, including `docs/security-hardening-student.md` and `docs/web-hardening-sql-xss.md`.
 - `package.json` — project scripts (see Developer workflow section).
 
 ---------------------------------------------------------------------------
@@ -76,10 +76,12 @@ Admin UI (client code)
 - `public/admin/requests.js` and `public/admin/bookings.js` — per-entity render logic. All user-sourced fields used in templates are passed through `escapeHtml()` and dynamic attributes (e.g. `data-id`) are escaped.
 
 XSS mitigations applied
-- Avoid `set:html` with untrusted content (public hero title fixed).
-- Centralized `escapeHtml()` used for all admin field display.
-- Replaced raw `innerHTML` for empty state with DOM API (`createElement`, `textContent`).
-- Escaped dynamic attribute values (IDs) before embedding in templates.
+- Backend rejects HTML markup (`<` and `>`) in persistent free-text fields through `parcial/api/src/utils/xss.mjs`.
+- Booking inputs protect `nombre_cliente` and `comentarios`; role-request inputs protect `justification`.
+- Centralized `escapeHtml()` is used for all admin field display before values enter HTML templates.
+- Messages and simple UI text use `textContent`; form values use `.value`.
+- Dynamic attribute values such as IDs are escaped before embedding in admin templates.
+- Automated XSS coverage lives in `parcial/api/tests/xss.test.mjs`.
 
 ---------------------------------------------------------------------------
 Backend API: Parcial (Express + Supabase)
@@ -106,8 +108,8 @@ Privileged operations
 
 Business logic & validation
 - Services perform strong validation prior to DB calls:
-	- `parcial/api/src/services/bookingService.mjs` — normalizes `fecha`/`hora` into `booking_time`, checks integer `numero_personas`, enforces future time window, comment length limits.
-	- `parcial/api/src/services/roleRequestService.mjs` — normalizes and validates `requested_role`, justification length limits and allowed set.
+	- `parcial/api/src/services/bookingService.mjs` — normalizes `fecha`/`hora` into `booking_time`, checks integer `numero_personas`, enforces future time window, validates text length, rejects HTML markup in `nombre_cliente` and `comentarios`.
+	- `parcial/api/src/services/roleRequestService.mjs` — normalizes and validates `requested_role`, justification length limits, allowed roles, and rejects HTML markup in `justification`.
 - Repositories expect validated inputs, minimizing need for runtime sanitization.
 
 HTTP security headers
@@ -229,6 +231,7 @@ Payload normalization & validation
 - Services normalize incoming form values (string trimming, numeric conversion).
 - Booking service converts `fecha` + `hora` → `booking_time` (ISO/TIMESTAMPTZ) and validates ranges.
 - Role request service enforces justification length and allowed roles.
+- XSS entry validation rejects HTML markup in user-controlled persistent text fields before data is written.
 
 ---------------------------------------------------------------------------
 Security & hardening — summary of controls
@@ -242,7 +245,7 @@ Layered defenses implemented:
 2. Row Level Security (RLS):
 	 - RLS policies on `profiles`, `bookings`, and `role_change_requests` limit visible/modify-able rows.
 3. Input validation:
-	 - Strong validation in service layer (`parcial/api/src/services/*`) — length, format, domain checks.
+	 - Strong validation in service layer (`parcial/api/src/services/*`) — length, format, domain checks, allowed values and HTML-markup rejection for persistent free-text fields.
 4. Query safety:
 	 - Use Supabase JS SDK query builder exclusively in repositories (`.select`, `.insert`, `.update`, `.eq`, `.in`).
 	 - No raw SQL string concatenation in application code — equivalent to “prepared statements”.
@@ -251,9 +254,11 @@ Layered defenses implemented:
 6. HTTP security headers:
 	 - `helmet()` middleware applied for multiple secure headers.
 7. XSS controls:
-	 - `escapeHtml()` centralized in `public/admin/common.js`.
-	 - Avoid `set:html` for untrusted content; replaced the hero `set:html` with safe splitting.
-	 - Use DOM APIs instead of `innerHTML` for non-templated content.
+	 - `assertNoHtmlMarkup()` in `parcial/api/src/utils/xss.mjs` rejects `<` and `>` in user-controlled persistent text fields.
+	 - `escapeHtml()` centralized in `public/admin/common.js` encodes user-controlled values before HTML-template rendering.
+	 - Admin messages use `textContent`, and form fills use `.value`.
+	 - `innerHTML` is limited to system-controlled templates whose dynamic values are escaped.
+	 - `parcial/api/tests/xss.test.mjs` verifies malicious markup rejection and output encoding.
 8. Logging & monitoring:
 	 - Console logs in service/repository important flows. Consider shipping to a log aggregator in production.
 9. CI/Dev checks (recommended):
@@ -295,6 +300,8 @@ Run Parcial tests
 pnpm parcial:test
 ```
 
+Current test coverage includes API smoke/auth behavior, CORS preflight behavior and XSS hardening checks.
+
 Notes
 - Dev proxy: `astro.config.mjs` proxies `/api` to `http://localhost:3001` in dev. Use the admin UI at `http://localhost:4321/admin` which will call `/api/*`.
 
@@ -328,12 +335,14 @@ What to include as proof that the project meets the security requirements (prefe
 		 - `parcial/api/src/repositories/roleRequestRepository.mjs` — show `.update(...).eq('id', id)` patterns.
 	 - Explain the reasoning: the client binds parameters; no SQL string concatenation occurs.
 2. Proof of input validation
-	 - Show `parcial/api/src/services/bookingService.mjs` and `roleRequestService.mjs` where inputs are normalized and validated (length, allowed sets).
+	 - Show `parcial/api/src/services/bookingService.mjs` and `roleRequestService.mjs` where inputs are normalized and validated (length, allowed sets, date/number rules and HTML-markup rejection).
+	 - Show `parcial/api/src/utils/xss.mjs` as the centralized helper for rejecting HTML markup in persistent free-text fields.
 3. Proof of HTTP headers security
 	 - Show `parcial/api/src/app.mjs` where `helmet()` is applied and list which relevant headers it enforces.
 4. Proof of XSS mitigations
 	 - Show `public/admin/common.js` (`escapeHtml`), and examples in `public/admin/requests.js`, `bookings.js` where `escapeHtml()` is used.
-	 - Show the fixed `src/pages/[lang]/index.astro` before/after and explain why `set:html` is unsafe for untrusted content.
+	 - Show `parcial/api/tests/xss.test.mjs`, which proves the API rejects `<script>`-style payloads and that `escapeHtml()` encodes dangerous text.
+	 - Explain the two-layer model: reject HTML markup before persistence, then escape again before browser rendering.
 5. Demonstration steps
 	 - Run `pnpm parcial:test` (backend tests).
 	 - Run `pnpm build` and open the built pages to inspect rendered HTML (verify no raw unescaped content).
@@ -344,15 +353,17 @@ File references you should attach in the student deliverable
 - `parcial/api/src/repositories/bookingRepository.mjs`
 - `parcial/api/src/repositories/roleRequestRepository.mjs`
 - `parcial/api/src/lib/supabase.mjs`
+- `parcial/api/src/utils/xss.mjs`
 - `parcial/api/src/services/bookingService.mjs`
 - `parcial/api/src/services/roleRequestService.mjs`
 - `parcial/api/src/app.mjs`
+- `parcial/api/tests/xss.test.mjs`
 - `public/admin/common.js`
 - `public/admin/entityCrudPage.js`
 - `public/admin/requests.js`
 - `public/admin/bookings.js`
-- `src/pages/[lang]/index.astro`
 - `docs/security-hardening-student.md` (narrative explanation already added)
+- `docs/web-hardening-sql-xss.md` (detailed SQL injection and XSS hardening explanation)
 
 ---------------------------------------------------------------------------
 Diagram guidance (what to draw)
@@ -396,6 +407,7 @@ Appendix B — Notes for auditors / reviewers
 - Check that `SUPABASE_SERVICE_ROLE_KEY` is never exposed to the client (only used server-side).
 - Check RLS policies in Supabase Studio for `bookings` and `role_change_requests`.
 - Review `docs/security-hardening-student.md` for a student-facing narrative explaining the logic and where to show evidence.
+- Review `docs/web-hardening-sql-xss.md` for the detailed explanation of SQL injection prevention and XSS hardening.
 
 ---------------------------------------------------------------------------
 Contact & references
@@ -405,13 +417,11 @@ Contact & references
 	- API: `parcial/api/src/app.mjs`, `parcial/api/src/server.mjs`
 	- Repositories: `parcial/api/src/repositories/*`
 	- Services: `parcial/api/src/services/*`
+	- XSS helper: `parcial/api/src/utils/xss.mjs`
 	- Admin JS: `public/admin/*.js`
 	- Student doc: `docs/security-hardening-student.md`
+	- Detailed hardening doc: `docs/web-hardening-sql-xss.md`
 
-If you want, I can:
-- Replace the repository `README.md` with this content (I can create or patch that file).
-- Produce a Mermaid/PlantUML diagram skeleton for each recommended diagram (component, sequence, ER).
-- Add the CI checks that fail on `innerHTML`/raw SQL usage and show a minimal GitHub Actions workflow.
 ### Development
 
 Read `docs/development.md` for:
@@ -421,6 +431,15 @@ Read `docs/development.md` for:
 - reviews CSV -> JSON process,
 - build and release routines,
 - troubleshooting commands.
+
+### Security Hardening
+
+Read `docs/web-hardening-sql-xss.md` for:
+
+- how SQL injection is prevented with Supabase Query Builder as the prepared-statement equivalent,
+- where service-layer validation happens before persistence,
+- how XSS is blocked through backend HTML-markup rejection and frontend output escaping,
+- which files and tests should be used as evidence for audits or student review.
 
 ### Website Workflow
 
