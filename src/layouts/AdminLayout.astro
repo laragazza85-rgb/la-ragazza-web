@@ -1,4 +1,5 @@
 ---
+import adminBootstrapUrl from '../scripts/admin/adminBootstrap.js?url';
 import '../styles/global.css';
 import '../styles/admin.css';
 
@@ -35,16 +36,14 @@ const publicApiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL;
     </noscript>
   </head>
   <body class="admin-shell">
-    <script type="module" define:vars={{ supabaseUrl, supabaseAnonKey, publicApiBaseUrl }}>
-      import { createSupabaseBrowserClient } from '../lib/supabaseClient.js';
-
-      window.__adminSupabase = createSupabaseBrowserClient({
-        url: supabaseUrl,
-        anonKey: supabaseAnonKey
-      });
-
-      window.__adminApiBase = publicApiBaseUrl ?? '';
-    </script>
+    <script
+      id="admin-bootstrap"
+      type="module"
+      src={adminBootstrapUrl}
+      data-supabase-url={supabaseUrl}
+      data-supabase-anon-key={supabaseAnonKey}
+      data-public-api-base-url={publicApiBaseUrl}
+    ></script>
     <slot />
   </body>
 </html>
