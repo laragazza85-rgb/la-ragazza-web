@@ -2,6 +2,7 @@ import express from "express";
 import helmet from "helmet";
 import { bookingRouter } from "./routes/bookingRoutes.mjs";
 import { roleRequestRouter } from "./routes/roleRequestRoutes.mjs";
+import { corsMiddleware } from "./middleware/cors.mjs";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.mjs";
 
 export function createApp() {
@@ -11,9 +12,12 @@ export function createApp() {
 
   app.use(
     helmet({
-      contentSecurityPolicy: false
+      contentSecurityPolicy: false,
+      crossOriginResourcePolicy: false
     })
   );
+
+  app.use(corsMiddleware);
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
