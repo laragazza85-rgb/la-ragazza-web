@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "optimize:images": "node scripts/optimize-images.mjs",
+    "start": "node parcial/api/src/server.mjs",
     "parcial:dev": "node parcial/api/src/server.mjs",
     "parcial:test": "node --test parcial/api/tests/**/*.test.mjs"
   },

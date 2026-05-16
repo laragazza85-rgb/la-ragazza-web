@@ -313,6 +313,7 @@ Applying the schema to Supabase
 Deployment
 - Static site deploy: Vercel or any static hosting.
 - API: deploy separately on a Node-capable host (for example Render, Fly.io, Railway, or a small VPS) or adapt Express to serverless if you want to keep it on Vercel. The API now listens on `PORT` first, then `PARCIAL_PORT`.
+- For Render, use a single start command like `pnpm start`; do not append `yarn start` or any second command in the same field.
 - Set `PUBLIC_API_BASE_URL` in the Astro/Vercel frontend so the admin calls point to the API host, for example `https://your-api-host.example.com`.
 - Ensure `SUPABASE_SERVICE_ROLE_KEY` is stored securely (secrets manager or environment variables in the host) and not exposed to client.
 
