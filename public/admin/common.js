@@ -63,12 +63,20 @@ async function readBody(response) {
   }
 }
 
+function resolveApiUrl(url) {
+  const baseUrl = window.__adminApiBase;
+  if (!baseUrl) return url;
+  if (/^https?:\/\//i.test(url)) return url;
+
+  return new URL(url, baseUrl).toString();
+}
+
 export async function apiRequest(url, options = {}) {
   const supabase = window.__adminSupabase;
   const sessionResult = supabase ? await supabase.auth.getSession() : { data: { session: null } };
   const accessToken = sessionResult.data.session?.access_token;
 
-  const response = await fetch(url, {
+  const response = await fetch(resolveApiUrl(url), {
     headers: {
       "Content-Type": "application/json",
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
