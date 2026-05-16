@@ -36,21 +36,7 @@ const publicApiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL;
   </head>
   <body class="admin-shell">
     <script type="module" define:vars={{ supabaseUrl, supabaseAnonKey, publicApiBaseUrl }}>
-      import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-      function createSupabaseBrowserClient({ url, anonKey }) {
-        if (!url || !anonKey) {
-          throw new Error('Supabase URL y anon key son obligatorios.');
-        }
-
-        return createClient(url, anonKey, {
-          auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true
-          }
-        });
-      }
+      import { createSupabaseBrowserClient } from '../lib/supabaseClient.js';
 
       window.__adminSupabase = createSupabaseBrowserClient({
         url: supabaseUrl,
