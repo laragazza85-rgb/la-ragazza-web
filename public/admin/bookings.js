@@ -1,7 +1,7 @@
 import { escapeHtml } from "/admin/common.js";
 import { initEntityCrudPage } from "/admin/entityCrudPage.js";
 
-const BOOKING_STATUS = ["pending", "confirmed", "cancelled", "completed"];
+const BOOKING_STATUS = ["pending", "confirmed", "cancelled", "completed", "no_show"];
 
 function toNumber(value) {
   return Number(value ?? 0);
@@ -65,16 +65,16 @@ initEntityCrudPage({
     form.comentarios.value = item.comentarios ?? "";
   },
   getScopeLabel: (user, scope) => {
-    if (user.role !== "admin") return "Estas viendo tus reservas.";
+    if (user.role === "customer") return "Estas viendo tus reservas.";
     return scope === "others"
       ? "Estas viendo las reservas creadas por otros usuarios."
       : "Estas viendo tus reservas.";
   },
   renderRow: (booking, user) => {
-    const canEdit = user.role === "admin" || booking.user_id === user.id;
+    const canEdit = user.role === "admin" || user.role === "staff" || booking.user_id === user.id;
 
     return `
-      <td class="admin-col-id" data-label="ID">${booking.id}</td>
+      <td class="admin-col-id" data-label="ID">${escapeHtml(booking.id)}</td>
       <td class="admin-col-client" data-label="Cliente">${escapeHtml(booking.nombre_cliente)}</td>
       <td data-label="Fecha">${escapeHtml(booking.fecha)}</td>
       <td data-label="Hora">${escapeHtml(booking.hora)}</td>
@@ -82,8 +82,8 @@ initEntityCrudPage({
       <td class="admin-col-comments" data-label="Comentarios">${escapeHtml(booking.comentarios || "-")}</td>
       <td data-label="Estado">
         ${
-          user.role === "admin"
-            ? `<select class="admin-select admin-select-compact" data-action="status" data-id="${booking.id}">
+          user.role === "admin" || user.role === "staff"
+            ? `<select class="admin-select admin-select-compact" data-action="status" data-id="${escapeHtml(booking.id)}">
                 ${BOOKING_STATUS.map(
                   (status) =>
                     `<option value="${status}" ${booking.status_name === status ? "selected" : ""}>${status}</option>`
@@ -95,8 +95,8 @@ initEntityCrudPage({
       <td class="admin-row-actions" data-label="Acciones">
         ${
           canEdit
-            ? `<button data-action="edit" data-id="${booking.id}" class="admin-btn admin-btn-soft">Editar</button>
-               <button data-action="delete" data-id="${booking.id}" class="admin-btn admin-btn-danger">Eliminar</button>`
+            ? `<button data-action="edit" data-id="${escapeHtml(booking.id)}" class="admin-btn admin-btn-soft">Editar</button>
+               <button data-action="delete" data-id="${escapeHtml(booking.id)}" class="admin-btn admin-btn-danger">Eliminar</button>`
             : "-"
         }
       </td>

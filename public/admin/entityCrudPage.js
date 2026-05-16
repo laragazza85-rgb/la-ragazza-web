@@ -12,7 +12,7 @@ import {
 } from "/admin/common.js";
 
 function getDefaultScope(user, currentScope) {
-  if (user.role !== "admin") return "mine";
+  if (user.role === "customer") return "mine";
   return ["mine", "others"].includes(currentScope) ? currentScope : "mine";
 }
 
@@ -71,7 +71,7 @@ export function initEntityCrudPage(config) {
   }
 
   function getVisibleItems() {
-    if (state.user.role !== "admin") {
+    if (state.user.role === "customer") {
       return state.items.filter((item) => item.user_id === state.user.id);
     }
 
@@ -85,7 +85,7 @@ export function initEntityCrudPage(config) {
   function renderScopeButtons() {
     if (!viewSwitch) return;
 
-    if (state.user.role !== "admin") {
+    if (state.user.role === "customer") {
       viewSwitch.hidden = true;
       return;
     }
@@ -101,10 +101,16 @@ export function initEntityCrudPage(config) {
     if (!rowsElement) return;
 
     const visibleItems = getVisibleItems();
-    rowsElement.innerHTML = "";
+    rowsElement.replaceChildren();
 
     if (visibleItems.length === 0) {
-      rowsElement.innerHTML = `<tr><td colspan="${config.columns}" class="admin-empty">${config.messages.empty}</td></tr>`;
+      const emptyRow = document.createElement("tr");
+      const emptyCell = document.createElement("td");
+      emptyCell.colSpan = config.columns;
+      emptyCell.className = "admin-empty";
+      emptyCell.textContent = config.messages.empty;
+      emptyRow.append(emptyCell);
+      rowsElement.append(emptyRow);
       return;
     }
 
@@ -134,7 +140,7 @@ export function initEntityCrudPage(config) {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
 
-    const itemId = Number(target.dataset.id);
+    const itemId = String(target.dataset.id ?? "").trim();
     if (!itemId) return;
 
     try {
@@ -161,7 +167,7 @@ export function initEntityCrudPage(config) {
       if (target.dataset.action !== "status") return;
 
       try {
-        await apiRequest(config.endpoints.updateStatus(Number(target.dataset.id)), {
+        await apiRequest(config.endpoints.updateStatus(String(target.dataset.id ?? "").trim()), {
           method: "PATCH",
           body: JSON.stringify({ status: target.value })
         });
@@ -177,7 +183,7 @@ export function initEntityCrudPage(config) {
     event.preventDefault();
 
     const formData = Object.fromEntries(new FormData(form).entries());
-    const itemId = Number(config.readHiddenId(formData));
+    const itemId = String(config.readHiddenId(formData) ?? "").trim();
     const payload = config.buildPayload(formData);
 
     try {

@@ -34,11 +34,8 @@ services:
     environment:
       NODE_ENV: development
       PARCIAL_PORT: 3001
-      PARCIAL_API_URL: http://api:3001
-      PARCIAL_DB_PATH: /app/parcial/api/db/parcial.db
-      SESSION_SECRET: dev-secret-change-me
-      ADMIN_EMAIL: admin@laragazza.local
-      ADMIN_PASSWORD: Admin1234!
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:3001/api/health"]
       interval: 5s

@@ -9,17 +9,17 @@ roleRequestRouter.use(requireAuth);
 
 roleRequestRouter
   .route("/")
-  .post((req, res, next) => {
+  .post(async (req, res, next) => {
     try {
-      const roleRequest = roleRequestService.create(req.body, req.session.user);
+      const roleRequest = await roleRequestService.create(req.body, req.auth);
       res.status(201).json({ roleRequest });
     } catch (error) {
       next(error);
     }
   })
-  .get((req, res, next) => {
+  .get(async (req, res, next) => {
     try {
-      const roleRequests = roleRequestService.list(req.session.user);
+      const roleRequests = await roleRequestService.list(req.auth);
       res.json({ roleRequests });
     } catch (error) {
       next(error);
@@ -29,25 +29,25 @@ roleRequestRouter
 
 roleRequestRouter
   .route("/:id")
-  .get((req, res, next) => {
+  .get(async (req, res, next) => {
     try {
-      const roleRequest = roleRequestService.getById(Number(req.params.id), req.session.user);
+      const roleRequest = await roleRequestService.getById(req.params.id, req.auth);
       res.json({ roleRequest });
     } catch (error) {
       next(error);
     }
   })
-  .put((req, res, next) => {
+  .put(async (req, res, next) => {
     try {
-      const roleRequest = roleRequestService.update(Number(req.params.id), req.body, req.session.user);
+      const roleRequest = await roleRequestService.update(req.params.id, req.body, req.auth);
       res.json({ roleRequest });
     } catch (error) {
       next(error);
     }
   })
-  .delete((req, res, next) => {
+  .delete(async (req, res, next) => {
     try {
-      roleRequestService.remove(Number(req.params.id), req.session.user);
+      await roleRequestService.remove(req.params.id, req.auth);
       res.status(204).send();
     } catch (error) {
       next(error);
@@ -57,13 +57,9 @@ roleRequestRouter
 
 roleRequestRouter
   .route("/:id/status")
-  .patch(requireRole("admin"), (req, res, next) => {
+  .patch(requireRole("admin"), async (req, res, next) => {
     try {
-      const roleRequest = roleRequestService.updateStatus(
-        Number(req.params.id),
-        req.body.status,
-        req.session.user
-      );
+      const roleRequest = await roleRequestService.updateStatus(req.params.id, req.body.status, req.auth);
       res.json({ roleRequest });
     } catch (error) {
       next(error);

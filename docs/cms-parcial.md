@@ -15,25 +15,26 @@ Agregar autenticacion y gestion de reservas/solicitudes de rol con estilo visual
    - Scripts publicos desacoplados por vista (`auth.js`, `home.js`, `bookings.js`, `requests.js`, `nav.js`).
 
 2. **API aislada en `parcial/api`**
-   - Express + SQLite + sesiones + reglas de negocio.
+   - Express + Supabase + reglas de negocio.
    - Rutas protegidas en `/api/*`.
    - Contrato HTTP con `405 Method Not Allowed` para metodos no soportados.
 
-3. **Modelo SQLite**
-   - `user_roles`, `users`, `booking_status`, `bookings`.
-   - `bookings.comentarios` para notas de ocasion especial.
-   - `role_change_requests` con `justification`, `status`, `is_active`.
+3. **Modelo Supabase/Postgres**
+   - `profiles` extendiendo `auth.users`.
+   - `bookings` con `booking_time`, `party_size`, `comments`, `status`.
+   - `role_change_requests` con `requested_role`, `justification`, `status`.
 
 4. **Seguridad base correcta**
-   - Password hash con bcrypt (`bcryptjs`).
-   - Sesiones con cookie `HttpOnly`, `SameSite=Lax`, `Secure` en produccion.
-   - Regeneracion de sesion al hacer login/signup.
-   - Autorizacion por rol y por propiedad del recurso.
+   - Supabase Auth para login/signup/logout.
+   - JWT del usuario enviado a la API en el header `Authorization`.
+   - RLS como capa principal de autorizacion.
+   - Validacion extra por rol y propiedad del recurso donde aporta UX.
 
 5. **Reglas clave**
    - Usuario normal: solo sus reservas y sus solicitudes de rol.
-   - Admin: todas las reservas/solicitudes y cambio de estados.
-   - Solicitudes no activas (`is_active = 0`) no son editables/eliminables por usuario.
+   - Staff y admin: acceso ampliado a reservas.
+   - Admin: cambio de estado de solicitudes de rol.
+   - Solicitudes no activas no son editables/eliminables por usuario.
 
 ## Flujo funcional
 

@@ -1,40 +1,55 @@
 import { HttpError } from "../utils/httpError.mjs";
+import { resolveRequestAuth } from "../lib/supabase.mjs";
 
-export function requireAuth(req, _res, next) {
-  if (!req.session?.user) {
-    return next(new HttpError(401, "Sesion requerida."));
+async function attachAuth(req) {
+  if (req.auth) return req.auth;
+  const auth = await resolveRequestAuth(req);
+  req.auth = auth;
+  req.user = auth.user;
+  return auth;
+}
+
+export async function requireAuth(req, _res, next) {
+  try {
+    await attachAuth(req);
+    return next();
+  } catch (error) {
+    return next(error);
   }
-  return next();
 }
 
 export function requireRole(role) {
-  return (req, _res, next) => {
-    if (!req.session?.user) {
-      return next(new HttpError(401, "Sesion requerida."));
-    }
+  return async (req, _res, next) => {
+    try {
+      const auth = await attachAuth(req);
 
-    if (req.session.user.role !== role) {
-      return next(new HttpError(403, "No autorizado."));
-    }
+      if (auth.user.role !== role) {
+        throw new HttpError(403, "No autorizado.");
+      }
 
-    return next();
+      return next();
+    } catch (error) {
+      return next(error);
+    }
   };
 }
 
 export function requireAdminOrOwner(getOwnerId) {
-  return (req, _res, next) => {
-    if (!req.session?.user) {
-      return next(new HttpError(401, "Sesion requerida."));
+  return async (req, _res, next) => {
+    try {
+      const auth = await attachAuth(req);
+
+      if (auth.user.role === "admin") return next();
+
+      const ownerId = String(getOwnerId(req) ?? "");
+      if (ownerId !== auth.user.id) {
+        throw new HttpError(403, "No autorizado.");
+      }
+
+      return next();
+    } catch (error) {
+      return next(error);
     }
-
-    if (req.session.user.role === "admin") return next();
-
-    const ownerId = getOwnerId(req);
-    if (Number(ownerId) !== req.session.user.id) {
-      return next(new HttpError(403, "No autorizado."));
-    }
-
-    return next();
   };
 }
 

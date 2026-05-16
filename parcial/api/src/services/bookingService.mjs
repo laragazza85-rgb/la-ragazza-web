@@ -1,12 +1,17 @@
-import { bookingRepository } from "../repositories/bookingRepository.mjs";
-import { statusRepository } from "../repositories/statusRepository.mjs";
 import { HttpError } from "../utils/httpError.mjs";
+import { bookingRepository } from "../repositories/bookingRepository.mjs";
+
+const BOOKING_STATUS = new Set(["pending", "confirmed", "cancelled", "completed", "no_show"]);
 
 function normalizeBookingPayload(input) {
+  const fecha = String(input.fecha ?? "").trim();
+  const hora = String(input.hora ?? "").trim();
+
   return {
     nombreCliente: String(input.nombre_cliente ?? "").trim(),
-    fecha: String(input.fecha ?? "").trim(),
-    hora: String(input.hora ?? "").trim(),
+    fecha,
+    hora,
+    bookingTime: fecha && hora ? `${fecha}T${hora}:00.000Z` : "",
     numeroPersonas: Number(input.numero_personas),
     comentarios: String(input.comentarios ?? "").trim()
   };
@@ -24,78 +29,94 @@ function validateBooking(payload) {
   if (payload.comentarios.length > 800) {
     throw new HttpError(400, "comentarios no debe superar 800 caracteres.");
   }
+
+  if (Number.isNaN(Date.parse(payload.bookingTime))) {
+    throw new HttpError(400, "fecha y hora tienen un formato invalido.");
+  }
+
+  if (new Date(payload.bookingTime).getTime() <= Date.now() - 15 * 60 * 1000) {
+    throw new HttpError(400, "La reserva no puede crearse en el pasado.");
+  }
 }
 
 function ensureCanAccessBooking(booking, user) {
   if (!booking) throw new HttpError(404, "Reserva no encontrada.");
-  if (user.role !== "admin" && booking.user_id !== user.id) {
+  if (user.role !== "admin" && user.role !== "staff" && booking.user_id !== user.id) {
     throw new HttpError(403, "No tienes permisos para esta reserva.");
   }
 }
 
 export const bookingService = {
-  listBookings(user) {
-    return user.role === "admin"
-      ? bookingRepository.listAll()
-      : bookingRepository.listByUserId(user.id);
+  async listBookings(auth) {
+    return auth.user.role === "admin" || auth.user.role === "staff"
+      ? bookingRepository.listAll(auth.supabase)
+      : bookingRepository.listByUserId(auth.supabase, auth.user.id);
   },
 
-  getBookingById(id, user) {
-    const booking = bookingRepository.findById(id);
-    ensureCanAccessBooking(booking, user);
+  async getBookingById(id, auth) {
+    const booking = await bookingRepository.findById(auth.supabase, id);
+    ensureCanAccessBooking(booking, auth.user);
     return booking;
   },
 
-  createBooking(body, user) {
+  async createBooking(body, auth) {
     const payload = normalizeBookingPayload(body);
     validateBooking(payload);
 
-    const pending = statusRepository.findByName("pending");
-    return bookingRepository.create({
-      userId: user.id,
+    return bookingRepository.create(auth.supabase, {
+      userId: auth.user.id,
       ...payload,
-      statusId: pending.id
+      status: "pending"
     });
   },
 
-  updateBooking(id, body, user) {
-    const current = bookingRepository.findById(id);
-    ensureCanAccessBooking(current, user);
+  async updateBooking(id, body, auth) {
+    const current = await bookingRepository.findById(auth.supabase, id);
+    ensureCanAccessBooking(current, auth.user);
 
     const payload = normalizeBookingPayload(body);
     validateBooking(payload);
 
-    let statusId = current.status_id;
-    if (user.role === "admin" && body.status) {
-      const status = statusRepository.findByName(String(body.status));
-      if (!status) throw new HttpError(400, "Estado inválido.");
-      statusId = status.id;
+    if (auth.user.role === "customer" && current.status_name !== "pending") {
+      throw new HttpError(409, "Solo puedes modificar reservas pendientes.");
     }
 
-    return bookingRepository.update(id, {
-      ...payload,
-      statusId
-    });
+    const updatePayload = {
+      client_name: payload.nombreCliente,
+      booking_time: payload.bookingTime,
+      party_size: payload.numeroPersonas,
+      comments: payload.comentarios
+    };
+
+    if ((auth.user.role === "admin" || auth.user.role === "staff") && body.status) {
+      const status = String(body.status).trim().toLowerCase();
+      if (!BOOKING_STATUS.has(status)) throw new HttpError(400, "Estado inválido.");
+      updatePayload.status = status;
+    }
+
+    return bookingRepository.update(auth.supabase, id, updatePayload);
   },
 
-  updateBookingStatus(id, statusName, user) {
-    if (user.role !== "admin") {
-      throw new HttpError(403, "Solo administradores pueden cambiar estado.");
+  async updateBookingStatus(id, statusName, auth) {
+    if (auth.user.role !== "admin" && auth.user.role !== "staff") {
+      throw new HttpError(403, "Solo administradores o staff pueden cambiar estado.");
     }
 
-    const booking = bookingRepository.findById(id);
+    const booking = await bookingRepository.findById(auth.supabase, id);
     if (!booking) throw new HttpError(404, "Reserva no encontrada.");
 
-    const status = statusRepository.findByName(String(statusName));
-    if (!status) throw new HttpError(400, "Estado inválido.");
+    const status = String(statusName).trim().toLowerCase();
+    if (!BOOKING_STATUS.has(status)) {
+      throw new HttpError(400, "Estado inválido.");
+    }
 
-    return bookingRepository.updateStatus(id, status.id);
+    return bookingRepository.updateStatus(auth.supabase, id, status);
   },
 
-  deleteBooking(id, user) {
-    const booking = bookingRepository.findById(id);
-    ensureCanAccessBooking(booking, user);
+  async deleteBooking(id, auth) {
+    const booking = await bookingRepository.findById(auth.supabase, id);
+    ensureCanAccessBooking(booking, auth.user);
 
-    bookingRepository.remove(id);
+    await bookingRepository.remove(auth.supabase, id);
   }
 };

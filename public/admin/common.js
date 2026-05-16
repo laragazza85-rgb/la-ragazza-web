@@ -64,8 +64,15 @@ async function readBody(response) {
 }
 
 export async function apiRequest(url, options = {}) {
+  const supabase = window.__adminSupabase;
+  const sessionResult = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+  const accessToken = sessionResult.data.session?.access_token;
+
   const response = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+    },
     ...options
   });
 
@@ -78,8 +85,36 @@ export async function apiRequest(url, options = {}) {
 }
 
 export async function getSession() {
-  const { user } = await apiRequest("/api/auth/session");
-  return user;
+  const supabase = window.__adminSupabase;
+  if (!supabase) {
+    throw new Error("Supabase no esta inicializado.");
+  }
+
+  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) throw sessionError;
+
+  const session = sessionData.session;
+  if (!session) {
+    throw new Error("Sesion requerida.");
+  }
+
+  const { data: userData, error: userError } = await supabase.auth.getUser(session.access_token);
+  if (userError) throw userError;
+
+  const authUser = userData.user;
+  if (!authUser) {
+    throw new Error("Sesion requerida.");
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("id,email,role")
+    .eq("id", authUser.id)
+    .single();
+
+  if (profileError) throw profileError;
+
+  return profile;
 }
 
 export function applyRoleVisibility(user) {

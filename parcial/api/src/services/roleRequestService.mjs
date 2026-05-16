@@ -2,11 +2,18 @@ import { HttpError } from "../utils/httpError.mjs";
 import { roleRequestRepository } from "../repositories/roleRequestRepository.mjs";
 
 const REQUEST_STATUS = new Set(["active", "approved", "rejected", "cancelled"]);
+const REQUESTED_ROLES = new Set(["customer", "staff", "admin"]);
 
 function ensureCanAccess(request, user) {
   if (!request) throw new HttpError(404, "Solicitud no encontrada.");
   if (user.role !== "admin" && request.user_id !== user.id) {
     throw new HttpError(403, "No tienes permisos para esta solicitud.");
+  }
+}
+
+function ensureRequestIsActive(request) {
+  if (request.is_active !== 1) {
+    throw new HttpError(409, "La solicitud ya fue resuelta y no se puede modificar.");
   }
 }
 
@@ -26,66 +33,60 @@ function validateRequestData(body) {
     throw new HttpError(400, "La justificacion no debe superar 1200 caracteres.");
   }
 
+  if (!REQUESTED_ROLES.has(requestedRole)) {
+    throw new HttpError(400, "requested_role invalido.");
+  }
+
   return { requestedRole, justification };
 }
 
 export const roleRequestService = {
-  list(user) {
-    return user.role === "admin"
-      ? roleRequestRepository.listAll()
-      : roleRequestRepository.listByUser(user.id);
+  async list(auth) {
+    return auth.user.role === "admin"
+      ? roleRequestRepository.listAll(auth.supabase)
+      : roleRequestRepository.listByUser(auth.supabase, auth.user.id);
   },
 
-  getById(id, user) {
-    const request = roleRequestRepository.findById(id);
-    ensureCanAccess(request, user);
+  async getById(id, auth) {
+    const request = await roleRequestRepository.findById(auth.supabase, id);
+    ensureCanAccess(request, auth.user);
     return request;
   },
 
-  create(body, user) {
+  async create(body, auth) {
     const payload = validateRequestData(body);
-    const role = roleRequestRepository.findRoleByName(payload.requestedRole);
 
-    if (!role) throw new HttpError(400, "Rol solicitado invalido.");
-
-    return roleRequestRepository.create({
-      userId: user.id,
-      requestedRoleId: role.id,
+    return roleRequestRepository.create(auth.supabase, {
+      userId: auth.user.id,
+      requestedRole: payload.requestedRole,
       justification: payload.justification
     });
   },
 
-  update(id, body, user) {
-    const current = roleRequestRepository.findById(id);
-    ensureCanAccess(current, user);
-
-    if (user.role !== "admin" && current.is_active !== 1) {
-      throw new HttpError(409, "Solo puedes editar solicitudes activas.");
-    }
+  async update(id, body, auth) {
+    const current = await roleRequestRepository.findById(auth.supabase, id);
+    ensureCanAccess(current, auth.user);
+    ensureRequestIsActive(current);
 
     const payload = validateRequestData(body);
-    const role = roleRequestRepository.findRoleByName(payload.requestedRole);
-    if (!role) throw new HttpError(400, "Rol solicitado invalido.");
 
-    return roleRequestRepository.update(id, {
-      requestedRoleId: role.id,
+    return roleRequestRepository.update(auth.supabase, id, {
+      requestedRole: payload.requestedRole,
       justification: payload.justification
     });
   },
 
-  remove(id, user) {
-    const current = roleRequestRepository.findById(id);
-    ensureCanAccess(current, user);
+  async remove(id, auth) {
+    const current = await roleRequestRepository.findById(auth.supabase, id);
+    ensureCanAccess(current, auth.user);
 
-    if (user.role !== "admin" && current.is_active !== 1) {
-      throw new HttpError(409, "Solo puedes eliminar solicitudes activas.");
-    }
+    ensureRequestIsActive(current);
 
-    roleRequestRepository.remove(id);
+    await roleRequestRepository.remove(auth.supabase, id);
   },
 
-  updateStatus(id, status, user) {
-    if (user.role !== "admin") {
+  async updateStatus(id, status, auth) {
+    if (auth.user.role !== "admin") {
       throw new HttpError(403, "Solo admin puede cambiar estado de solicitudes.");
     }
 
@@ -94,13 +95,17 @@ export const roleRequestService = {
       throw new HttpError(400, "Estado de solicitud invalido.");
     }
 
-    const current = roleRequestRepository.findById(id);
+    const current = await roleRequestRepository.findById(auth.supabase, id);
     if (!current) throw new HttpError(404, "Solicitud no encontrada.");
+    ensureRequestIsActive(current);
 
-    const updated = roleRequestRepository.updateStatus(id, normalizedStatus);
+    const updated = await roleRequestRepository.updateStatus(auth.supabase, id, normalizedStatus);
 
+    console.log(`[roleRequestService] updateStatus -> id=${id} status=${normalizedStatus} updatedRequestUser=${updated.user_id}`);
     if (normalizedStatus === "approved") {
-      roleRequestRepository.applyApprovedRole(updated.user_id, updated.requested_role_id);
+      console.log("[roleRequestService] calling applyApprovedRole for user", updated.user_id);
+      const result = await roleRequestRepository.applyApprovedRole(auth.supabase, updated.user_id, updated.requested_role);
+      console.log("[roleRequestService] applyApprovedRole returned:", result);
     }
 
     return updated;

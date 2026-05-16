@@ -80,20 +80,20 @@ function renderRows() {
   }
 
   for (const request of requests) {
-    const canEdit =
-      state.user.role === "admin" || (request.user_id === state.user.id && request.is_active === 1);
+    const isActive = request.is_active === 1;
+    const canEdit = isActive && (state.user.role === "admin" || request.user_id === state.user.id);
 
     const row = document.createElement("tr");
     row.className = "admin-table-row";
     row.innerHTML = `
-      <td data-label="ID">${request.id}</td>
+      <td data-label="ID">${escapeHtml(request.id)}</td>
       <td data-label="Usuario">${escapeHtml(request.requester_email)}</td>
       <td data-label="Rol solicitado">${escapeHtml(request.requested_role)}</td>
       <td class="admin-col-comments" data-label="Justificacion">${escapeHtml(request.justification)}</td>
       <td data-label="Estado">
         ${
-          state.user.role === "admin"
-            ? `<select class="admin-select admin-select-compact" data-action="status" data-id="${request.id}">
+          state.user.role === "admin" && isActive
+            ? `<select class="admin-select admin-select-compact" data-action="status" data-id="${escapeHtml(request.id)}">
                 ${REQUEST_STATUS.map(
                   (status) =>
                     `<option value="${status}" ${request.status === status ? "selected" : ""}>${status}</option>`
@@ -105,8 +105,8 @@ function renderRows() {
       <td class="admin-row-actions" data-label="Acciones">
         ${
           canEdit
-            ? `<button data-action="edit" data-id="${request.id}" class="admin-btn admin-btn-soft">Editar</button>
-               <button data-action="delete" data-id="${request.id}" class="admin-btn admin-btn-danger">Eliminar</button>`
+            ? `<button data-action="edit" data-id="${escapeHtml(request.id)}" class="admin-btn admin-btn-soft">Editar</button>
+               <button data-action="delete" data-id="${escapeHtml(request.id)}" class="admin-btn admin-btn-danger">Eliminar</button>`
             : "-"
         }
       </td>
@@ -175,7 +175,7 @@ rowsElement?.addEventListener("click", async (event) => {
   const target = event.target;
   if (!(target instanceof HTMLElement)) return;
 
-  const requestId = Number(target.dataset.id);
+  const requestId = String(target.dataset.id ?? "").trim();
   if (!requestId) return;
 
   try {
@@ -221,7 +221,7 @@ requestForm?.addEventListener("submit", async (event) => {
     justification: formData.justification
   };
 
-  const requestId = Number(formData.request_id);
+  const requestId = String(formData.request_id ?? "").trim();
 
   try {
     if (requestId) {

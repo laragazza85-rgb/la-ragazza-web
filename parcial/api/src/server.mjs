@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { bootstrapDatabase } from "./bootstrap.mjs";
 import { env } from "./config/env.mjs";
 import { createApp } from "./app.mjs";

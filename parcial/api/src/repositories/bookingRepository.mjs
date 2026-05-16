@@ -1,87 +1,100 @@
-import { db } from "../db/connection.mjs";
-
-const bookingColumns = `
-  b.id,
-  b.user_id,
-  b.nombre_cliente,
-  b.fecha,
-  b.hora,
-  b.numero_personas,
-  b.comentarios,
-  b.status_id,
-  s.name AS status_name,
-  b.created_at,
-  b.updated_at
+const BOOKING_SELECT = `
+  id,
+  user_id,
+  client_name,
+  booking_time,
+  party_size,
+  comments,
+  status,
+  created_at,
+  updated_at
 `;
 
+function mapBooking(row) {
+  if (!row) return null;
+
+  const bookingTime = String(row.booking_time ?? "");
+  return {
+    ...row,
+    nombre_cliente: row.client_name,
+    fecha: bookingTime ? bookingTime.slice(0, 10) : "",
+    hora: bookingTime ? bookingTime.slice(11, 16) : "",
+    numero_personas: row.party_size,
+    comentarios: row.comments ?? "",
+    status_name: row.status
+  };
+}
+
+async function runQuery(query) {
+  const { data, error } = await query;
+  if (error) throw error;
+  return data;
+}
+
 export const bookingRepository = {
-  create({ userId, nombreCliente, fecha, hora, numeroPersonas, comentarios, statusId }) {
-    const result = db
-      .prepare(
-        `INSERT INTO bookings (
-          user_id, nombre_cliente, fecha, hora, numero_personas, comentarios, status_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)`
-      )
-      .run(userId, nombreCliente, fecha, hora, numeroPersonas, comentarios, statusId);
+  async create(supabase, { userId, nombreCliente, bookingTime, numeroPersonas, comentarios, status }) {
+    const data = await runQuery(
+      supabase
+        .from("bookings")
+        .insert({
+          user_id: userId,
+          client_name: nombreCliente,
+          booking_time: bookingTime,
+          party_size: numeroPersonas,
+          comments: comentarios,
+          status
+        })
+        .select(BOOKING_SELECT)
+        .single()
+    );
 
-    return this.findById(result.lastInsertRowid);
+    return mapBooking(data);
   },
 
-  listByUserId(userId) {
-    return db
-      .prepare(
-        `SELECT ${bookingColumns}
-         FROM bookings b
-         JOIN booking_status s ON s.id = b.status_id
-         WHERE b.user_id = ?
-         ORDER BY b.fecha ASC, b.hora ASC`
-      )
-      .all(userId);
+  async listByUserId(supabase, userId) {
+    const data = await runQuery(
+      supabase.from("bookings").select(BOOKING_SELECT).eq("user_id", userId).order("booking_time", {
+        ascending: true
+      })
+    );
+
+    return data.map(mapBooking);
   },
 
-  listAll() {
-    return db
-      .prepare(
-        `SELECT ${bookingColumns}
-         FROM bookings b
-         JOIN booking_status s ON s.id = b.status_id
-         ORDER BY b.fecha ASC, b.hora ASC`
-      )
-      .all();
+  async listAll(supabase) {
+    const data = await runQuery(
+      supabase.from("bookings").select(BOOKING_SELECT).order("booking_time", {
+        ascending: true
+      })
+    );
+
+    return data.map(mapBooking);
   },
 
-  findById(id) {
-    return db
-      .prepare(
-        `SELECT ${bookingColumns}
-         FROM bookings b
-         JOIN booking_status s ON s.id = b.status_id
-         WHERE b.id = ?`
-      )
-      .get(id);
+  async findById(supabase, id) {
+    const data = await runQuery(supabase.from("bookings").select(BOOKING_SELECT).eq("id", id).maybeSingle());
+    return mapBooking(data);
   },
 
-  update(id, { nombreCliente, fecha, hora, numeroPersonas, comentarios, statusId }) {
-    db.prepare(
-      `UPDATE bookings
-       SET nombre_cliente = ?,
-           fecha = ?,
-           hora = ?,
-           numero_personas = ?,
-           comentarios = ?,
-           status_id = ?
-       WHERE id = ?`
-    ).run(nombreCliente, fecha, hora, numeroPersonas, comentarios, statusId, id);
+  async update(supabase, id, payload) {
+    const data = await runQuery(
+      supabase
+        .from("bookings")
+        .update(payload)
+        .eq("id", id)
+        .select(BOOKING_SELECT)
+        .single()
+    );
 
-    return this.findById(id);
+    return mapBooking(data);
   },
 
-  updateStatus(id, statusId) {
-    db.prepare("UPDATE bookings SET status_id = ? WHERE id = ?").run(statusId, id);
-    return this.findById(id);
+  async updateStatus(supabase, id, status) {
+    return this.update(supabase, id, { status });
   },
 
-  remove(id) {
-    return db.prepare("DELETE FROM bookings WHERE id = ?").run(id);
+  async remove(supabase, id) {
+    const { error } = await supabase.from("bookings").delete().eq("id", id);
+    if (error) throw error;
   }
 };

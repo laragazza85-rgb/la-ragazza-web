@@ -1,4 +1,4 @@
-import { apiRequest, applyRoleVisibility, getSession } from "/admin/common.js";
+import { applyRoleVisibility, getSession } from "/admin/common.js";
 
 const logoutButton = document.querySelector("#admin-logout");
 const mobileLogoutButton = document.querySelector("#admin-mobile-logout");
@@ -99,7 +99,7 @@ function initMobileMenu() {
 
     async function logout() {
       window.__closeAdminMobileMenu?.();
-      await apiRequest("/api/auth/logout", { method: "POST" });
+      await window.__adminSupabase?.auth.signOut();
       window.location.assign("/admin/login");
     }
 

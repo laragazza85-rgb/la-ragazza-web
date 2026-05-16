@@ -8,6 +8,8 @@ interface Props {
 }
 
 const { title, description = 'Panel de administracion de La Ragazza' } = Astro.props;
+const supabaseUrl = import.meta.env.SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
 ---
 
 <!doctype html>
@@ -32,6 +34,28 @@ const { title, description = 'Panel de administracion de La Ragazza' } = Astro.p
     </noscript>
   </head>
   <body class="admin-shell">
+    <script type="module" define:vars={{ supabaseUrl, supabaseAnonKey }}>
+      import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+      function createSupabaseBrowserClient({ url, anonKey }) {
+        if (!url || !anonKey) {
+          throw new Error('Supabase URL y anon key son obligatorios.');
+        }
+
+        return createClient(url, anonKey, {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+          }
+        });
+      }
+
+      window.__adminSupabase = createSupabaseBrowserClient({
+        url: supabaseUrl,
+        anonKey: supabaseAnonKey
+      });
+    </script>
     <slot />
   </body>
 </html>

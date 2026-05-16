@@ -1,6 +1,6 @@
 # Modulo CMS Parcial (UI + API)
 
-Implementacion para convertir el frontend estatico en una aplicacion funcional de gestion de reservas, con UI admin en Astro y backend API en Express + SQLite.
+Implementacion para convertir el frontend estatico en una aplicacion funcional de gestion de reservas, con UI admin en Astro y backend API en Express + Supabase.
 
 ## 1) Estructura
 
@@ -30,13 +30,12 @@ public/
 
 parcial/
   api/
-    db/                # Se crea automaticamente (parcial.db)
     src/
       app.mjs
       server.mjs
       bootstrap.mjs
       config/
-      db/
+      lib/
       middleware/
       repositories/
       routes/
@@ -50,22 +49,14 @@ parcial/
 
 ```bash
 PARCIAL_PORT=3001
-SESSION_SECRET=un-secreto-seguro
-PARCIAL_DB_PATH=/ruta/absoluta/parcial.db
-ADMIN_EMAIL=admin@laragazza.local
-ADMIN_PASSWORD=Admin1234!
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_ANON_KEY=tu_anon_key
 NODE_ENV=development
 ```
 
-> En produccion (`NODE_ENV=production`) la cookie de sesion se emite con `Secure=true`, por lo que debe existir HTTPS en el proxy/reverse proxy.
+> La autenticacion se gestiona con Supabase Auth desde el navegador. La API solo consume el JWT del usuario para hablar con Supabase y aplicar RLS.
 
 ## 3) Endpoints
-
-### Auth
-- `POST /api/auth/signup`
-- `POST /api/auth/login`
-- `POST /api/auth/logout`
-- `GET /api/auth/session`
 
 ### Bookings
 - `POST /api/bookings`
@@ -94,16 +85,14 @@ NODE_ENV=development
 
 ## 4) Reglas de negocio
 
-- Passwords hasheadas con algoritmo bcrypt (`bcryptjs`).
-- Sesiones por cookie (`express-session`) con `HttpOnly` + `SameSite` + `Secure` en produccion.
-- Login y registro por email (sin username).
-- Un usuario tiene un solo rol (`users.role_id`).
-- Reservas permiten `comentarios` (ocasion especial, alergias, notas).
+- Supabase Auth maneja signup/login/logout.
+- La API usa el JWT del usuario para consultar Supabase con RLS.
+- `profiles` extiende `auth.users` y guarda `email` + `role`.
+- Reservas usan `booking_time` como `TIMESTAMPTZ` y exponen `fecha`/`hora` en el contrato del panel.
 - Usuario normal solo ve/modifica/elimina sus reservas.
-- Admin ve todas y puede cambiar estado (`pending`, `confirmed`, `cancelled`, `completed`).
-- Solicitudes de rol tienen `justification` + `status` + `is_active`.
-- Usuario solo puede editar/eliminar solicitudes activas.
-- Admin puede cambiar estado de solicitud (`active`, `approved`, `rejected`, `cancelled`).
+- Staff y admin pueden ver el panel de reservas de otros usuarios; solo admin gestiona solicitudes de rol de terceros.
+- Solicitudes de rol tienen `requested_role`, `justification` y `status`.
+- Las políticas RLS son la fuente principal de autorización.
 
 ## 5) Ejecutar local
 
@@ -132,11 +121,4 @@ Abrir:
 pnpm parcial:test
 ```
 
-Incluye pruebas de:
-- bloqueo sin sesion,
-- aislamiento de reservas por usuario,
-- permisos admin para cambiar estado,
-- comentarios en reservas,
-- ciclo de vida de solicitudes de rol activas/no activas,
-- cierre de sesion,
-- validacion de metodos HTTP no permitidos.
+Incluye pruebas de humo sobre el arranque de la API, `401` sin bearer token y manejo base de rutas protegidas.

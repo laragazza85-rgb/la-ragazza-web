@@ -1,5 +1,8 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const supabaseUrl = import.meta.env.SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
 ---
 
 <AdminLayout title="Admin | Iniciar sesion">
@@ -47,6 +50,16 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </section>
   </main>
 
-  <script is:inline type="module" src="/admin/auth.js"></script>
+  <script type="module" define:vars={{ supabaseUrl, supabaseAnonKey }}>
+    import { initAdminAuthForm } from '../../scripts/admin/auth.js';
+
+    initAdminAuthForm({
+      form: document.querySelector('#login-form'),
+      status: document.querySelector('#auth-status'),
+      mode: 'login',
+      supabaseUrl,
+      supabaseAnonKey
+    });
+  </script>
 </AdminLayout>
 
