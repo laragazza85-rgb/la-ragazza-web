@@ -1,6 +1,35 @@
 export const CONFIRM_DELETE_MESSAGE = "¿Seguro?";
 export const CONFIRM_EDIT_MESSAGE = "¿Seguro que quieres confirmar cambios?";
 
+const AUTH_ERROR_NAME = "AdminAuthSessionError";
+
+let profilePromise = null;
+
+export class AdminAuthSessionError extends Error {
+  constructor(message = "Sesion requerida.") {
+    super(message);
+    this.name = AUTH_ERROR_NAME;
+  }
+}
+
+export function isAuthSessionError(error) {
+  return error instanceof AdminAuthSessionError || error?.name === AUTH_ERROR_NAME;
+}
+
+export function redirectToLogin() {
+  if (window.__adminLoginRedirectStarted) return;
+
+  window.__adminLoginRedirectStarted = true;
+  window.location.replace("/admin/login");
+}
+
+export function handleAuthError(error) {
+  if (!isAuthSessionError(error)) return false;
+
+  redirectToLogin();
+  return true;
+}
+
 export function escapeHtml(text) {
   return String(text ?? "")
     .replaceAll("&", "&amp;")
@@ -71,20 +100,69 @@ function resolveApiUrl(url) {
   return new URL(url, baseUrl).toString();
 }
 
-export async function apiRequest(url, options = {}) {
+function getSupabaseClient() {
   const supabase = window.__adminSupabase;
-  const sessionResult = supabase ? await supabase.auth.getSession() : { data: { session: null } };
-  const accessToken = sessionResult.data.session?.access_token;
+  if (!supabase) {
+    throw new AdminAuthSessionError("Supabase no esta inicializado.");
+  }
 
-  const response = await fetch(resolveApiUrl(url), {
-    headers: {
-      "Content-Type": "application/json",
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
-    },
-    ...options
+  return supabase;
+}
+
+export async function getAuthSession() {
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase.auth.getSession();
+  if (error) throw new AdminAuthSessionError(error.message);
+
+  if (!data.session?.access_token) {
+    throw new AdminAuthSessionError();
+  }
+
+  return data.session;
+}
+
+async function refreshAuthSession() {
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase.auth.refreshSession();
+  if (error) throw new AdminAuthSessionError(error.message);
+
+  if (!data.session?.access_token) {
+    throw new AdminAuthSessionError();
+  }
+
+  return data.session;
+}
+
+async function fetchWithAuth(url, options = {}) {
+  const session = await getAuthSession();
+  const headers = new Headers(options.headers ?? {});
+
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  headers.set("Authorization", `Bearer ${session.access_token}`);
+
+  return fetch(resolveApiUrl(url), {
+    ...options,
+    headers
   });
+}
+
+export async function apiRequest(url, options = {}) {
+  let response = await fetchWithAuth(url, options);
+
+  if (response.status === 401) {
+    profilePromise = null;
+    await refreshAuthSession();
+    response = await fetchWithAuth(url, options);
+  }
 
   const body = await readBody(response);
+  if (response.status === 401) {
+    throw new AdminAuthSessionError(body.error ?? body.raw ?? "Sesion requerida.");
+  }
+
   if (!response.ok) {
     throw new Error(body.error ?? body.raw ?? "Error inesperado");
   }
@@ -92,26 +170,16 @@ export async function apiRequest(url, options = {}) {
   return body;
 }
 
-export async function getSession() {
-  const supabase = window.__adminSupabase;
-  if (!supabase) {
-    throw new Error("Supabase no esta inicializado.");
-  }
-
-  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-  if (sessionError) throw sessionError;
-
-  const session = sessionData.session;
-  if (!session) {
-    throw new Error("Sesion requerida.");
-  }
+async function loadProfile() {
+  const supabase = getSupabaseClient();
+  const session = await getAuthSession();
 
   const { data: userData, error: userError } = await supabase.auth.getUser(session.access_token);
-  if (userError) throw userError;
+  if (userError) throw new AdminAuthSessionError(userError.message);
 
   const authUser = userData.user;
   if (!authUser) {
-    throw new Error("Sesion requerida.");
+    throw new AdminAuthSessionError();
   }
 
   const { data: profile, error: profileError } = await supabase
@@ -120,9 +188,28 @@ export async function getSession() {
     .eq("id", authUser.id)
     .single();
 
-  if (profileError) throw profileError;
+  if (profileError) {
+    throw new Error(`No se pudo cargar el perfil del usuario: ${profileError.message}`);
+  }
 
+  window.__adminSessionUser = profile;
   return profile;
+}
+
+export async function getSession() {
+  if (!profilePromise) {
+    profilePromise = loadProfile().catch((error) => {
+      profilePromise = null;
+      throw error;
+    });
+  }
+
+  return profilePromise;
+}
+
+export function clearCachedSession() {
+  profilePromise = null;
+  window.__adminSessionUser = null;
 }
 
 export function applyRoleVisibility(user) {

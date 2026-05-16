@@ -1,4 +1,4 @@
-import { applyRoleVisibility, getSession } from "/admin/common.js";
+import { applyRoleVisibility, clearCachedSession, getSession, handleAuthError, redirectToLogin } from "/admin/common.js";
 
 const logoutButton = document.querySelector("#admin-logout");
 const mobileLogoutButton = document.querySelector("#admin-mobile-logout");
@@ -91,25 +91,30 @@ function initMobileMenu() {
   window.__closeAdminMobileMenu = () => setMenuState(false);
 }
 
+async function logout() {
+  window.__closeAdminMobileMenu?.();
+  clearCachedSession();
+  await window.__adminSupabase?.auth.signOut();
+  redirectToLogin();
+}
+
+logoutButton?.addEventListener("click", logout);
+mobileLogoutButton?.addEventListener("click", logout);
+
 (async function initHeader() {
   try {
     const user = await getSession();
     applyRoleVisibility(user);
     window.__adminSessionUser = user;
 
-    async function logout() {
-      window.__closeAdminMobileMenu?.();
-      await window.__adminSupabase?.auth.signOut();
-      window.location.assign("/admin/login");
-    }
-
-    logoutButton?.addEventListener("click", logout);
-    mobileLogoutButton?.addEventListener("click", logout);
-
     initDropdowns();
     initHeaderMotion();
     initMobileMenu();
-  } catch {
-    window.location.assign("/admin/login");
+  } catch (error) {
+    if (handleAuthError(error)) return;
+
+    console.error(error);
+    initHeaderMotion();
+    initMobileMenu();
   }
 })();

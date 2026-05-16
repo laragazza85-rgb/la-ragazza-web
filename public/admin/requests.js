@@ -7,6 +7,7 @@ import {
   escapeHtml,
   getQueryValue,
   getSession,
+  handleAuthError,
   openDialog,
   setQueryValue,
   showMessage
@@ -191,6 +192,7 @@ rowsElement?.addEventListener("click", async (event) => {
       await loadRequests();
     }
   } catch (error) {
+    if (handleAuthError(error)) return;
     showMessage(statusElement, error.message, true);
   }
 });
@@ -208,6 +210,7 @@ rowsElement?.addEventListener("change", async (event) => {
     showMessage(statusElement, "Estado actualizado.");
     await loadRequests();
   } catch (error) {
+    if (handleAuthError(error)) return;
     showMessage(statusElement, error.message, true);
   }
 });
@@ -242,6 +245,7 @@ requestForm?.addEventListener("submit", async (event) => {
     closeModal();
     await loadRequests();
   } catch (error) {
+    if (handleAuthError(error)) return;
     showMessage(statusElement, error.message, true);
   }
 });
@@ -269,7 +273,8 @@ cancelButton?.addEventListener("click", closeModal);
     if (getQueryValue("action") === "new") {
       openCreateModal();
     }
-  } catch {
-    window.location.assign("/admin/login");
+  } catch (error) {
+    if (handleAuthError(error)) return;
+    showMessage(statusElement, error.message, true);
   }
 })();

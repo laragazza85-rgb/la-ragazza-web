@@ -6,6 +6,7 @@ import {
   closeDialog,
   getQueryValue,
   getSession,
+  handleAuthError,
   openDialog,
   setQueryValue,
   showMessage
@@ -156,6 +157,7 @@ export function initEntityCrudPage(config) {
         await loadItems();
       }
     } catch (error) {
+      if (handleAuthError(error)) return;
       showMessage(statusElement, error.message, true);
     }
   });
@@ -174,6 +176,7 @@ export function initEntityCrudPage(config) {
         showMessage(statusElement, config.messages.statusUpdated);
         await loadItems();
       } catch (error) {
+        if (handleAuthError(error)) return;
         showMessage(statusElement, error.message, true);
       }
     });
@@ -205,6 +208,7 @@ export function initEntityCrudPage(config) {
       closeDialog(modal, resetForm);
       await loadItems();
     } catch (error) {
+      if (handleAuthError(error)) return;
       showMessage(statusElement, error.message, true);
     }
   });
@@ -228,9 +232,9 @@ export function initEntityCrudPage(config) {
       if (getQueryValue("action") === "new") {
         openCreateModal();
       }
-    } catch {
-      window.location.assign("/admin/login");
+    } catch (error) {
+      if (handleAuthError(error)) return;
+      showMessage(statusElement, error.message, true);
     }
   })();
 }
-
