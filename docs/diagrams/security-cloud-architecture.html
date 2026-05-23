@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Arquitectura Cloud - La Ragazza Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f3ec;
+        --ink: #221d18;
+        --muted: #6d6258;
+        --line: #b9aa98;
+        --site: #365f5a;
+        --api: #8f3f2d;
+        --auth: #5d4a8c;
+        --db: #2f5f8f;
+        --edge: #9b702f;
+        --safe: #2f7d50;
+        --card: #fffaf2;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Lora", Georgia, serif;
+        font-feature-settings: "liga" 1, "kern" 1;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      main {
+        width: min(1180px, calc(100vw - 48px));
+        margin: 0 auto;
+        padding: 36px 0 44px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 4vw, 44px);
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        margin: 0 0 28px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      .diagram {
+        position: relative;
+        min-height: 720px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        overflow: hidden;
+      }
+
+      .zone {
+        position: absolute;
+        border: 1px solid var(--line);
+        background: rgba(255, 250, 242, 0.72);
+        padding: 14px;
+      }
+
+      .zone-title {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .client-zone {
+        left: 28px;
+        top: 92px;
+        width: 230px;
+        height: 510px;
+      }
+
+      .vercel-zone {
+        left: 300px;
+        top: 44px;
+        width: 260px;
+        height: 610px;
+      }
+
+      .render-zone {
+        left: 610px;
+        top: 140px;
+        width: 245px;
+        height: 420px;
+      }
+
+      .supabase-zone {
+        left: 900px;
+        top: 52px;
+        width: 250px;
+        height: 610px;
+      }
+
+      .node {
+        position: absolute;
+        width: 190px;
+        min-height: 82px;
+        border: 2px solid currentColor;
+        background: var(--card);
+        padding: 14px;
+        box-shadow: 0 10px 24px rgba(58, 42, 26, 0.1);
+      }
+
+      .node h2 {
+        margin: 0 0 8px;
+        font-size: 15px;
+        letter-spacing: 0;
+      }
+
+      .node p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .browser {
+        left: 48px;
+        top: 190px;
+        color: var(--edge);
+      }
+
+      .vercel {
+        left: 335px;
+        top: 112px;
+        color: var(--site);
+      }
+
+      .admin {
+        left: 335px;
+        top: 315px;
+        color: var(--site);
+      }
+
+      .api {
+        left: 638px;
+        top: 270px;
+        color: var(--api);
+      }
+
+      .auth {
+        left: 930px;
+        top: 108px;
+        color: var(--auth);
+      }
+
+      .postgres {
+        left: 930px;
+        top: 330px;
+        color: var(--db);
+      }
+
+      .security {
+        left: 628px;
+        top: 468px;
+        color: var(--safe);
+        width: 210px;
+      }
+
+      svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .flow {
+        fill: none;
+        stroke: #44382d;
+        stroke-width: 2.5;
+        marker-end: url(#arrow);
+      }
+
+      .secure-flow {
+        fill: none;
+        stroke: var(--safe);
+        stroke-width: 2.5;
+        stroke-dasharray: 8 6;
+        marker-end: url(#arrow-safe);
+      }
+
+      .label {
+        position: absolute;
+        display: inline-block;
+        max-width: 170px;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        background: #fffaf2;
+        color: var(--ink);
+        font-size: 11px;
+        line-height: 1.25;
+      }
+
+      .l1 {
+        left: 54px;
+        top: 128px;
+      }
+
+      .l2 {
+        left: 332px;
+        top: 250px;
+      }
+
+      .l3 {
+        left: 632px;
+        top: 218px;
+      }
+
+      .l4 {
+        left: 930px;
+        top: 250px;
+      }
+
+      .l5 {
+        left: 930px;
+        top: 552px;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .legend div {
+        border: 1px solid var(--line);
+        background: var(--card);
+        padding: 10px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .legend strong {
+        display: block;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+
+      @media (max-width: 900px) {
+        main {
+          width: calc(100vw - 24px);
+        }
+
+        .diagram {
+          overflow-x: auto;
+        }
+
+        .legend {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      h1,
+      .zone-title,
+      .lane h2,
+      .node h2,
+      .step h3,
+      .panel h2,
+      .triad-card h3,
+      .flow-step h3,
+      .note h3,
+      .legend strong {
+        font-family: "Cinzel", Georgia, serif;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .subtitle,
+      .node p,
+      .step p,
+      .note p,
+      .legend div,
+      .label,
+      td,
+      th,
+      .control span,
+      .flow-step p,
+      .triad-card p {
+        font-family: "Lora", Georgia, serif;
+      }
+
+      .diagram-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0 0 12px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        background: rgba(255, 253, 248, 0.86);
+      }
+
+      .diagram-toolbar-title {
+        color: var(--muted);
+        font-family: "Cinzel", Georgia, serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .diagram-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .diagram-actions button,
+      .zoom-readout {
+        min-height: 32px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        color: var(--ink);
+        font-family: "Cinzel", Georgia, serif;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .diagram-actions button {
+        cursor: pointer;
+        padding: 0 10px;
+      }
+
+      .diagram-actions button:hover {
+        background: var(--card, #fffaf2);
+      }
+
+      .zoom-readout {
+        display: inline-grid;
+        place-items: center;
+        min-width: 56px;
+        padding: 0 8px;
+      }
+
+      .diagram-viewport {
+        width: 100%;
+        height: min(76vh, 780px);
+        min-height: 520px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        overflow: auto;
+        cursor: grab;
+        overscroll-behavior: contain;
+        touch-action: none;
+      }
+
+      .diagram-viewport.is-dragging {
+        cursor: grabbing;
+        user-select: none;
+      }
+
+      .diagram-stage {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+      }
+
+      .diagram,
+      .canvas,
+      .matrix-canvas {
+        transform-origin: 0 0;
+      }
+
+      .matrix-canvas {
+        width: 1280px;
+        padding: 0;
+        background: var(--paper);
+      }
+
+      .label {
+        z-index: 8;
+        box-shadow: 0 8px 18px rgba(56, 41, 27, 0.08);
+      }
+
+      @media print {
+        .diagram-toolbar {
+          display: none;
+        }
+        .diagram-viewport {
+          height: auto;
+          min-height: 0;
+          overflow: visible;
+          border: 0;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Arquitectura Cloud Desplegada</h1>
+      <p class="subtitle">
+        Separacion entre frontend estatico en Vercel, API Node/Express en Render y proveedor administrado Supabase para Auth y Postgres.
+      </p>
+
+      <section class="diagram" aria-label="Diagrama de arquitectura cloud">
+        <svg viewBox="0 0 1180 720" role="img" aria-label="Flujos cloud de autenticacion, API y base de datos">
+          <defs>
+            <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <path d="M 0 0 L 12 6 L 0 12 z" fill="#44382d"></path>
+            </marker>
+            <marker id="arrow-safe" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <path d="M 0 0 L 12 6 L 0 12 z" fill="#2f7d50"></path>
+            </marker>
+          </defs>
+          <path class="flow" d="M 238 232 C 280 210 292 176 335 162"></path>
+          <path class="flow" d="M 238 278 C 275 315 294 354 335 360"></path>
+          <path class="secure-flow" d="M 525 360 C 575 358 595 332 638 318"></path>
+          <path class="secure-flow" d="M 828 300 C 884 252 890 196 930 164"></path>
+          <path class="secure-flow" d="M 828 350 C 880 372 890 392 930 394"></path>
+          <path class="secure-flow" d="M 1035 226 C 1040 270 1040 298 1035 330"></path>
+        </svg>
+
+        <div class="zone client-zone">
+          <p class="zone-title">Cliente</p>
+        </div>
+        <div class="zone vercel-zone">
+          <p class="zone-title">Vercel CDN / Static Hosting</p>
+        </div>
+        <div class="zone render-zone">
+          <p class="zone-title">Render / Node Runtime</p>
+        </div>
+        <div class="zone supabase-zone">
+          <p class="zone-title">Supabase Cloud</p>
+        </div>
+
+        <article class="node browser">
+          <h2>Navegador</h2>
+          <p>Usuario/admin. Mantiene sesion Supabase y envia JWT como Bearer token.</p>
+        </article>
+
+        <article class="node vercel">
+          <h2>Sitio Astro</h2>
+          <p>Paginas estaticas, assets y panel admin servido desde Vercel.</p>
+        </article>
+
+        <article class="node admin">
+          <h2>Admin JS</h2>
+          <p>Login con Supabase Auth, escape HTML y llamadas API con Authorization.</p>
+        </article>
+
+        <article class="node api">
+          <h2>API Parcial</h2>
+          <p>Express: Helmet, CORS, requireAuth, validacion y reglas de negocio.</p>
+        </article>
+
+        <article class="node security">
+          <h2>Controles</h2>
+          <p>Query Builder, RLS, JWT, XSS validation, service key solo server-side.</p>
+        </article>
+
+        <article class="node auth">
+          <h2>Supabase Auth</h2>
+          <p>Gestiona credenciales, hashes internos, sesiones y emision de JWT.</p>
+        </article>
+
+        <article class="node postgres">
+          <h2>Postgres + RLS</h2>
+          <p>Tablas profiles, bookings y role_change_requests con politicas por fila.</p>
+        </article>
+
+        <span class="label l1">GET HTML, JS y CSS desde Vercel</span>
+        <span class="label l2">signIn/signUp y sesion en navegador</span>
+        <span class="label l3">fetch /api con Bearer JWT</span>
+        <span class="label l4">validacion de token</span>
+        <span class="label l5">consultas parametrizadas via Query Builder</span>
+      </section>
+
+      <section class="legend" aria-label="Leyenda">
+        <div><strong>Confidencialidad</strong>JWT y service role key no se exponen en repositorio; password vive en Supabase Auth.</div>
+        <div><strong>Integridad</strong>Servicios validan dominio; repositorios no concatenan SQL.</div>
+        <div><strong>Disponibilidad</strong>Frontend estatico y API separada reducen acoplamiento operacional.</div>
+        <div><strong>Auditoria</strong>Repositorios, servicios y tests muestran evidencia de controles.</div>
+      </section>
+    </main>
+    <script>
+      (function initDiagramViewer() {
+        const title = document.title.toLowerCase();
+        let target = document.querySelector('.diagram, .canvas');
+
+        if (!target && document.querySelector('.triad')) {
+          const board = document.createElement('section');
+          board.className = 'matrix-canvas';
+          const first = document.querySelector('.triad');
+          first.before(board);
+          ['.triad', '.dashboard', '.risk-map'].forEach((selector) => {
+            const node = document.querySelector(selector);
+            if (node) board.append(node);
+          });
+          target = board;
+        }
+
+        if (!target || target.dataset.viewerReady === 'true') return;
+        target.dataset.viewerReady = 'true';
+
+        const baseWidth = title.includes('local') ? 1160 : title.includes('flujo') ? 1240 : title.includes('matriz') ? 1280 : 1180;
+        const configuredHeight = title.includes('flujo') ? 900 : title.includes('matriz') ? 980 : 720;
+
+        const toolbar = document.createElement('div');
+        toolbar.className = 'diagram-toolbar';
+        toolbar.innerHTML = '<div class="diagram-toolbar-title">Visor interactivo</div><div class="diagram-actions"><button type="button" data-action="fit">Ajustar</button><button type="button" data-action="out">−</button><span class="zoom-readout">100%</span><button type="button" data-action="in">+</button><button type="button" data-action="reset">100%</button></div>';
+
+        const viewport = document.createElement('div');
+        viewport.className = 'diagram-viewport';
+        viewport.setAttribute('aria-label', 'Lienzo con zoom, scroll y arrastre');
+
+        const stage = document.createElement('div');
+        stage.className = 'diagram-stage';
+
+        target.before(toolbar);
+        target.before(viewport);
+        viewport.append(stage);
+        stage.append(target);
+
+        target.style.width = baseWidth + 'px';
+        target.style.minHeight = configuredHeight + 'px';
+        const baseHeight = Math.max(configuredHeight, target.scrollHeight || configuredHeight);
+
+        const readout = toolbar.querySelector('.zoom-readout');
+        let scale = 1;
+
+        function applyScale(nextScale) {
+          scale = Math.max(0.35, Math.min(2.4, nextScale));
+          target.style.transform = 'scale(' + scale + ')';
+          stage.style.width = Math.ceil(baseWidth * scale) + 'px';
+          stage.style.height = Math.ceil(baseHeight * scale) + 'px';
+          readout.textContent = Math.round(scale * 100) + '%';
+        }
+
+        function fit() {
+          const availableW = Math.max(320, viewport.clientWidth - 18);
+          const availableH = Math.max(320, viewport.clientHeight - 18);
+          applyScale(Math.min(1, availableW / baseWidth, availableH / baseHeight));
+          viewport.scrollLeft = Math.max(0, (stage.offsetWidth - viewport.clientWidth) / 2);
+          viewport.scrollTop = 0;
+        }
+
+        toolbar.addEventListener('click', (event) => {
+          const button = event.target.closest('button[data-action]');
+          if (!button) return;
+          const action = button.dataset.action;
+          if (action === 'fit') fit();
+          if (action === 'in') applyScale(scale + 0.12);
+          if (action === 'out') applyScale(scale - 0.12);
+          if (action === 'reset') applyScale(1);
+        });
+
+        let dragging = false;
+        let startX = 0;
+        let startY = 0;
+        let startLeft = 0;
+        let startTop = 0;
+
+        viewport.addEventListener('pointerdown', (event) => {
+          if (event.button !== 0) return;
+          dragging = true;
+          viewport.classList.add('is-dragging');
+          viewport.setPointerCapture(event.pointerId);
+          startX = event.clientX;
+          startY = event.clientY;
+          startLeft = viewport.scrollLeft;
+          startTop = viewport.scrollTop;
+        });
+
+        viewport.addEventListener('pointermove', (event) => {
+          if (!dragging) return;
+          viewport.scrollLeft = startLeft - (event.clientX - startX);
+          viewport.scrollTop = startTop - (event.clientY - startY);
+        });
+
+        function endDrag(event) {
+          dragging = false;
+          viewport.classList.remove('is-dragging');
+          if (event.pointerId !== undefined && viewport.hasPointerCapture(event.pointerId)) {
+            viewport.releasePointerCapture(event.pointerId);
+          }
+        }
+
+        viewport.addEventListener('pointerup', endDrag);
+        viewport.addEventListener('pointercancel', endDrag);
+        window.addEventListener('resize', fit);
+        requestAnimationFrame(fit);
+      })();
+    </script>
+
+  </body>
+</html>

@@ -33,7 +33,7 @@ Repository layout (high-level)
 - `src/` — public site pages, layouts, components, localized JSON content.
 - `public/` — static JS used by admin UI (`common.js`, `bookings.js`, `requests.js`, `entityCrudPage.js`, etc.).
 - `parcial/api/src/` — Express API server (routes, services, repositories, utils, middleware).
-- `docs/` — architecture, development and security docs, including `docs/security-hardening-student.md` and `docs/web-hardening-sql-xss.md`.
+- `docs/` — architecture, development and security docs, including `docs/security-audit-report.md`, `docs/security-hardening-student.md` and `docs/web-hardening-sql-xss.md`.
 - `package.json` — project scripts (see Developer workflow section).
 
 ---------------------------------------------------------------------------
@@ -364,6 +364,12 @@ File references you should attach in the student deliverable
 - `public/admin/bookings.js`
 - `docs/security-hardening-student.md` (narrative explanation already added)
 - `docs/web-hardening-sql-xss.md` (detailed SQL injection and XSS hardening explanation)
+- `docs/security-audit-report.md` (full rubric-oriented audit report with CIA matrix and migration manual)
+- `docs/security-audit-report.html` (premium HTML version of the full audit report, with embedded diagrams and PDF-ready styling)
+- `docs/diagrams/security-cloud-architecture.html` (cloud architecture diagram)
+- `docs/diagrams/security-local-architecture.html` (local architecture diagram)
+- `docs/diagrams/admin-security-flow.html` (end-to-end admin security flow)
+- `docs/diagrams/cia-security-matrix.html` (CIA matrix and control dashboard)
 
 ---------------------------------------------------------------------------
 Diagram guidance (what to draw)
@@ -408,6 +414,8 @@ Appendix B — Notes for auditors / reviewers
 - Check RLS policies in Supabase Studio for `bookings` and `role_change_requests`.
 - Review `docs/security-hardening-student.md` for a student-facing narrative explaining the logic and where to show evidence.
 - Review `docs/web-hardening-sql-xss.md` for the detailed explanation of SQL injection prevention and XSS hardening.
+- Review `docs/security-audit-report.md` for the complete audit deliverable, including credential handling, prepared-statement evidence, CIA matrix, risk analysis and migration guide.
+- Open `docs/security-audit-report.html` in a browser for the polished report version with embedded diagrams and print/PDF styling.
 
 ---------------------------------------------------------------------------
 Contact & references
@@ -419,6 +427,9 @@ Contact & references
 	- Services: `parcial/api/src/services/*`
 	- XSS helper: `parcial/api/src/utils/xss.mjs`
 	- Admin JS: `public/admin/*.js`
+	- Security audit report: `docs/security-audit-report.md`
+	- Premium HTML audit report: `docs/security-audit-report.html`
+	- Architecture diagrams: `docs/diagrams/security-cloud-architecture.html`, `docs/diagrams/security-local-architecture.html`, `docs/diagrams/admin-security-flow.html`, `docs/diagrams/cia-security-matrix.html`
 	- Student doc: `docs/security-hardening-student.md`
 	- Detailed hardening doc: `docs/web-hardening-sql-xss.md`
 
@@ -433,6 +444,8 @@ Read `docs/development.md` for:
 - troubleshooting commands.
 
 ### Security Hardening
+
+Read `docs/security-audit-report.md` for the full rubric-oriented audit report, including cloud/local diagrams, CIA matrix and migration manual.
 
 Read `docs/web-hardening-sql-xss.md` for:
 

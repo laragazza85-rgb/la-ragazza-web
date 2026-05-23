@@ -1,0 +1,2999 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Informe Tecnico de Auditoria de Seguridad | La Ragazza Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+    <meta name="description" content="Informe tecnico de auditoria de seguridad, arquitectura cloud/local, matriz CIA, hardening y migracion para La Ragazza Web." />
+    <style>
+      :root { color-scheme: light; --bg: #f5f0e7; --paper: #fffdf8; --paper-soft: #fff8ee; --ink: #211b17; --muted: #675c52; --line: #b9aa96; --line-soft: #ded1bf; --brand: #315f59; --brand-2: #8f3f2d; --blue: #325e86; --green: #2f7d50; --gold: #967033; --danger: #9b3f35; --shadow: 0 22px 60px rgba(59, 43, 26, 0.14); --mono: "SFMono-Regular", "Cascadia Code", "Roboto Mono", Consolas, monospace; --sans: "Lora", Georgia, serif; --display: "Cinzel", Georgia, serif; --serif: "Lora", Georgia, serif; }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-feature-settings: "liga" 1, "kern" 1; line-height: 1.6; }
+      a { color: var(--brand); text-decoration-thickness: 0.08em; text-underline-offset: 0.18em; }
+      .report-shell { min-height: 100vh; }
+      .cover { position: relative; overflow: hidden; min-height: 96vh; display: grid; align-items: center; padding: 64px min(7vw, 92px); background: linear-gradient(135deg, rgba(33, 27, 23, 0.92), rgba(49, 95, 89, 0.88)), radial-gradient(circle at 20% 20%, rgba(255, 248, 238, 0.24), transparent 34%), var(--ink); color: #fffaf2; }
+      .cover::after { content: ""; position: absolute; inset: auto -8% -18% 38%; height: 42%; border: 1px solid rgba(255,255,255,0.16); transform: rotate(-6deg); background: rgba(255,255,255,0.04); }
+      .cover-content { position: relative; z-index: 1; max-width: 1080px; }
+      .eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 24px; color: #eadfce; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; }
+      .eyebrow::before { content: ""; width: 36px; height: 2px; background: #eadfce; }
+      .cover h1 { margin: 0; max-width: 1000px; font-size: clamp(44px, 8vw, 92px); line-height: 0.96; letter-spacing: 0; }
+      .cover .lead { max-width: 850px; margin: 26px 0 0; color: #f1e7da; font-size: clamp(17px, 2vw, 23px); line-height: 1.5; }
+      .cover-meta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 44px; }
+      .meta-card { border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); padding: 16px; backdrop-filter: blur(12px); }
+      .meta-card span { display: block; color: #d8cbb8; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; }
+      .meta-card strong { display: block; margin-top: 6px; font-size: 14px; color: #fffaf2; }
+      .layout { display: block; width: min(1380px, calc(100vw - 48px)); margin: 0 auto; padding: 34px 0 70px; }
+      .toc-panel { display: none; }
+      .toc-panel h2 { margin: 0 0 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+      .toc-panel ol { margin: 0; padding-left: 18px; }
+      .toc-panel li { margin: 7px 0; color: var(--muted); font-size: 12px; }
+      .toc-panel a { color: var(--ink); text-decoration: none; }
+      .toc-panel a:hover { color: var(--brand); }
+      .toc-panel .toc-h3 { margin-left: 12px; font-size: 11px; }
+      .content { min-width: 0; }
+      .executive-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 24px; }
+      .metric { border: 1px solid var(--line); background: var(--paper); padding: 18px; box-shadow: 0 12px 30px rgba(59,43,26,0.08); }
+      .metric svg { width: 26px; height: 26px; color: var(--brand); }
+      .metric strong { display: block; margin-top: 12px; font-size: 18px; }
+      .metric span { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+      .section-card, .markdown-body, .diagram-section { border: 1px solid var(--line); background: var(--paper); box-shadow: var(--shadow); }
+      .section-card { padding: 26px; margin-bottom: 24px; }
+      .section-kicker { color: var(--brand-2); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.14em; }
+      .section-card h2, .diagram-heading h2 { margin: 8px 0 10px; font-size: clamp(24px, 3vw, 38px); line-height: 1.1; }
+      .section-card p, .diagram-heading p { color: var(--muted); margin: 0; }
+      .diagram-section { display: none; }
+      .diagram-heading { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 18px; }
+      .icon-badge { flex: 0 0 auto; display: grid; place-items: center; width: 46px; height: 46px; background: var(--ink); color: #fffaf2; font-weight: 900; }
+      .diagram-frame { border: 1px solid var(--line-soft); background: #f7f3ec; overflow: hidden; }
+      iframe { display: block; width: 100%; height: 820px; border: 0; background: #fffdf8; }
+      .diagram-link { margin: 12px 0 0; color: var(--muted); font-size: 12px; }
+      .markdown-body { padding: clamp(24px, 4vw, 48px); }
+      .markdown-body h1 { display: none; }
+      .markdown-body h2 { margin: 46px 0 14px; padding-top: 18px; border-top: 1px solid var(--line-soft); font-size: clamp(26px, 3vw, 38px); line-height: 1.14; }
+      .markdown-body h3 { margin: 30px 0 10px; font-size: 21px; line-height: 1.24; color: var(--brand); }
+      .markdown-body h4 { margin: 22px 0 8px; font-size: 16px; color: var(--brand-2); }
+      .markdown-body p { margin: 12px 0; color: var(--muted); }
+      .markdown-body ul, .markdown-body ol { color: var(--muted); padding-left: 22px; }
+      .markdown-body li { margin: 6px 0; }
+      .markdown-body strong { color: var(--ink); }
+      .markdown-body code { font-family: var(--mono); font-size: 0.92em; background: #efe5d7; color: #2a211b; padding: 0.12em 0.35em; }
+      pre { margin: 16px 0; overflow: auto; border: 1px solid #3f342c; background: #201b18; color: #f6ecdf; padding: 18px; }
+      pre code { background: transparent !important; color: inherit !important; padding: 0 !important; }
+      .table-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--line-soft); }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { border: 1px solid var(--line-soft); padding: 10px 12px; text-align: left; vertical-align: top; }
+      th { background: #efe5d7; color: var(--ink); font-weight: 900; }
+      td { color: var(--muted); }
+      blockquote { margin: 18px 0; border-left: 5px solid var(--brand); background: var(--paper-soft); padding: 14px 18px; }
+      hr { border: 0; border-top: 1px solid var(--line-soft); margin: 32px 0; }
+      .footer-note { margin-top: 26px; padding: 20px; border: 1px solid var(--line); background: #efe5d7; color: var(--muted); font-size: 13px; }
+      .capture-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0 22px; }
+      .capture-card { margin: 0; border: 1px solid var(--line-soft); background: var(--paper-soft); padding: 14px; }
+      .capture-card img { display: block; width: 100%; height: auto; border: 1px solid var(--line); background: #fff; }
+      .capture-card figcaption { margin-top: 10px; color: var(--muted); font-size: 13px; }
+      .evidence-list { margin: 12px 0 0; }
+      .evidence-list li { margin: 7px 0; }
+      @media print { body { background: #fff; } .cover { min-height: 100vh; page-break-after: always; } .layout { display: block; width: 100%; padding: 0; } .section-card, .markdown-body, .diagram-section { box-shadow: none; page-break-inside: avoid; } iframe { height: 720px; } a { color: inherit; text-decoration: none; } }
+      @media (max-width: 1120px) { .layout { display: block; width: 100%; } .cover-meta, .executive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 700px) { .cover { padding: 42px 22px; } .cover-meta, .executive-grid { grid-template-columns: 1fr; } iframe { height: 680px; } .diagram-heading { flex-direction: column; } .layout { width: calc(100vw - 22px); } }
+      @media (max-width: 860px) { .capture-grid { grid-template-columns: 1fr; } }
+      .cover h1,
+      .eyebrow,
+      .meta-card span,
+      .toc-panel h2,
+      .section-kicker,
+      .section-card h2,
+      .diagram-heading h2,
+      .metric strong,
+      .markdown-body h2,
+      .markdown-body h3,
+      .markdown-body h4,
+      th,
+      .icon-badge {
+        font-family: var(--display);
+        font-weight: 700;
+      }
+
+      .cover .lead,
+      .meta-card strong,
+      .metric span,
+      .markdown-body p,
+      .markdown-body li,
+      .diagram-heading p,
+      td,
+      blockquote {
+        font-family: var(--sans);
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="report-shell">
+      <header class="cover">
+        <div class="cover-content">
+          <div class="eyebrow">Informe tecnico de ciberseguridad y arquitectura cloud</div>
+          <h1>Auditoria de Seguridad<br />La Ragazza Web</h1>
+          <p class="lead">Analisis tecnico integral para la materia Lenguajes de Internet: autenticacion, manejo de credenciales, sentencias preparadas equivalentes, XSS hardening, arquitectura cloud/local, matriz CIA, riesgos y migracion.</p>
+          <div class="cover-meta">
+            <div class="meta-card"><span>Estudiante</span><strong>Juan Guillermo López Cortés</strong></div>
+            <div class="meta-card"><span>Materia</span><strong>Lenguajes de Internet</strong></div>
+            <div class="meta-card"><span>Proyecto</span><strong>La Ragazza Web</strong></div>
+            <div class="meta-card"><span>Fecha</span><strong>2026-05-23</strong></div>
+          </div>
+        </div>
+      </header>
+      <main class="layout">
+        <div class="content">
+          <section class="executive-grid" aria-label="Resumen ejecutivo visual">
+            <article class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg><strong>Credenciales delegadas</strong><span>Supabase Auth gestiona passwords y hashes internos; la app no guarda Contraseñas propias.</span></article>
+            <article class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/><path d="m17 16 2 2 3-5"/></svg><strong>Query Builder</strong><span>Equivalente operacional a prepared statements: no hay SQL interpolado por la app.</span></article>
+            <article class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M3 12h18"/><path d="m5 5 14 14"/><path d="m19 5-14 14"/></svg><strong>Defensa XSS</strong><span>Rechazo de markup persistente en backend y escapeHtml/textContent en frontend.</span></article>
+            <article class="metric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M8 3v18"/><path d="M16 3v18"/><path d="M3 8h18"/><path d="M3 16h18"/></svg><strong>Matriz CIA</strong><span>Activos clasificados por confidencialidad, integridad, disponibilidad y riesgo residual.</span></article>
+          </section>
+          <section class="section-card" id="resumen-integrado"><div class="section-kicker">Documento integrado</div><h2>Informe premium de auditoria y arquitectura</h2><p>Este HTML integra el contenido completo de <code>docs/security-audit-report.md</code> y todos los diagramas ubicados en <code>docs/diagrams/</code>. Esta version esta preparada para lectura academica, revision empresarial y exportacion a PDF desde el navegador.</p></section>
+          
+<section class="diagram-section" id="diagrama-1">
+  <div class="section-kicker">Diagrama 1</div>
+  <div class="diagram-heading">
+    <div class="icon-badge">1</div>
+    <div>
+      <h2>Arquitectura Cloud Desplegada</h2>
+      <p>Separacion entre Vercel, Render y Supabase Cloud con flujos de JWT, Query Builder y RLS.</p>
+    </div>
+  </div>
+  <div class="diagram-frame">
+    <iframe title="Arquitectura Cloud Desplegada" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;es&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+    &lt;title&gt;Arquitectura Cloud - La Ragazza Web&lt;/title&gt;
+    &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; /&gt;
+    &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin /&gt;
+    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&amp;family=Lora:ital,wght@0,400..700;1,400..700&amp;display=swap&quot; rel=&quot;stylesheet&quot; /&gt;
+    &lt;style&gt;
+      :root {
+        color-scheme: light;
+        --bg: #f7f3ec;
+        --ink: #221d18;
+        --muted: #6d6258;
+        --line: #b9aa98;
+        --site: #365f5a;
+        --api: #8f3f2d;
+        --auth: #5d4a8c;
+        --db: #2f5f8f;
+        --edge: #9b702f;
+        --safe: #2f7d50;
+        --card: #fffaf2;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: &quot;Lora&quot;, Georgia, serif;
+        font-feature-settings: &quot;liga&quot; 1, &quot;kern&quot; 1;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      main {
+        width: min(1180px, calc(100vw - 48px));
+        margin: 0 auto;
+        padding: 36px 0 44px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 4vw, 44px);
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        margin: 0 0 28px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      .diagram {
+        position: relative;
+        min-height: 720px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        overflow: hidden;
+      }
+
+      .zone {
+        position: absolute;
+        border: 1px solid var(--line);
+        background: rgba(255, 250, 242, 0.72);
+        padding: 14px;
+      }
+
+      .zone-title {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .client-zone {
+        left: 28px;
+        top: 92px;
+        width: 230px;
+        height: 510px;
+      }
+
+      .vercel-zone {
+        left: 300px;
+        top: 44px;
+        width: 260px;
+        height: 610px;
+      }
+
+      .render-zone {
+        left: 610px;
+        top: 140px;
+        width: 245px;
+        height: 420px;
+      }
+
+      .supabase-zone {
+        left: 900px;
+        top: 52px;
+        width: 250px;
+        height: 610px;
+      }
+
+      .node {
+        position: absolute;
+        width: 190px;
+        min-height: 82px;
+        border: 2px solid currentColor;
+        background: var(--card);
+        padding: 14px;
+        box-shadow: 0 10px 24px rgba(58, 42, 26, 0.1);
+      }
+
+      .node h2 {
+        margin: 0 0 8px;
+        font-size: 15px;
+        letter-spacing: 0;
+      }
+
+      .node p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .browser {
+        left: 48px;
+        top: 190px;
+        color: var(--edge);
+      }
+
+      .vercel {
+        left: 335px;
+        top: 112px;
+        color: var(--site);
+      }
+
+      .admin {
+        left: 335px;
+        top: 315px;
+        color: var(--site);
+      }
+
+      .api {
+        left: 638px;
+        top: 270px;
+        color: var(--api);
+      }
+
+      .auth {
+        left: 930px;
+        top: 108px;
+        color: var(--auth);
+      }
+
+      .postgres {
+        left: 930px;
+        top: 330px;
+        color: var(--db);
+      }
+
+      .security {
+        left: 628px;
+        top: 468px;
+        color: var(--safe);
+        width: 210px;
+      }
+
+      svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .flow {
+        fill: none;
+        stroke: #44382d;
+        stroke-width: 2.5;
+        marker-end: url(#arrow);
+      }
+
+      .secure-flow {
+        fill: none;
+        stroke: var(--safe);
+        stroke-width: 2.5;
+        stroke-dasharray: 8 6;
+        marker-end: url(#arrow-safe);
+      }
+
+      .label {
+        position: absolute;
+        display: inline-block;
+        max-width: 170px;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        background: #fffaf2;
+        color: var(--ink);
+        font-size: 11px;
+        line-height: 1.25;
+      }
+
+      .l1 {
+        left: 54px;
+        top: 128px;
+      }
+
+      .l2 {
+        left: 332px;
+        top: 250px;
+      }
+
+      .l3 {
+        left: 632px;
+        top: 218px;
+      }
+
+      .l4 {
+        left: 930px;
+        top: 250px;
+      }
+
+      .l5 {
+        left: 930px;
+        top: 552px;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .legend div {
+        border: 1px solid var(--line);
+        background: var(--card);
+        padding: 10px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .legend strong {
+        display: block;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+
+      @media (max-width: 900px) {
+        main {
+          width: calc(100vw - 24px);
+        }
+
+        .diagram {
+          overflow-x: auto;
+        }
+
+        .legend {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      h1,
+      .zone-title,
+      .lane h2,
+      .node h2,
+      .step h3,
+      .panel h2,
+      .triad-card h3,
+      .flow-step h3,
+      .note h3,
+      .legend strong {
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .subtitle,
+      .node p,
+      .step p,
+      .note p,
+      .legend div,
+      .label,
+      td,
+      th,
+      .control span,
+      .flow-step p,
+      .triad-card p {
+        font-family: &quot;Lora&quot;, Georgia, serif;
+      }
+
+      .diagram-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0 0 12px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        background: rgba(255, 253, 248, 0.86);
+      }
+
+      .diagram-toolbar-title {
+        color: var(--muted);
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .diagram-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .diagram-actions button,
+      .zoom-readout {
+        min-height: 32px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        color: var(--ink);
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .diagram-actions button {
+        cursor: pointer;
+        padding: 0 10px;
+      }
+
+      .diagram-actions button:hover {
+        background: var(--card, #fffaf2);
+      }
+
+      .zoom-readout {
+        display: inline-grid;
+        place-items: center;
+        min-width: 56px;
+        padding: 0 8px;
+      }
+
+      .diagram-viewport {
+        width: 100%;
+        height: min(76vh, 780px);
+        min-height: 520px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        overflow: auto;
+        cursor: grab;
+        overscroll-behavior: contain;
+        touch-action: none;
+      }
+
+      .diagram-viewport.is-dragging {
+        cursor: grabbing;
+        user-select: none;
+      }
+
+      .diagram-stage {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+      }
+
+      .diagram,
+      .canvas,
+      .matrix-canvas {
+        transform-origin: 0 0;
+      }
+
+      .matrix-canvas {
+        width: 1280px;
+        padding: 0;
+        background: var(--paper);
+      }
+
+      .label {
+        z-index: 8;
+        box-shadow: 0 8px 18px rgba(56, 41, 27, 0.08);
+      }
+
+      @media print {
+        .diagram-toolbar {
+          display: none;
+        }
+        .diagram-viewport {
+          height: auto;
+          min-height: 0;
+          overflow: visible;
+          border: 0;
+        }
+      }
+
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;main&gt;
+      &lt;h1&gt;Arquitectura Cloud Desplegada&lt;/h1&gt;
+      &lt;p class=&quot;subtitle&quot;&gt;
+        Separacion entre frontend estatico en Vercel, API Node/Express en Render y proveedor administrado Supabase para Auth y Postgres.
+      &lt;/p&gt;
+
+      &lt;section class=&quot;diagram&quot; aria-label=&quot;Diagrama de arquitectura cloud&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 1180 720&quot; role=&quot;img&quot; aria-label=&quot;Flujos cloud de autenticacion, API y base de datos&quot;&gt;
+          &lt;defs&gt;
+            &lt;marker id=&quot;arrow&quot; markerWidth=&quot;12&quot; markerHeight=&quot;12&quot; refX=&quot;10&quot; refY=&quot;6&quot; orient=&quot;auto&quot;&gt;
+              &lt;path d=&quot;M 0 0 L 12 6 L 0 12 z&quot; fill=&quot;#44382d&quot;&gt;&lt;/path&gt;
+            &lt;/marker&gt;
+            &lt;marker id=&quot;arrow-safe&quot; markerWidth=&quot;12&quot; markerHeight=&quot;12&quot; refX=&quot;10&quot; refY=&quot;6&quot; orient=&quot;auto&quot;&gt;
+              &lt;path d=&quot;M 0 0 L 12 6 L 0 12 z&quot; fill=&quot;#2f7d50&quot;&gt;&lt;/path&gt;
+            &lt;/marker&gt;
+          &lt;/defs&gt;
+          &lt;path class=&quot;flow&quot; d=&quot;M 238 232 C 280 210 292 176 335 162&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;flow&quot; d=&quot;M 238 278 C 275 315 294 354 335 360&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;secure-flow&quot; d=&quot;M 525 360 C 575 358 595 332 638 318&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;secure-flow&quot; d=&quot;M 828 300 C 884 252 890 196 930 164&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;secure-flow&quot; d=&quot;M 828 350 C 880 372 890 392 930 394&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;secure-flow&quot; d=&quot;M 1035 226 C 1040 270 1040 298 1035 330&quot;&gt;&lt;/path&gt;
+        &lt;/svg&gt;
+
+        &lt;div class=&quot;zone client-zone&quot;&gt;
+          &lt;p class=&quot;zone-title&quot;&gt;Cliente&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;zone vercel-zone&quot;&gt;
+          &lt;p class=&quot;zone-title&quot;&gt;Vercel CDN / Static Hosting&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;zone render-zone&quot;&gt;
+          &lt;p class=&quot;zone-title&quot;&gt;Render / Node Runtime&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;zone supabase-zone&quot;&gt;
+          &lt;p class=&quot;zone-title&quot;&gt;Supabase Cloud&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;article class=&quot;node browser&quot;&gt;
+          &lt;h2&gt;Navegador&lt;/h2&gt;
+          &lt;p&gt;Usuario/admin. Mantiene sesion Supabase y envia JWT como Bearer token.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node vercel&quot;&gt;
+          &lt;h2&gt;Sitio Astro&lt;/h2&gt;
+          &lt;p&gt;Paginas estaticas, assets y panel admin servido desde Vercel.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node admin&quot;&gt;
+          &lt;h2&gt;Admin JS&lt;/h2&gt;
+          &lt;p&gt;Login con Supabase Auth, escape HTML y llamadas API con Authorization.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node api&quot;&gt;
+          &lt;h2&gt;API Parcial&lt;/h2&gt;
+          &lt;p&gt;Express: Helmet, CORS, requireAuth, validacion y reglas de negocio.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node security&quot;&gt;
+          &lt;h2&gt;Controles&lt;/h2&gt;
+          &lt;p&gt;Query Builder, RLS, JWT, XSS validation, service key solo server-side.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node auth&quot;&gt;
+          &lt;h2&gt;Supabase Auth&lt;/h2&gt;
+          &lt;p&gt;Gestiona credenciales, hashes internos, sesiones y emision de JWT.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node postgres&quot;&gt;
+          &lt;h2&gt;Postgres + RLS&lt;/h2&gt;
+          &lt;p&gt;Tablas profiles, bookings y role_change_requests con politicas por fila.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;span class=&quot;label l1&quot;&gt;GET HTML, JS y CSS desde Vercel&lt;/span&gt;
+        &lt;span class=&quot;label l2&quot;&gt;signIn/signUp y sesion en navegador&lt;/span&gt;
+        &lt;span class=&quot;label l3&quot;&gt;fetch /api con Bearer JWT&lt;/span&gt;
+        &lt;span class=&quot;label l4&quot;&gt;validacion de token&lt;/span&gt;
+        &lt;span class=&quot;label l5&quot;&gt;consultas parametrizadas via Query Builder&lt;/span&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;legend&quot; aria-label=&quot;Leyenda&quot;&gt;
+        &lt;div&gt;&lt;strong&gt;Confidencialidad&lt;/strong&gt;JWT y service role key no se exponen en repositorio; password vive en Supabase Auth.&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Integridad&lt;/strong&gt;Servicios validan dominio; repositorios no concatenan SQL.&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Disponibilidad&lt;/strong&gt;Frontend estatico y API separada reducen acoplamiento operacional.&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Auditoria&lt;/strong&gt;Repositorios, servicios y tests muestran evidencia de controles.&lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/main&gt;
+    &lt;script&gt;
+      (function initDiagramViewer() {
+        const title = document.title.toLowerCase();
+        let target = document.querySelector(&#39;.diagram, .canvas&#39;);
+
+        if (!target &amp;&amp; document.querySelector(&#39;.triad&#39;)) {
+          const board = document.createElement(&#39;section&#39;);
+          board.className = &#39;matrix-canvas&#39;;
+          const first = document.querySelector(&#39;.triad&#39;);
+          first.before(board);
+          [&#39;.triad&#39;, &#39;.dashboard&#39;, &#39;.risk-map&#39;].forEach((selector) =&gt; {
+            const node = document.querySelector(selector);
+            if (node) board.append(node);
+          });
+          target = board;
+        }
+
+        if (!target || target.dataset.viewerReady === &#39;true&#39;) return;
+        target.dataset.viewerReady = &#39;true&#39;;
+
+        const baseWidth = title.includes(&#39;local&#39;) ? 1160 : title.includes(&#39;flujo&#39;) ? 1240 : title.includes(&#39;matriz&#39;) ? 1280 : 1180;
+        const configuredHeight = title.includes(&#39;flujo&#39;) ? 900 : title.includes(&#39;matriz&#39;) ? 980 : 720;
+
+        const toolbar = document.createElement(&#39;div&#39;);
+        toolbar.className = &#39;diagram-toolbar&#39;;
+        toolbar.innerHTML = &#39;&lt;div class=&quot;diagram-toolbar-title&quot;&gt;Visor interactivo&lt;/div&gt;&lt;div class=&quot;diagram-actions&quot;&gt;&lt;button type=&quot;button&quot; data-action=&quot;fit&quot;&gt;Ajustar&lt;/button&gt;&lt;button type=&quot;button&quot; data-action=&quot;out&quot;&gt;−&lt;/button&gt;&lt;span class=&quot;zoom-readout&quot;&gt;100%&lt;/span&gt;&lt;button type=&quot;button&quot; data-action=&quot;in&quot;&gt;+&lt;/button&gt;&lt;button type=&quot;button&quot; data-action=&quot;reset&quot;&gt;100%&lt;/button&gt;&lt;/div&gt;&#39;;
+
+        const viewport = document.createElement(&#39;div&#39;);
+        viewport.className = &#39;diagram-viewport&#39;;
+        viewport.setAttribute(&#39;aria-label&#39;, &#39;Lienzo con zoom, scroll y arrastre&#39;);
+
+        const stage = document.createElement(&#39;div&#39;);
+        stage.className = &#39;diagram-stage&#39;;
+
+        target.before(toolbar);
+        target.before(viewport);
+        viewport.append(stage);
+        stage.append(target);
+
+        target.style.width = baseWidth + &#39;px&#39;;
+        target.style.minHeight = configuredHeight + &#39;px&#39;;
+        const baseHeight = Math.max(configuredHeight, target.scrollHeight || configuredHeight);
+
+        const readout = toolbar.querySelector(&#39;.zoom-readout&#39;);
+        let scale = 1;
+
+        function applyScale(nextScale) {
+          scale = Math.max(0.35, Math.min(2.4, nextScale));
+          target.style.transform = &#39;scale(&#39; + scale + &#39;)&#39;;
+          stage.style.width = Math.ceil(baseWidth * scale) + &#39;px&#39;;
+          stage.style.height = Math.ceil(baseHeight * scale) + &#39;px&#39;;
+          readout.textContent = Math.round(scale * 100) + &#39;%&#39;;
+        }
+
+        function fit() {
+          const availableW = Math.max(320, viewport.clientWidth - 18);
+          const availableH = Math.max(320, viewport.clientHeight - 18);
+          applyScale(Math.min(1, availableW / baseWidth, availableH / baseHeight));
+          viewport.scrollLeft = Math.max(0, (stage.offsetWidth - viewport.clientWidth) / 2);
+          viewport.scrollTop = 0;
+        }
+
+        toolbar.addEventListener(&#39;click&#39;, (event) =&gt; {
+          const button = event.target.closest(&#39;button[data-action]&#39;);
+          if (!button) return;
+          const action = button.dataset.action;
+          if (action === &#39;fit&#39;) fit();
+          if (action === &#39;in&#39;) applyScale(scale + 0.12);
+          if (action === &#39;out&#39;) applyScale(scale - 0.12);
+          if (action === &#39;reset&#39;) applyScale(1);
+        });
+
+        let dragging = false;
+        let startX = 0;
+        let startY = 0;
+        let startLeft = 0;
+        let startTop = 0;
+
+        viewport.addEventListener(&#39;pointerdown&#39;, (event) =&gt; {
+          if (event.button !== 0) return;
+          dragging = true;
+          viewport.classList.add(&#39;is-dragging&#39;);
+          viewport.setPointerCapture(event.pointerId);
+          startX = event.clientX;
+          startY = event.clientY;
+          startLeft = viewport.scrollLeft;
+          startTop = viewport.scrollTop;
+        });
+
+        viewport.addEventListener(&#39;pointermove&#39;, (event) =&gt; {
+          if (!dragging) return;
+          viewport.scrollLeft = startLeft - (event.clientX - startX);
+          viewport.scrollTop = startTop - (event.clientY - startY);
+        });
+
+        function endDrag(event) {
+          dragging = false;
+          viewport.classList.remove(&#39;is-dragging&#39;);
+          if (event.pointerId !== undefined &amp;&amp; viewport.hasPointerCapture(event.pointerId)) {
+            viewport.releasePointerCapture(event.pointerId);
+          }
+        }
+
+        viewport.addEventListener(&#39;pointerup&#39;, endDrag);
+        viewport.addEventListener(&#39;pointercancel&#39;, endDrag);
+        window.addEventListener(&#39;resize&#39;, fit);
+        requestAnimationFrame(fit);
+      })();
+    &lt;/script&gt;
+
+  &lt;/body&gt;
+&lt;/html&gt;
+" loading="lazy"></iframe>
+  </div>
+  <p class="diagram-link">Archivo fuente embebido: <code>docs/diagrams/security-cloud-architecture.html</code></p>
+</section>
+
+<section class="diagram-section" id="diagrama-2">
+  <div class="section-kicker">Diagrama 2</div>
+  <div class="diagram-heading">
+    <div class="icon-badge">2</div>
+    <div>
+      <h2>Arquitectura Local de Desarrollo</h2>
+      <p>Ambiente local con Astro, proxy Vite, Express y Supabase remoto.</p>
+    </div>
+  </div>
+  <div class="diagram-frame">
+    <iframe title="Arquitectura Local de Desarrollo" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;es&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+    &lt;title&gt;Arquitectura Local - La Ragazza Web&lt;/title&gt;
+    &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; /&gt;
+    &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin /&gt;
+    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&amp;family=Lora:ital,wght@0,400..700;1,400..700&amp;display=swap&quot; rel=&quot;stylesheet&quot; /&gt;
+    &lt;style&gt;
+      :root {
+        color-scheme: light;
+        --bg: #f4f6f1;
+        --ink: #1f241f;
+        --muted: #657066;
+        --line: #aab5a8;
+        --local: #486f49;
+        --api: #8d3d35;
+        --supabase: #395f85;
+        --config: #7b642e;
+        --safe: #2f7d50;
+        --card: #fffef8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: &quot;Lora&quot;, Georgia, serif;
+        font-feature-settings: &quot;liga&quot; 1, &quot;kern&quot; 1;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      main {
+        width: min(1160px, calc(100vw - 48px));
+        margin: 0 auto;
+        padding: 36px 0 44px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 4vw, 42px);
+      }
+
+      .subtitle {
+        margin: 0 0 28px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      .diagram {
+        position: relative;
+        min-height: 720px;
+        border: 1px solid var(--line);
+        background: #fffef8;
+        overflow: hidden;
+      }
+
+      .zone {
+        position: absolute;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.72);
+        padding: 14px;
+      }
+
+      .zone-title {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .machine-zone {
+        left: 28px;
+        top: 52px;
+        width: 765px;
+        height: 610px;
+      }
+
+      .remote-zone {
+        left: 835px;
+        top: 52px;
+        width: 290px;
+        height: 610px;
+      }
+
+      .node {
+        position: absolute;
+        width: 210px;
+        min-height: 82px;
+        border: 2px solid currentColor;
+        background: var(--card);
+        padding: 14px;
+        box-shadow: 0 10px 22px rgba(33, 49, 36, 0.1);
+      }
+
+      .node h2 {
+        margin: 0 0 8px;
+        font-size: 15px;
+      }
+
+      .node p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .browser {
+        left: 64px;
+        top: 160px;
+        color: var(--local);
+      }
+
+      .astro {
+        left: 332px;
+        top: 116px;
+        color: var(--local);
+      }
+
+      .proxy {
+        left: 332px;
+        top: 300px;
+        color: var(--config);
+      }
+
+      .express {
+        left: 586px;
+        top: 238px;
+        color: var(--api);
+      }
+
+      .env {
+        left: 322px;
+        top: 492px;
+        color: var(--config);
+      }
+
+      .auth {
+        left: 875px;
+        top: 150px;
+        color: var(--supabase);
+      }
+
+      .db {
+        left: 875px;
+        top: 370px;
+        color: var(--supabase);
+      }
+
+      svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .flow {
+        fill: none;
+        stroke: #354135;
+        stroke-width: 2.5;
+        marker-end: url(#arrow);
+      }
+
+      .secure-flow {
+        fill: none;
+        stroke: var(--safe);
+        stroke-width: 2.5;
+        stroke-dasharray: 8 6;
+        marker-end: url(#arrow-safe);
+      }
+
+      .label {
+        position: absolute;
+        display: inline-block;
+        max-width: 180px;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        background: #fffef8;
+        font-size: 11px;
+        line-height: 1.25;
+      }
+
+      .l1 {
+        left: 70px;
+        top: 290px;
+      }
+
+      .l2 {
+        left: 340px;
+        top: 425px;
+      }
+
+      .l3 {
+        left: 875px;
+        top: 285px;
+      }
+
+      .l4 {
+        left: 875px;
+        top: 560px;
+      }
+
+      .l5 {
+        left: 74px;
+        top: 584px;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .legend div {
+        border: 1px solid var(--line);
+        background: var(--card);
+        padding: 10px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .legend strong {
+        display: block;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+
+      @media (max-width: 900px) {
+        main {
+          width: calc(100vw - 24px);
+        }
+
+        .diagram {
+          overflow-x: auto;
+        }
+
+        .legend {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      h1,
+      .zone-title,
+      .lane h2,
+      .node h2,
+      .step h3,
+      .panel h2,
+      .triad-card h3,
+      .flow-step h3,
+      .note h3,
+      .legend strong {
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .subtitle,
+      .node p,
+      .step p,
+      .note p,
+      .legend div,
+      .label,
+      td,
+      th,
+      .control span,
+      .flow-step p,
+      .triad-card p {
+        font-family: &quot;Lora&quot;, Georgia, serif;
+      }
+
+      .diagram-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0 0 12px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        background: rgba(255, 253, 248, 0.86);
+      }
+
+      .diagram-toolbar-title {
+        color: var(--muted);
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .diagram-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .diagram-actions button,
+      .zoom-readout {
+        min-height: 32px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        color: var(--ink);
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .diagram-actions button {
+        cursor: pointer;
+        padding: 0 10px;
+      }
+
+      .diagram-actions button:hover {
+        background: var(--card, #fffaf2);
+      }
+
+      .zoom-readout {
+        display: inline-grid;
+        place-items: center;
+        min-width: 56px;
+        padding: 0 8px;
+      }
+
+      .diagram-viewport {
+        width: 100%;
+        height: min(76vh, 780px);
+        min-height: 520px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        overflow: auto;
+        cursor: grab;
+        overscroll-behavior: contain;
+        touch-action: none;
+      }
+
+      .diagram-viewport.is-dragging {
+        cursor: grabbing;
+        user-select: none;
+      }
+
+      .diagram-stage {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+      }
+
+      .diagram,
+      .canvas,
+      .matrix-canvas {
+        transform-origin: 0 0;
+      }
+
+      .matrix-canvas {
+        width: 1280px;
+        padding: 0;
+        background: var(--paper);
+      }
+
+      .label {
+        z-index: 8;
+        box-shadow: 0 8px 18px rgba(56, 41, 27, 0.08);
+      }
+
+      @media print {
+        .diagram-toolbar {
+          display: none;
+        }
+        .diagram-viewport {
+          height: auto;
+          min-height: 0;
+          overflow: visible;
+          border: 0;
+        }
+      }
+
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;main&gt;
+      &lt;h1&gt;Arquitectura Local de Desarrollo&lt;/h1&gt;
+      &lt;p class=&quot;subtitle&quot;&gt;
+        Flujo local con Astro en puerto 4321, Express en puerto 3001 y Supabase remoto para Auth/Postgres.
+      &lt;/p&gt;
+
+      &lt;section class=&quot;diagram&quot; aria-label=&quot;Diagrama de arquitectura local&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 1160 720&quot; role=&quot;img&quot; aria-label=&quot;Flujos locales de desarrollo&quot;&gt;
+          &lt;defs&gt;
+            &lt;marker id=&quot;arrow&quot; markerWidth=&quot;12&quot; markerHeight=&quot;12&quot; refX=&quot;10&quot; refY=&quot;6&quot; orient=&quot;auto&quot;&gt;
+              &lt;path d=&quot;M 0 0 L 12 6 L 0 12 z&quot; fill=&quot;#354135&quot;&gt;&lt;/path&gt;
+            &lt;/marker&gt;
+            &lt;marker id=&quot;arrow-safe&quot; markerWidth=&quot;12&quot; markerHeight=&quot;12&quot; refX=&quot;10&quot; refY=&quot;6&quot; orient=&quot;auto&quot;&gt;
+              &lt;path d=&quot;M 0 0 L 12 6 L 0 12 z&quot; fill=&quot;#2f7d50&quot;&gt;&lt;/path&gt;
+            &lt;/marker&gt;
+          &lt;/defs&gt;
+          &lt;path class=&quot;flow&quot; d=&quot;M 274 198 C 300 178 312 166 332 160&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;flow&quot; d=&quot;M 440 198 C 450 244 450 276 440 300&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;flow&quot; d=&quot;M 542 340 C 565 328 575 305 586 292&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;secure-flow&quot; d=&quot;M 796 276 C 835 250 846 206 875 196&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;secure-flow&quot; d=&quot;M 796 322 C 842 352 846 415 875 420&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;flow&quot; d=&quot;M 488 492 C 540 450 570 386 586 322&quot;&gt;&lt;/path&gt;
+        &lt;/svg&gt;
+
+        &lt;div class=&quot;zone machine-zone&quot;&gt;
+          &lt;p class=&quot;zone-title&quot;&gt;Maquina local del desarrollador&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;zone remote-zone&quot;&gt;
+          &lt;p class=&quot;zone-title&quot;&gt;Supabase remoto&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;article class=&quot;node browser&quot;&gt;
+          &lt;h2&gt;Browser local&lt;/h2&gt;
+          &lt;p&gt;Abre localhost:4321/admin y mantiene la sesion del usuario.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node astro&quot;&gt;
+          &lt;h2&gt;Astro Dev Server&lt;/h2&gt;
+          &lt;p&gt;Sirve sitio y admin en localhost:4321 con proxy Vite para /api.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node proxy&quot;&gt;
+          &lt;h2&gt;Vite Proxy&lt;/h2&gt;
+          &lt;p&gt;Redirige /api hacia http://localhost:3001 durante desarrollo.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node express&quot;&gt;
+          &lt;h2&gt;Express API&lt;/h2&gt;
+          &lt;p&gt;Valida JWT, aplica servicios y ejecuta Query Builder.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node env&quot;&gt;
+          &lt;h2&gt;.env local&lt;/h2&gt;
+          &lt;p&gt;SUPABASE_URL, anon key y opcional service role solo para API.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node auth&quot;&gt;
+          &lt;h2&gt;Supabase Auth&lt;/h2&gt;
+          &lt;p&gt;Login, signup, hash interno de Contraseñas y JWT.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;node db&quot;&gt;
+          &lt;h2&gt;Supabase Postgres&lt;/h2&gt;
+          &lt;p&gt;RLS y tablas profiles, bookings, role_change_requests.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;span class=&quot;label l1&quot;&gt;HTML/JS local&lt;/span&gt;
+        &lt;span class=&quot;label l2&quot;&gt;/api proxied&lt;/span&gt;
+        &lt;span class=&quot;label l3&quot;&gt;getUser(token)&lt;/span&gt;
+        &lt;span class=&quot;label l4&quot;&gt;Query Builder + RLS&lt;/span&gt;
+        &lt;span class=&quot;label l5&quot;&gt;config local sin commitear&lt;/span&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;legend&quot; aria-label=&quot;Leyenda&quot;&gt;
+        &lt;div&gt;&lt;strong&gt;Cloud externo&lt;/strong&gt;Incluso localmente Auth y Postgres pueden seguir estando en Supabase cloud.&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Proxy dev&lt;/strong&gt;El navegador llama /api y Astro lo envia a Express local.&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Seguridad equivalente&lt;/strong&gt;JWT, RLS, validacion y Query Builder se prueban igual que en cloud.&lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/main&gt;
+    &lt;script&gt;
+      (function initDiagramViewer() {
+        const title = document.title.toLowerCase();
+        let target = document.querySelector(&#39;.diagram, .canvas&#39;);
+
+        if (!target &amp;&amp; document.querySelector(&#39;.triad&#39;)) {
+          const board = document.createElement(&#39;section&#39;);
+          board.className = &#39;matrix-canvas&#39;;
+          const first = document.querySelector(&#39;.triad&#39;);
+          first.before(board);
+          [&#39;.triad&#39;, &#39;.dashboard&#39;, &#39;.risk-map&#39;].forEach((selector) =&gt; {
+            const node = document.querySelector(selector);
+            if (node) board.append(node);
+          });
+          target = board;
+        }
+
+        if (!target || target.dataset.viewerReady === &#39;true&#39;) return;
+        target.dataset.viewerReady = &#39;true&#39;;
+
+        const baseWidth = title.includes(&#39;local&#39;) ? 1160 : title.includes(&#39;flujo&#39;) ? 1240 : title.includes(&#39;matriz&#39;) ? 1280 : 1180;
+        const configuredHeight = title.includes(&#39;flujo&#39;) ? 900 : title.includes(&#39;matriz&#39;) ? 980 : 720;
+
+        const toolbar = document.createElement(&#39;div&#39;);
+        toolbar.className = &#39;diagram-toolbar&#39;;
+        toolbar.innerHTML = &#39;&lt;div class=&quot;diagram-toolbar-title&quot;&gt;Visor interactivo&lt;/div&gt;&lt;div class=&quot;diagram-actions&quot;&gt;&lt;button type=&quot;button&quot; data-action=&quot;fit&quot;&gt;Ajustar&lt;/button&gt;&lt;button type=&quot;button&quot; data-action=&quot;out&quot;&gt;−&lt;/button&gt;&lt;span class=&quot;zoom-readout&quot;&gt;100%&lt;/span&gt;&lt;button type=&quot;button&quot; data-action=&quot;in&quot;&gt;+&lt;/button&gt;&lt;button type=&quot;button&quot; data-action=&quot;reset&quot;&gt;100%&lt;/button&gt;&lt;/div&gt;&#39;;
+
+        const viewport = document.createElement(&#39;div&#39;);
+        viewport.className = &#39;diagram-viewport&#39;;
+        viewport.setAttribute(&#39;aria-label&#39;, &#39;Lienzo con zoom, scroll y arrastre&#39;);
+
+        const stage = document.createElement(&#39;div&#39;);
+        stage.className = &#39;diagram-stage&#39;;
+
+        target.before(toolbar);
+        target.before(viewport);
+        viewport.append(stage);
+        stage.append(target);
+
+        target.style.width = baseWidth + &#39;px&#39;;
+        target.style.minHeight = configuredHeight + &#39;px&#39;;
+        const baseHeight = Math.max(configuredHeight, target.scrollHeight || configuredHeight);
+
+        const readout = toolbar.querySelector(&#39;.zoom-readout&#39;);
+        let scale = 1;
+
+        function applyScale(nextScale) {
+          scale = Math.max(0.35, Math.min(2.4, nextScale));
+          target.style.transform = &#39;scale(&#39; + scale + &#39;)&#39;;
+          stage.style.width = Math.ceil(baseWidth * scale) + &#39;px&#39;;
+          stage.style.height = Math.ceil(baseHeight * scale) + &#39;px&#39;;
+          readout.textContent = Math.round(scale * 100) + &#39;%&#39;;
+        }
+
+        function fit() {
+          const availableW = Math.max(320, viewport.clientWidth - 18);
+          const availableH = Math.max(320, viewport.clientHeight - 18);
+          applyScale(Math.min(1, availableW / baseWidth, availableH / baseHeight));
+          viewport.scrollLeft = Math.max(0, (stage.offsetWidth - viewport.clientWidth) / 2);
+          viewport.scrollTop = 0;
+        }
+
+        toolbar.addEventListener(&#39;click&#39;, (event) =&gt; {
+          const button = event.target.closest(&#39;button[data-action]&#39;);
+          if (!button) return;
+          const action = button.dataset.action;
+          if (action === &#39;fit&#39;) fit();
+          if (action === &#39;in&#39;) applyScale(scale + 0.12);
+          if (action === &#39;out&#39;) applyScale(scale - 0.12);
+          if (action === &#39;reset&#39;) applyScale(1);
+        });
+
+        let dragging = false;
+        let startX = 0;
+        let startY = 0;
+        let startLeft = 0;
+        let startTop = 0;
+
+        viewport.addEventListener(&#39;pointerdown&#39;, (event) =&gt; {
+          if (event.button !== 0) return;
+          dragging = true;
+          viewport.classList.add(&#39;is-dragging&#39;);
+          viewport.setPointerCapture(event.pointerId);
+          startX = event.clientX;
+          startY = event.clientY;
+          startLeft = viewport.scrollLeft;
+          startTop = viewport.scrollTop;
+        });
+
+        viewport.addEventListener(&#39;pointermove&#39;, (event) =&gt; {
+          if (!dragging) return;
+          viewport.scrollLeft = startLeft - (event.clientX - startX);
+          viewport.scrollTop = startTop - (event.clientY - startY);
+        });
+
+        function endDrag(event) {
+          dragging = false;
+          viewport.classList.remove(&#39;is-dragging&#39;);
+          if (event.pointerId !== undefined &amp;&amp; viewport.hasPointerCapture(event.pointerId)) {
+            viewport.releasePointerCapture(event.pointerId);
+          }
+        }
+
+        viewport.addEventListener(&#39;pointerup&#39;, endDrag);
+        viewport.addEventListener(&#39;pointercancel&#39;, endDrag);
+        window.addEventListener(&#39;resize&#39;, fit);
+        requestAnimationFrame(fit);
+      })();
+    &lt;/script&gt;
+
+  &lt;/body&gt;
+&lt;/html&gt;
+" loading="lazy"></iframe>
+  </div>
+  <p class="diagram-link">Archivo fuente embebido: <code>docs/diagrams/security-local-architecture.html</code></p>
+</section>
+
+<section class="diagram-section" id="diagrama-3">
+  <div class="section-kicker">Diagrama 3</div>
+  <div class="diagram-heading">
+    <div class="icon-badge">3</div>
+    <div>
+      <h2>Flujo Seguro Admin/API/RLS</h2>
+      <p>Secuencia completa desde login hasta render seguro en el panel administrativo.</p>
+    </div>
+  </div>
+  <div class="diagram-frame">
+    <iframe title="Flujo Seguro Admin/API/RLS" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;es&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+    &lt;title&gt;Flujo Seguro Admin/API/RLS - La Ragazza Web&lt;/title&gt;
+    &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; /&gt;
+    &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin /&gt;
+    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&amp;family=Lora:ital,wght@0,400..700;1,400..700&amp;display=swap&quot; rel=&quot;stylesheet&quot; /&gt;
+    &lt;style&gt;
+      :root {
+        --bg: #f6f1e8;
+        --paper: #fffdf8;
+        --ink: #241d18;
+        --muted: #665b51;
+        --line: #b8a998;
+        --browser: #8a6729;
+        --supabase: #4d6f45;
+        --api: #8d3d35;
+        --db: #325e86;
+        --security: #2f7d50;
+        --warn: #9b4b2f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: &quot;Lora&quot;, Georgia, serif;
+        font-feature-settings: &quot;liga&quot; 1, &quot;kern&quot; 1;
+      }
+
+      main {
+        width: min(1240px, calc(100vw - 40px));
+        margin: 0 auto;
+        padding: 34px 0 42px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 4vw, 44px);
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        margin: 0 0 22px;
+        max-width: 900px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .canvas {
+        position: relative;
+        min-height: 900px;
+        border: 1px solid var(--line);
+        background: var(--paper);
+        overflow: hidden;
+      }
+
+      .lane {
+        position: absolute;
+        top: 24px;
+        bottom: 24px;
+        border: 1px solid var(--line);
+        background: rgba(255, 250, 242, 0.72);
+        padding: 12px;
+      }
+
+      .lane h2 {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .lane.browser-lane {
+        left: 24px;
+        width: 250px;
+      }
+
+      .lane.auth-lane {
+        left: 298px;
+        width: 250px;
+      }
+
+      .lane.api-lane {
+        left: 572px;
+        width: 300px;
+      }
+
+      .lane.db-lane {
+        left: 896px;
+        width: 320px;
+      }
+
+      .step {
+        position: absolute;
+        width: 210px;
+        min-height: 92px;
+        padding: 13px;
+        border: 2px solid currentColor;
+        background: #fffaf2;
+        box-shadow: 0 10px 22px rgba(56, 41, 27, 0.1);
+      }
+
+      .step h3 {
+        margin: 0 0 7px;
+        font-size: 14px;
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .b1 { left: 44px; top: 92px; color: var(--browser); }
+      .b2 { left: 44px; top: 262px; color: var(--browser); }
+      .b3 { left: 44px; top: 456px; color: var(--browser); }
+      .b4 { left: 44px; top: 682px; color: var(--browser); }
+
+      .a1 { left: 318px; top: 92px; color: var(--supabase); }
+      .a2 { left: 318px; top: 262px; color: var(--supabase); }
+
+      .p1 { left: 602px; top: 260px; color: var(--api); width: 238px; }
+      .p2 { left: 602px; top: 410px; color: var(--security); width: 238px; }
+      .p3 { left: 602px; top: 560px; color: var(--api); width: 238px; }
+      .p4 { left: 602px; top: 710px; color: var(--security); width: 238px; }
+
+      .d1 { left: 928px; top: 160px; color: var(--supabase); width: 250px; }
+      .d2 { left: 928px; top: 380px; color: var(--db); width: 250px; }
+      .d3 { left: 928px; top: 602px; color: var(--db); width: 250px; }
+
+      svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .arrow {
+        fill: none;
+        stroke: #3b3029;
+        stroke-width: 2.4;
+        marker-end: url(#arrow);
+      }
+
+      .safe {
+        fill: none;
+        stroke: var(--security);
+        stroke-width: 2.6;
+        stroke-dasharray: 8 6;
+        marker-end: url(#arrow-safe);
+      }
+
+      .reject {
+        fill: none;
+        stroke: var(--warn);
+        stroke-width: 2.3;
+        stroke-dasharray: 5 5;
+        marker-end: url(#arrow-warn);
+      }
+
+      .label {
+        position: absolute;
+        max-width: 190px;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        color: var(--ink);
+        font-size: 11px;
+        line-height: 1.25;
+      }
+
+      .l1 { left: 56px; top: 206px; }
+      .l2 { left: 324px; top: 400px; }
+      .l3 { left: 56px; top: 590px; }
+      .l4 { left: 604px; top: 368px; }
+      .l5 { left: 904px; top: 302px; }
+      .l6 { left: 904px; top: 530px; }
+      .l7 { left: 900px; top: 780px; color: var(--warn); }
+
+      .notes {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .note {
+        border: 1px solid var(--line);
+        background: var(--paper);
+        padding: 12px;
+      }
+
+      .note h3 {
+        margin: 0 0 6px;
+        font-size: 13px;
+      }
+
+      .note p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      @media (max-width: 900px) {
+        main {
+          width: calc(100vw - 24px);
+        }
+
+        .canvas {
+          overflow-x: auto;
+        }
+
+        .notes {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      h1,
+      .zone-title,
+      .lane h2,
+      .node h2,
+      .step h3,
+      .panel h2,
+      .triad-card h3,
+      .flow-step h3,
+      .note h3,
+      .legend strong {
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .subtitle,
+      .node p,
+      .step p,
+      .note p,
+      .legend div,
+      .label,
+      td,
+      th,
+      .control span,
+      .flow-step p,
+      .triad-card p {
+        font-family: &quot;Lora&quot;, Georgia, serif;
+      }
+
+      .diagram-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0 0 12px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        background: rgba(255, 253, 248, 0.86);
+      }
+
+      .diagram-toolbar-title {
+        color: var(--muted);
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .diagram-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .diagram-actions button,
+      .zoom-readout {
+        min-height: 32px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        color: var(--ink);
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .diagram-actions button {
+        cursor: pointer;
+        padding: 0 10px;
+      }
+
+      .diagram-actions button:hover {
+        background: var(--card, #fffaf2);
+      }
+
+      .zoom-readout {
+        display: inline-grid;
+        place-items: center;
+        min-width: 56px;
+        padding: 0 8px;
+      }
+
+      .diagram-viewport {
+        width: 100%;
+        height: min(76vh, 780px);
+        min-height: 520px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        overflow: auto;
+        cursor: grab;
+        overscroll-behavior: contain;
+        touch-action: none;
+      }
+
+      .diagram-viewport.is-dragging {
+        cursor: grabbing;
+        user-select: none;
+      }
+
+      .diagram-stage {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+      }
+
+      .diagram,
+      .canvas,
+      .matrix-canvas {
+        transform-origin: 0 0;
+      }
+
+      .matrix-canvas {
+        width: 1280px;
+        padding: 0;
+        background: var(--paper);
+      }
+
+      .label {
+        z-index: 8;
+        box-shadow: 0 8px 18px rgba(56, 41, 27, 0.08);
+      }
+
+      @media print {
+        .diagram-toolbar {
+          display: none;
+        }
+        .diagram-viewport {
+          height: auto;
+          min-height: 0;
+          overflow: visible;
+          border: 0;
+        }
+      }
+
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;main&gt;
+      &lt;h1&gt;Flujo seguro Admin → API → Supabase/RLS&lt;/h1&gt;
+      &lt;p class=&quot;subtitle&quot;&gt;
+        Diagrama de secuencia funcional para explicar como una accion del panel admin se autentica, se valida, se consulta con Query Builder y se restringe con RLS.
+      &lt;/p&gt;
+
+      &lt;section class=&quot;canvas&quot; aria-label=&quot;Flujo seguro del panel administrativo&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 1240 900&quot; role=&quot;img&quot; aria-label=&quot;Secuencia de autenticacion, API, validacion y RLS&quot;&gt;
+          &lt;defs&gt;
+            &lt;marker id=&quot;arrow&quot; markerWidth=&quot;12&quot; markerHeight=&quot;12&quot; refX=&quot;10&quot; refY=&quot;6&quot; orient=&quot;auto&quot;&gt;
+              &lt;path d=&quot;M 0 0 L 12 6 L 0 12 z&quot; fill=&quot;#3b3029&quot;&gt;&lt;/path&gt;
+            &lt;/marker&gt;
+            &lt;marker id=&quot;arrow-safe&quot; markerWidth=&quot;12&quot; markerHeight=&quot;12&quot; refX=&quot;10&quot; refY=&quot;6&quot; orient=&quot;auto&quot;&gt;
+              &lt;path d=&quot;M 0 0 L 12 6 L 0 12 z&quot; fill=&quot;#2f7d50&quot;&gt;&lt;/path&gt;
+            &lt;/marker&gt;
+            &lt;marker id=&quot;arrow-warn&quot; markerWidth=&quot;12&quot; markerHeight=&quot;12&quot; refX=&quot;10&quot; refY=&quot;6&quot; orient=&quot;auto&quot;&gt;
+              &lt;path d=&quot;M 0 0 L 12 6 L 0 12 z&quot; fill=&quot;#9b4b2f&quot;&gt;&lt;/path&gt;
+            &lt;/marker&gt;
+          &lt;/defs&gt;
+
+          &lt;path class=&quot;arrow&quot; d=&quot;M 254 138 C 282 138 290 138 318 138&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;arrow&quot; d=&quot;M 424 184 C 424 214 424 232 424 262&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;safe&quot; d=&quot;M 318 308 C 286 308 286 308 254 308&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;safe&quot; d=&quot;M 254 506 C 420 506 455 308 602 308&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;safe&quot; d=&quot;M 840 310 C 880 285 892 220 928 206&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;safe&quot; d=&quot;M 720 352 C 720 380 720 392 720 410&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;safe&quot; d=&quot;M 840 460 C 884 462 892 430 928 426&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;safe&quot; d=&quot;M 720 502 C 720 532 720 544 720 560&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;safe&quot; d=&quot;M 840 612 C 880 612 895 644 928 648&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;safe&quot; d=&quot;M 720 652 C 720 682 720 696 720 710&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;safe&quot; d=&quot;M 602 760 C 470 804 350 776 254 728&quot;&gt;&lt;/path&gt;
+          &lt;path class=&quot;reject&quot; d=&quot;M 840 760 C 915 790 995 790 1070 720&quot;&gt;&lt;/path&gt;
+        &lt;/svg&gt;
+
+        &lt;div class=&quot;lane browser-lane&quot;&gt;&lt;h2&gt;Navegador/Admin&lt;/h2&gt;&lt;/div&gt;
+        &lt;div class=&quot;lane auth-lane&quot;&gt;&lt;h2&gt;Supabase Auth&lt;/h2&gt;&lt;/div&gt;
+        &lt;div class=&quot;lane api-lane&quot;&gt;&lt;h2&gt;API Parcial Express&lt;/h2&gt;&lt;/div&gt;
+        &lt;div class=&quot;lane db-lane&quot;&gt;&lt;h2&gt;Supabase/Postgres&lt;/h2&gt;&lt;/div&gt;
+
+        &lt;article class=&quot;step b1&quot;&gt;
+          &lt;h3&gt;1. Carga admin&lt;/h3&gt;
+          &lt;p&gt;El browser recibe HTML/JS desde Vercel y crea el cliente Supabase publico.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step a1&quot;&gt;
+          &lt;h3&gt;2. Login/signup&lt;/h3&gt;
+          &lt;p&gt;Supabase Auth recibe email/password, valida credenciales y administra hashes internos.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step a2&quot;&gt;
+          &lt;h3&gt;3. Sesion + JWT&lt;/h3&gt;
+          &lt;p&gt;Devuelve access token. La app no almacena passwords en tablas propias.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step b2&quot;&gt;
+          &lt;h3&gt;4. Sesion local&lt;/h3&gt;
+          &lt;p&gt;El navegador guarda la sesion Supabase y la refresca automaticamente.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step b3&quot;&gt;
+          &lt;h3&gt;5. Accion admin&lt;/h3&gt;
+          &lt;p&gt;Reserva, consulta o solicitud. El fetch incluye Authorization: Bearer JWT.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step p1&quot;&gt;
+          &lt;h3&gt;6. requireAuth&lt;/h3&gt;
+          &lt;p&gt;Extrae Bearer token, llama getUser(token) y carga profile con role.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step p2&quot;&gt;
+          &lt;h3&gt;7. Validacion&lt;/h3&gt;
+          &lt;p&gt;Servicios validan dominio, longitudes, fechas, roles y rechazo de markup HTML.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step p3&quot;&gt;
+          &lt;h3&gt;8. Repositorio&lt;/h3&gt;
+          &lt;p&gt;Usa Supabase Query Builder: insert, update, select, eq, in. No SQL crudo.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step p4&quot;&gt;
+          &lt;h3&gt;10. Respuesta segura&lt;/h3&gt;
+          &lt;p&gt;Devuelve JSON. El admin escapa datos con escapeHtml antes de renderizar.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step d1&quot;&gt;
+          &lt;h3&gt;Auth metadata&lt;/h3&gt;
+          &lt;p&gt;Supabase valida JWT y mantiene hash/encrypted password en esquema auth.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step d2&quot;&gt;
+          &lt;h3&gt;9. RLS&lt;/h3&gt;
+          &lt;p&gt;Postgres filtra filas segun auth.uid() y politicas de rol.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step d3&quot;&gt;
+          &lt;h3&gt;Datos&lt;/h3&gt;
+          &lt;p&gt;profiles, bookings y role_change_requests. Sin columna password propia.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;step b4&quot;&gt;
+          &lt;h3&gt;11. Render UI&lt;/h3&gt;
+          &lt;p&gt;textContent para mensajes, .value para formularios y escapeHtml para plantillas.&lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;span class=&quot;label l1&quot;&gt;Credenciales solo hacia Supabase Auth&lt;/span&gt;
+        &lt;span class=&quot;label l2&quot;&gt;JWT emitido por Supabase&lt;/span&gt;
+        &lt;span class=&quot;label l3&quot;&gt;Bearer token en API calls&lt;/span&gt;
+        &lt;span class=&quot;label l4&quot;&gt;Validacion de identidad&lt;/span&gt;
+        &lt;span class=&quot;label l5&quot;&gt;Consulta parametrizada&lt;/span&gt;
+        &lt;span class=&quot;label l6&quot;&gt;RLS decide filas visibles/modificables&lt;/span&gt;
+        &lt;span class=&quot;label l7&quot;&gt;401/403/400 si falla auth, rol o validacion&lt;/span&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;notes&quot;&gt;
+        &lt;article class=&quot;note&quot;&gt;
+          &lt;h3&gt;Password handling&lt;/h3&gt;
+          &lt;p&gt;La app nunca compara ni guarda passwords. Supabase Auth controla credenciales y emite tokens.&lt;/p&gt;
+        &lt;/article&gt;
+        &lt;article class=&quot;note&quot;&gt;
+          &lt;h3&gt;Prepared statements&lt;/h3&gt;
+          &lt;p&gt;En este stack, el Query Builder separa estructura y valores, evitando SQL interpolado.&lt;/p&gt;
+        &lt;/article&gt;
+        &lt;article class=&quot;note&quot;&gt;
+          &lt;h3&gt;XSS&lt;/h3&gt;
+          &lt;p&gt;Campos libres rechazan markup en backend y se escapan antes de renderizar en admin.&lt;/p&gt;
+        &lt;/article&gt;
+        &lt;article class=&quot;note&quot;&gt;
+          &lt;h3&gt;RLS&lt;/h3&gt;
+          &lt;p&gt;Postgres aplica politicas por fila bajo el contexto del JWT del usuario.&lt;/p&gt;
+        &lt;/article&gt;
+      &lt;/section&gt;
+    &lt;/main&gt;
+    &lt;script&gt;
+      (function initDiagramViewer() {
+        const title = document.title.toLowerCase();
+        let target = document.querySelector(&#39;.diagram, .canvas&#39;);
+
+        if (!target &amp;&amp; document.querySelector(&#39;.triad&#39;)) {
+          const board = document.createElement(&#39;section&#39;);
+          board.className = &#39;matrix-canvas&#39;;
+          const first = document.querySelector(&#39;.triad&#39;);
+          first.before(board);
+          [&#39;.triad&#39;, &#39;.dashboard&#39;, &#39;.risk-map&#39;].forEach((selector) =&gt; {
+            const node = document.querySelector(selector);
+            if (node) board.append(node);
+          });
+          target = board;
+        }
+
+        if (!target || target.dataset.viewerReady === &#39;true&#39;) return;
+        target.dataset.viewerReady = &#39;true&#39;;
+
+        const baseWidth = title.includes(&#39;local&#39;) ? 1160 : title.includes(&#39;flujo&#39;) ? 1240 : title.includes(&#39;matriz&#39;) ? 1280 : 1180;
+        const configuredHeight = title.includes(&#39;flujo&#39;) ? 900 : title.includes(&#39;matriz&#39;) ? 980 : 720;
+
+        const toolbar = document.createElement(&#39;div&#39;);
+        toolbar.className = &#39;diagram-toolbar&#39;;
+        toolbar.innerHTML = &#39;&lt;div class=&quot;diagram-toolbar-title&quot;&gt;Visor interactivo&lt;/div&gt;&lt;div class=&quot;diagram-actions&quot;&gt;&lt;button type=&quot;button&quot; data-action=&quot;fit&quot;&gt;Ajustar&lt;/button&gt;&lt;button type=&quot;button&quot; data-action=&quot;out&quot;&gt;−&lt;/button&gt;&lt;span class=&quot;zoom-readout&quot;&gt;100%&lt;/span&gt;&lt;button type=&quot;button&quot; data-action=&quot;in&quot;&gt;+&lt;/button&gt;&lt;button type=&quot;button&quot; data-action=&quot;reset&quot;&gt;100%&lt;/button&gt;&lt;/div&gt;&#39;;
+
+        const viewport = document.createElement(&#39;div&#39;);
+        viewport.className = &#39;diagram-viewport&#39;;
+        viewport.setAttribute(&#39;aria-label&#39;, &#39;Lienzo con zoom, scroll y arrastre&#39;);
+
+        const stage = document.createElement(&#39;div&#39;);
+        stage.className = &#39;diagram-stage&#39;;
+
+        target.before(toolbar);
+        target.before(viewport);
+        viewport.append(stage);
+        stage.append(target);
+
+        target.style.width = baseWidth + &#39;px&#39;;
+        target.style.minHeight = configuredHeight + &#39;px&#39;;
+        const baseHeight = Math.max(configuredHeight, target.scrollHeight || configuredHeight);
+
+        const readout = toolbar.querySelector(&#39;.zoom-readout&#39;);
+        let scale = 1;
+
+        function applyScale(nextScale) {
+          scale = Math.max(0.35, Math.min(2.4, nextScale));
+          target.style.transform = &#39;scale(&#39; + scale + &#39;)&#39;;
+          stage.style.width = Math.ceil(baseWidth * scale) + &#39;px&#39;;
+          stage.style.height = Math.ceil(baseHeight * scale) + &#39;px&#39;;
+          readout.textContent = Math.round(scale * 100) + &#39;%&#39;;
+        }
+
+        function fit() {
+          const availableW = Math.max(320, viewport.clientWidth - 18);
+          const availableH = Math.max(320, viewport.clientHeight - 18);
+          applyScale(Math.min(1, availableW / baseWidth, availableH / baseHeight));
+          viewport.scrollLeft = Math.max(0, (stage.offsetWidth - viewport.clientWidth) / 2);
+          viewport.scrollTop = 0;
+        }
+
+        toolbar.addEventListener(&#39;click&#39;, (event) =&gt; {
+          const button = event.target.closest(&#39;button[data-action]&#39;);
+          if (!button) return;
+          const action = button.dataset.action;
+          if (action === &#39;fit&#39;) fit();
+          if (action === &#39;in&#39;) applyScale(scale + 0.12);
+          if (action === &#39;out&#39;) applyScale(scale - 0.12);
+          if (action === &#39;reset&#39;) applyScale(1);
+        });
+
+        let dragging = false;
+        let startX = 0;
+        let startY = 0;
+        let startLeft = 0;
+        let startTop = 0;
+
+        viewport.addEventListener(&#39;pointerdown&#39;, (event) =&gt; {
+          if (event.button !== 0) return;
+          dragging = true;
+          viewport.classList.add(&#39;is-dragging&#39;);
+          viewport.setPointerCapture(event.pointerId);
+          startX = event.clientX;
+          startY = event.clientY;
+          startLeft = viewport.scrollLeft;
+          startTop = viewport.scrollTop;
+        });
+
+        viewport.addEventListener(&#39;pointermove&#39;, (event) =&gt; {
+          if (!dragging) return;
+          viewport.scrollLeft = startLeft - (event.clientX - startX);
+          viewport.scrollTop = startTop - (event.clientY - startY);
+        });
+
+        function endDrag(event) {
+          dragging = false;
+          viewport.classList.remove(&#39;is-dragging&#39;);
+          if (event.pointerId !== undefined &amp;&amp; viewport.hasPointerCapture(event.pointerId)) {
+            viewport.releasePointerCapture(event.pointerId);
+          }
+        }
+
+        viewport.addEventListener(&#39;pointerup&#39;, endDrag);
+        viewport.addEventListener(&#39;pointercancel&#39;, endDrag);
+        window.addEventListener(&#39;resize&#39;, fit);
+        requestAnimationFrame(fit);
+      })();
+    &lt;/script&gt;
+
+  &lt;/body&gt;
+&lt;/html&gt;
+" loading="lazy"></iframe>
+  </div>
+  <p class="diagram-link">Archivo fuente embebido: <code>docs/diagrams/admin-security-flow.html</code></p>
+</section>
+
+<section class="diagram-section" id="diagrama-4">
+  <div class="section-kicker">Diagrama 4</div>
+  <div class="diagram-heading">
+    <div class="icon-badge">4</div>
+    <div>
+      <h2>Matriz CIA y Controles</h2>
+      <p>Mapa ejecutivo de activos, controles, riesgos residuales y cadena de defensa.</p>
+    </div>
+  </div>
+  <div class="diagram-frame">
+    <iframe title="Matriz CIA y Controles" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;es&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+    &lt;title&gt;Matriz CIA y Controles - La Ragazza Web&lt;/title&gt;
+    &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; /&gt;
+    &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin /&gt;
+    &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&amp;family=Lora:ital,wght@0,400..700;1,400..700&amp;display=swap&quot; rel=&quot;stylesheet&quot; /&gt;
+    &lt;style&gt;
+      :root {
+        --bg: #f5f0e7;
+        --paper: #fffdf8;
+        --ink: #241d18;
+        --muted: #675d52;
+        --line: #b7a894;
+        --c: #2f5f8f;
+        --i: #2f7d50;
+        --a: #9b702f;
+        --risk: #9b3f35;
+        --ok: #2f7d50;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: &quot;Lora&quot;, Georgia, serif;
+        font-feature-settings: &quot;liga&quot; 1, &quot;kern&quot; 1;
+      }
+
+      main {
+        width: min(1280px, calc(100vw - 40px));
+        margin: 0 auto;
+        padding: 34px 0 42px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 4vw, 44px);
+      }
+
+      .subtitle {
+        margin: 0 0 24px;
+        color: var(--muted);
+        line-height: 1.55;
+        max-width: 980px;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 18px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        background: var(--paper);
+        padding: 18px;
+      }
+
+      .panel h2 {
+        margin: 0 0 14px;
+        font-size: 18px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 10px;
+        vertical-align: top;
+        text-align: left;
+      }
+
+      th {
+        background: #efe5d7;
+        color: var(--ink);
+        font-size: 12px;
+      }
+
+      td {
+        color: var(--muted);
+        line-height: 1.35;
+      }
+
+      .asset {
+        color: var(--ink);
+        font-weight: 800;
+      }
+
+      .score {
+        display: inline-block;
+        min-width: 58px;
+        padding: 4px 7px;
+        color: #fff;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .high { background: var(--risk); }
+      .medium { background: var(--a); }
+      .low { background: var(--ok); }
+
+      .triad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .triad-card {
+        border: 2px solid currentColor;
+        background: #fffaf2;
+        padding: 14px;
+        min-height: 150px;
+      }
+
+      .triad-card h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+      }
+
+      .triad-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .conf { color: var(--c); }
+      .integ { color: var(--i); }
+      .avail { color: var(--a); }
+
+      .control-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .control {
+        border: 1px solid var(--line);
+        background: #fffaf2;
+        padding: 12px;
+      }
+
+      .control strong {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--ink);
+      }
+
+      .control span {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .flow {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+      }
+
+      .flow-step {
+        position: relative;
+        border: 1px solid var(--line);
+        background: #fffaf2;
+        padding: 12px;
+        min-height: 112px;
+      }
+
+      .flow-step:not(:last-child)::after {
+        content: &quot;→&quot;;
+        position: absolute;
+        right: -18px;
+        top: 38px;
+        color: var(--muted);
+        font-weight: 900;
+        font-size: 20px;
+      }
+
+      .flow-step h3 {
+        margin: 0 0 6px;
+        font-size: 13px;
+      }
+
+      .flow-step p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .risk-map {
+        margin-top: 18px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 7px;
+        border: 1px solid currentColor;
+        color: var(--ink);
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      @media (max-width: 980px) {
+        main {
+          width: calc(100vw - 24px);
+        }
+
+        .dashboard,
+        .triad,
+        .flow {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-step:not(:last-child)::after {
+          display: none;
+        }
+      }
+
+      h1,
+      .zone-title,
+      .lane h2,
+      .node h2,
+      .step h3,
+      .panel h2,
+      .triad-card h3,
+      .flow-step h3,
+      .note h3,
+      .legend strong {
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .subtitle,
+      .node p,
+      .step p,
+      .note p,
+      .legend div,
+      .label,
+      td,
+      th,
+      .control span,
+      .flow-step p,
+      .triad-card p {
+        font-family: &quot;Lora&quot;, Georgia, serif;
+      }
+
+      .diagram-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0 0 12px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        background: rgba(255, 253, 248, 0.86);
+      }
+
+      .diagram-toolbar-title {
+        color: var(--muted);
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .diagram-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .diagram-actions button,
+      .zoom-readout {
+        min-height: 32px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        color: var(--ink);
+        font-family: &quot;Cinzel&quot;, Georgia, serif;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .diagram-actions button {
+        cursor: pointer;
+        padding: 0 10px;
+      }
+
+      .diagram-actions button:hover {
+        background: var(--card, #fffaf2);
+      }
+
+      .zoom-readout {
+        display: inline-grid;
+        place-items: center;
+        min-width: 56px;
+        padding: 0 8px;
+      }
+
+      .diagram-viewport {
+        width: 100%;
+        height: min(76vh, 780px);
+        min-height: 520px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        overflow: auto;
+        cursor: grab;
+        overscroll-behavior: contain;
+        touch-action: none;
+      }
+
+      .diagram-viewport.is-dragging {
+        cursor: grabbing;
+        user-select: none;
+      }
+
+      .diagram-stage {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+      }
+
+      .diagram,
+      .canvas,
+      .matrix-canvas {
+        transform-origin: 0 0;
+      }
+
+      .matrix-canvas {
+        width: 1280px;
+        padding: 0;
+        background: var(--paper);
+      }
+
+      .label {
+        z-index: 8;
+        box-shadow: 0 8px 18px rgba(56, 41, 27, 0.08);
+      }
+
+      @media print {
+        .diagram-toolbar {
+          display: none;
+        }
+        .diagram-viewport {
+          height: auto;
+          min-height: 0;
+          overflow: visible;
+          border: 0;
+        }
+      }
+
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;main&gt;
+      &lt;h1&gt;Matriz CIA, controles y riesgos residuales&lt;/h1&gt;
+      &lt;p class=&quot;subtitle&quot;&gt;
+        Vista de auditoria para explicar que activos se protegen, que propiedad de seguridad domina en cada caso y que controles concretos existen en el codigo o la arquitectura.
+      &lt;/p&gt;
+
+      &lt;section class=&quot;triad&quot; aria-label=&quot;Resumen CIA&quot;&gt;
+        &lt;article class=&quot;triad-card conf&quot;&gt;
+          &lt;h3&gt;Confidencialidad&lt;/h3&gt;
+          &lt;p&gt;
+            Protege secretos, sesiones, datos personales y credenciales. Se apoya en Supabase Auth, JWT,
+            RLS y en no exponer la service role key al frontend.
+          &lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;triad-card integ&quot;&gt;
+          &lt;h3&gt;Integridad&lt;/h3&gt;
+          &lt;p&gt;
+            Protege que los datos no sean alterados por usuarios no autorizados. Se apoya en validacion de
+            servicios, Query Builder, RLS y controles de rol.
+          &lt;/p&gt;
+        &lt;/article&gt;
+
+        &lt;article class=&quot;triad-card avail&quot;&gt;
+          &lt;h3&gt;Disponibilidad&lt;/h3&gt;
+          &lt;p&gt;
+            Protege que el sitio y el panel sigan operando. Se apoya en frontend estatico, API separada,
+            proveedores administrados y pruebas automatizadas.
+          &lt;/p&gt;
+        &lt;/article&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;dashboard&quot;&gt;
+        &lt;article class=&quot;panel&quot;&gt;
+          &lt;h2&gt;Matriz por activo&lt;/h2&gt;
+          &lt;table aria-label=&quot;Matriz CIA por activo&quot;&gt;
+            &lt;thead&gt;
+              &lt;tr&gt;
+                &lt;th&gt;Activo&lt;/th&gt;
+                &lt;th&gt;Confidencialidad&lt;/th&gt;
+                &lt;th&gt;Integridad&lt;/th&gt;
+                &lt;th&gt;Disponibilidad&lt;/th&gt;
+                &lt;th&gt;Controles principales&lt;/th&gt;
+                &lt;th&gt;Riesgo residual&lt;/th&gt;
+              &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+              &lt;tr&gt;
+                &lt;td class=&quot;asset&quot;&gt;Credenciales&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score medium&quot;&gt;Media&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;Supabase Auth; hash interno; la app no guarda password.&lt;/td&gt;
+                &lt;td&gt;Config incorrecta de Auth o mala gestion de cuentas.&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td class=&quot;asset&quot;&gt;JWT / sesion&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score medium&quot;&gt;Media&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;Bearer token; getUser(token); refresh client-side; HTTPS.&lt;/td&gt;
+                &lt;td&gt;Robo de token por dispositivo comprometido.&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td class=&quot;asset&quot;&gt;Service role key&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Critica&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Critica&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score medium&quot;&gt;Media&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;Solo API/server; no Vercel frontend; uso auditado en aprobacion de rol.&lt;/td&gt;
+                &lt;td&gt;Error operacional al copiar secretos al frontend.&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td class=&quot;asset&quot;&gt;profiles&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score medium&quot;&gt;Media&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score medium&quot;&gt;Media&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;RLS; auth.uid(); roles; Query Builder; service path controlado.&lt;/td&gt;
+                &lt;td&gt;Politicas RLS mal migradas.&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td class=&quot;asset&quot;&gt;bookings&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score medium&quot;&gt;Media&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;Validacion de fecha/personas; Query Builder; RLS; controles admin/staff.&lt;/td&gt;
+                &lt;td&gt;Errores de negocio si no se actualizan estados correctamente.&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td class=&quot;asset&quot;&gt;role_change_requests&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score medium&quot;&gt;Media&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score medium&quot;&gt;Media&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;Roles permitidos; estados permitidos; RLS; admin-only approve.&lt;/td&gt;
+                &lt;td&gt;Aprobacion indebida por cuenta admin comprometida.&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td class=&quot;asset&quot;&gt;Admin UI&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score medium&quot;&gt;Media&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;escapeHtml; textContent; API auth; CORS; no passwords propios.&lt;/td&gt;
+                &lt;td&gt;Dependencia de configuracion correcta de origen API.&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;td class=&quot;asset&quot;&gt;API Parcial&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score medium&quot;&gt;Media&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;span class=&quot;score high&quot;&gt;Alta&lt;/span&gt;&lt;/td&gt;
+                &lt;td&gt;Helmet; CORS; requireAuth; HttpError; tests; validacion de servicios.&lt;/td&gt;
+                &lt;td&gt;Caida del hosting Node o rate limits externos.&lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/tbody&gt;
+          &lt;/table&gt;
+        &lt;/article&gt;
+
+        &lt;aside class=&quot;panel&quot;&gt;
+          &lt;h2&gt;Controles verificables&lt;/h2&gt;
+          &lt;div class=&quot;control-grid&quot;&gt;
+            &lt;div class=&quot;control&quot;&gt;
+              &lt;strong&gt;Passwords&lt;/strong&gt;
+              &lt;span&gt;Supabase Auth gestiona hashes. La app solo guarda profiles sin columna password.&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;control&quot;&gt;
+              &lt;strong&gt;Prepared statements equivalentes&lt;/strong&gt;
+              &lt;span&gt;Repositorios usan Supabase Query Builder: insert, update, select, eq, in.&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;control&quot;&gt;
+              &lt;strong&gt;RLS&lt;/strong&gt;
+              &lt;span&gt;Postgres filtra acceso a filas bajo el contexto del JWT.&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;control&quot;&gt;
+              &lt;strong&gt;XSS&lt;/strong&gt;
+              &lt;span&gt;Backend rechaza markup HTML persistente; frontend usa escapeHtml/textContent.&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;control&quot;&gt;
+              &lt;strong&gt;CORS&lt;/strong&gt;
+              &lt;span&gt;Preflight OPTIONS no requiere auth y solo permite origenes configurados.&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;control&quot;&gt;
+              &lt;strong&gt;Secretos&lt;/strong&gt;
+              &lt;span&gt;Service role key solo debe vivir en API host, nunca en cliente.&lt;/span&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/aside&gt;
+      &lt;/section&gt;
+
+      &lt;section class=&quot;panel risk-map&quot;&gt;
+        &lt;h2&gt;Cadena de defensa por solicitud admin&lt;/h2&gt;
+        &lt;div class=&quot;flow&quot;&gt;
+          &lt;article class=&quot;flow-step&quot;&gt;
+            &lt;h3&gt;1. Auth&lt;/h3&gt;
+            &lt;p&gt;Supabase valida credenciales y emite JWT. &lt;span class=&quot;badge&quot;&gt;C&lt;/span&gt;&lt;/p&gt;
+          &lt;/article&gt;
+          &lt;article class=&quot;flow-step&quot;&gt;
+            &lt;h3&gt;2. API gate&lt;/h3&gt;
+            &lt;p&gt;requireAuth valida Bearer token y carga profile. &lt;span class=&quot;badge&quot;&gt;C/I&lt;/span&gt;&lt;/p&gt;
+          &lt;/article&gt;
+          &lt;article class=&quot;flow-step&quot;&gt;
+            &lt;h3&gt;3. Servicio&lt;/h3&gt;
+            &lt;p&gt;Valida dominio: fechas, roles, longitudes, XSS. &lt;span class=&quot;badge&quot;&gt;I&lt;/span&gt;&lt;/p&gt;
+          &lt;/article&gt;
+          &lt;article class=&quot;flow-step&quot;&gt;
+            &lt;h3&gt;4. Repositorio&lt;/h3&gt;
+            &lt;p&gt;Query Builder evita SQL interpolado. &lt;span class=&quot;badge&quot;&gt;I&lt;/span&gt;&lt;/p&gt;
+          &lt;/article&gt;
+          &lt;article class=&quot;flow-step&quot;&gt;
+            &lt;h3&gt;5. Postgres/RLS&lt;/h3&gt;
+            &lt;p&gt;Politicas por fila limitan lectura/escritura. &lt;span class=&quot;badge&quot;&gt;C/I&lt;/span&gt;&lt;/p&gt;
+          &lt;/article&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/main&gt;
+    &lt;script&gt;
+      (function initDiagramViewer() {
+        const title = document.title.toLowerCase();
+        let target = document.querySelector(&#39;.diagram, .canvas&#39;);
+
+        if (!target &amp;&amp; document.querySelector(&#39;.triad&#39;)) {
+          const board = document.createElement(&#39;section&#39;);
+          board.className = &#39;matrix-canvas&#39;;
+          const first = document.querySelector(&#39;.triad&#39;);
+          first.before(board);
+          [&#39;.triad&#39;, &#39;.dashboard&#39;, &#39;.risk-map&#39;].forEach((selector) =&gt; {
+            const node = document.querySelector(selector);
+            if (node) board.append(node);
+          });
+          target = board;
+        }
+
+        if (!target || target.dataset.viewerReady === &#39;true&#39;) return;
+        target.dataset.viewerReady = &#39;true&#39;;
+
+        const baseWidth = title.includes(&#39;local&#39;) ? 1160 : title.includes(&#39;flujo&#39;) ? 1240 : title.includes(&#39;matriz&#39;) ? 1280 : 1180;
+        const configuredHeight = title.includes(&#39;flujo&#39;) ? 900 : title.includes(&#39;matriz&#39;) ? 980 : 720;
+
+        const toolbar = document.createElement(&#39;div&#39;);
+        toolbar.className = &#39;diagram-toolbar&#39;;
+        toolbar.innerHTML = &#39;&lt;div class=&quot;diagram-toolbar-title&quot;&gt;Visor interactivo&lt;/div&gt;&lt;div class=&quot;diagram-actions&quot;&gt;&lt;button type=&quot;button&quot; data-action=&quot;fit&quot;&gt;Ajustar&lt;/button&gt;&lt;button type=&quot;button&quot; data-action=&quot;out&quot;&gt;−&lt;/button&gt;&lt;span class=&quot;zoom-readout&quot;&gt;100%&lt;/span&gt;&lt;button type=&quot;button&quot; data-action=&quot;in&quot;&gt;+&lt;/button&gt;&lt;button type=&quot;button&quot; data-action=&quot;reset&quot;&gt;100%&lt;/button&gt;&lt;/div&gt;&#39;;
+
+        const viewport = document.createElement(&#39;div&#39;);
+        viewport.className = &#39;diagram-viewport&#39;;
+        viewport.setAttribute(&#39;aria-label&#39;, &#39;Lienzo con zoom, scroll y arrastre&#39;);
+
+        const stage = document.createElement(&#39;div&#39;);
+        stage.className = &#39;diagram-stage&#39;;
+
+        target.before(toolbar);
+        target.before(viewport);
+        viewport.append(stage);
+        stage.append(target);
+
+        target.style.width = baseWidth + &#39;px&#39;;
+        target.style.minHeight = configuredHeight + &#39;px&#39;;
+        const baseHeight = Math.max(configuredHeight, target.scrollHeight || configuredHeight);
+
+        const readout = toolbar.querySelector(&#39;.zoom-readout&#39;);
+        let scale = 1;
+
+        function applyScale(nextScale) {
+          scale = Math.max(0.35, Math.min(2.4, nextScale));
+          target.style.transform = &#39;scale(&#39; + scale + &#39;)&#39;;
+          stage.style.width = Math.ceil(baseWidth * scale) + &#39;px&#39;;
+          stage.style.height = Math.ceil(baseHeight * scale) + &#39;px&#39;;
+          readout.textContent = Math.round(scale * 100) + &#39;%&#39;;
+        }
+
+        function fit() {
+          const availableW = Math.max(320, viewport.clientWidth - 18);
+          const availableH = Math.max(320, viewport.clientHeight - 18);
+          applyScale(Math.min(1, availableW / baseWidth, availableH / baseHeight));
+          viewport.scrollLeft = Math.max(0, (stage.offsetWidth - viewport.clientWidth) / 2);
+          viewport.scrollTop = 0;
+        }
+
+        toolbar.addEventListener(&#39;click&#39;, (event) =&gt; {
+          const button = event.target.closest(&#39;button[data-action]&#39;);
+          if (!button) return;
+          const action = button.dataset.action;
+          if (action === &#39;fit&#39;) fit();
+          if (action === &#39;in&#39;) applyScale(scale + 0.12);
+          if (action === &#39;out&#39;) applyScale(scale - 0.12);
+          if (action === &#39;reset&#39;) applyScale(1);
+        });
+
+        let dragging = false;
+        let startX = 0;
+        let startY = 0;
+        let startLeft = 0;
+        let startTop = 0;
+
+        viewport.addEventListener(&#39;pointerdown&#39;, (event) =&gt; {
+          if (event.button !== 0) return;
+          dragging = true;
+          viewport.classList.add(&#39;is-dragging&#39;);
+          viewport.setPointerCapture(event.pointerId);
+          startX = event.clientX;
+          startY = event.clientY;
+          startLeft = viewport.scrollLeft;
+          startTop = viewport.scrollTop;
+        });
+
+        viewport.addEventListener(&#39;pointermove&#39;, (event) =&gt; {
+          if (!dragging) return;
+          viewport.scrollLeft = startLeft - (event.clientX - startX);
+          viewport.scrollTop = startTop - (event.clientY - startY);
+        });
+
+        function endDrag(event) {
+          dragging = false;
+          viewport.classList.remove(&#39;is-dragging&#39;);
+          if (event.pointerId !== undefined &amp;&amp; viewport.hasPointerCapture(event.pointerId)) {
+            viewport.releasePointerCapture(event.pointerId);
+          }
+        }
+
+        viewport.addEventListener(&#39;pointerup&#39;, endDrag);
+        viewport.addEventListener(&#39;pointercancel&#39;, endDrag);
+        window.addEventListener(&#39;resize&#39;, fit);
+        requestAnimationFrame(fit);
+      })();
+    &lt;/script&gt;
+
+  &lt;/body&gt;
+&lt;/html&gt;
+" loading="lazy"></iframe>
+  </div>
+  <p class="diagram-link">Archivo fuente embebido: <code>docs/diagrams/cia-security-matrix.html</code></p>
+</section>
+          <article class="markdown-body" id="contenido-completo"><h1 id="informe-de-auditoria-de-seguridad">Informe de Auditoria de Seguridad</h1>
+<p>Proyecto: <strong>La Ragazza Web</strong> Fecha del informe: <strong>2026-05-23</strong> Alcance: sitio Astro, panel administrativo, API Parcial Express, Supabase Auth y Supabase/Postgres.</p>
+<h2 id="1-resumen-ejecutivo">1. Resumen ejecutivo</h2>
+<p>Este informe documenta dos controles de seguridad obligatorios para la rubrica:</p>
+<ol><li><strong>Proteccion de credenciales:</strong> la aplicacion no almacena Contraseñas en tablas propias. El login, signup, sesiones y almacenamiento de hashes de Contraseña son gestionados por <strong>Supabase Auth</strong>.</li><li><strong>Prevencion de inyeccion SQL:</strong> el backend no construye SQL crudo con datos del usuario. La capa de repositorios usa el <strong>Supabase Query Builder</strong>, que actua como equivalente practico de sentencias preparadas en esta arquitectura.</li></ol>
+<p>Tambien se incluye:</p>
+<ul><li>analisis de arquitectura cloud y local;</li><li>matriz CIA;</li><li>analisis de riesgos;</li><li>evidencias de codigo;</li><li>guia para capturas de pantalla;</li><li>manual de migracion;</li><li>referencias a diagramas HTML separados.</li></ul>
+<p>Diagramas complementarios:</p>
+<ul><li><code>docs/diagrams/security-cloud-architecture.html</code></li><li><code>docs/diagrams/security-local-architecture.html</code></li><li><code>docs/diagrams/admin-security-flow.html</code></li><li><code>docs/diagrams/cia-security-matrix.html</code></li></ul>
+<h2 id="2-alcance-tecnico-del-sistema">2. Alcance tecnico del sistema</h2>
+<h3 id="2-1-componentes-principales">2.1 Componentes principales</h3>
+<div class="table-wrap"><table><thead><tr><th>Componente</th><th>Tecnologia</th><th>Responsabilidad</th></tr></thead><tbody><tr><td>Sitio publico</td><td>Astro</td><td>Renderizar paginas estaticas bilingues para usuarios finales.</td></tr><tr><td>Panel admin</td><td>Astro + JS publico en <code>public/admin</code></td><td>Permitir login, gestion de reservas y solicitudes de cambio de rol.</td></tr><tr><td>Autenticacion</td><td>Supabase Auth</td><td>Crear usuarios, autenticar credenciales, emitir JWT y manejar sesiones.</td></tr><tr><td>API Parcial</td><td>Express</td><td>Validar JWT, aplicar reglas de negocio y consultar Supabase/Postgres.</td></tr><tr><td>Base de datos</td><td>Supabase/Postgres</td><td>Persistir perfiles, reservas y solicitudes con RLS.</td></tr><tr><td>Hosting frontend</td><td>Vercel</td><td>Servir sitio estatico y panel admin.</td></tr><tr><td>Hosting API</td><td>Render u otro host Node</td><td>Ejecutar Express API.</td></tr></tbody></table></div>
+<h3 id="2-2-flujo-cloud-desplegado">2.2 Flujo cloud desplegado</h3>
+<ol><li>El usuario abre el panel admin desde Vercel.</li><li>El navegador carga el cliente Supabase publico con la <code>anon/publishable key</code>.</li><li>El usuario inicia sesion desde el formulario del admin.</li><li>Supabase Auth valida email y Contraseña.</li><li>Supabase Auth devuelve una sesion y un <code>access_token</code>.</li><li>El admin llama a la API Parcial con <code>Authorization: Bearer &lt;access_token&gt;</code>.</li><li>La API valida el token con Supabase.</li><li>La API crea un cliente Supabase server-side con el JWT del usuario.</li><li>Los servicios validan el payload.</li><li>Los repositorios consultan con Supabase Query Builder.</li><li>Supabase/Postgres aplica RLS.</li><li>La API devuelve JSON al admin.</li></ol>
+<h3 id="2-3-flujo-local-de-desarrollo">2.3 Flujo local de desarrollo</h3>
+<ol><li>Astro corre en <code>localhost:4321</code>.</li><li>Express API corre en <code>localhost:3001</code>.</li><li><code>astro.config.mjs</code> proxya <code>/api</code> hacia <code>http://localhost:3001</code>.</li><li>El admin local usa Supabase Auth real o el proyecto Supabase configurado en <code>.env</code>.</li><li>El flujo de JWT y RLS es el mismo que en cloud.</li></ol>
+<h2 id="3-proteccion-de-Contraseñas">3. Proteccion de Contraseñas</h2>
+<h3 id="3-1-decision-de-arquitectura">3.1 Decision de arquitectura</h3>
+<p>La aplicacion <strong>no implementa almacenamiento propio de Contraseñas</strong>. No existe una tabla de aplicacion como:</p>
+<ul><li><code>users.password</code></li><li><code>profiles.password</code></li><li><code>admin_users.password</code></li><li><code>password_hash</code></li></ul>
+<p>La tabla <code>profiles</code> solo extiende la identidad del usuario con informacion de dominio, por ejemplo:</p>
+<ul><li><code>id</code></li><li><code>email</code></li><li><code>role</code></li></ul>
+<p>La Contraseña no forma parte del modelo de datos de la aplicacion.</p>
+<h3 id="3-2-donde-se-autentica-el-usuario">3.2 Donde se autentica el usuario</h3>
+<p>El formulario de login/signup del admin usa Supabase Auth desde el navegador. La evidencia esta en:</p>
+<ul><li><code>public/scripts/admin/auth.js</code></li></ul>
+<p>Fragmento relevante:</p>
+<pre><code class="language-js">const { error } = await supabase.auth.signUp({
+  email: String(payload.email ?? &quot;&quot;).trim(),
+  password: String(payload.password ?? &quot;&quot;)
+});</code></pre>
+<pre><code class="language-js">const { error } = await supabase.auth.signInWithPassword({
+  email: String(payload.email ?? &quot;&quot;).trim(),
+  password: String(payload.password ?? &quot;&quot;)
+});</code></pre>
+<p>Interpretacion:</p>
+<ul><li>El frontend envia las credenciales a Supabase Auth.</li><li>La API Parcial no recibe Contraseñas.</li><li>La API Parcial no guarda Contraseñas.</li><li>La base de datos de aplicacion no guarda Contraseñas.</li><li>Supabase Auth gestiona internamente los hashes y el ciclo de vida de credenciales.</li></ul>
+<h3 id="3-3-donde-se-valida-la-sesion-en-el-backend">3.3 Donde se valida la sesion en el backend</h3>
+<p>La API no valida email/Contraseña. Solo valida tokens ya emitidos por Supabase Auth.</p>
+<p>Archivo:</p>
+<ul><li><code>parcial/api/src/lib/supabase.mjs</code></li></ul>
+<p>Fragmento:</p>
+<pre><code class="language-js">export function getBearerToken(request) {
+  const header = request.headers.authorization ?? &quot;&quot;;
+  if (!header.toLowerCase().startsWith(&quot;bearer &quot;)) return &quot;&quot;;
+  return header.slice(7).trim();
+}</code></pre>
+<pre><code class="language-js">export async function resolveRequestAuth(request) {
+  const accessToken = getBearerToken(request);
+  if (!accessToken) {
+    throw new HttpError(401, &quot;Sesion requerida.&quot;);
+  }
+
+  const supabase = createServerSupabaseClient(accessToken);
+  const { data: userData, error: userError } = await supabase.auth.getUser(accessToken);
+  if (userError || !userData.user) {
+    throw new HttpError(401, &quot;Sesion requerida.&quot;);
+  }
+}</code></pre>
+<p>Interpretacion:</p>
+<ul><li>El backend solo acepta <code>Bearer token</code>.</li><li>El token se valida contra Supabase Auth.</li><li>Si el token no existe o no es valido, la API responde <code>401</code>.</li><li>La API nunca compara Contraseñas.</li></ul>
+<h3 id="3-4-captura-de-pantalla-solicitada-Contraseñas-cifradas-en-bd">3.4 Captura de pantalla solicitada: Contraseñas cifradas en BD</h3>
+<p>La rubrica solicita: <strong>&quot;Captura de pantalla de las Contraseñas cifradas en la BD.&quot;</strong></p>
+<p>En este proyecto se debe presentar de esta forma:</p>
+<ol><li>Abrir Supabase Dashboard.</li><li>Ir al proyecto usado por la aplicacion.</li><li>Entrar a <strong>Authentication</strong>.</li><li>Abrir la seccion de usuarios.</li><li>Mostrar que los usuarios son administrados por Supabase Auth.</li><li>Si se usa SQL Editor con permisos adecuados, consultar la tabla interna <code>auth.users</code>.</li><li>Evidenciar que la Contraseña no aparece en texto plano y que Supabase maneja un campo interno de hash/encrypted password.</li></ol>
+<p>Consulta de evidencia sugerida para Supabase SQL Editor:</p>
+<pre><code class="language-sql">select
+  id,
+  email,
+  encrypted_password,
+  created_at,
+  last_sign_in_at
+from auth.users
+limit 5;</code></pre>
+<blockquote><p>Nota importante: esta tabla pertenece al esquema interno <code>auth</code>, no a las tablas de aplicacion. La captura debe ocultar o difuminar valores sensibles completos. Para la sustentacion basta mostrar que existe un valor cifrado/hasheado y que no hay Contraseñas en texto plano.</p></blockquote>
+<h3 id="3-5-captura-alternativa-aceptable">3.5 Captura alternativa aceptable</h3>
+<p>Si Supabase no permite visualizar <code>encrypted_password</code> por permisos del dashboard, se recomienda incluir dos capturas:</p>
+<ol><li>Pantalla de <strong>Authentication &gt; Users</strong> en Supabase, mostrando que los usuarios viven en Supabase Auth.</li><li>Pantalla del schema o tabla <code>public.profiles</code>, mostrando que solo guarda <code>id</code>, <code>email</code> y <code>role</code>, no <code>password</code>.</li></ol>
+<p>Conclusion para la rubrica:</p>
+<blockquote><p>La aplicacion no almacena Contraseñas en su propia base de datos. Las credenciales son delegadas a Supabase Auth, que administra internamente el hash de Contraseña en el esquema <code>auth</code>. La aplicacion solo consume JWTs emitidos por Supabase y guarda datos de perfil/rol en <code>public.profiles</code>.</p></blockquote>
+<h2 id="4-prueba-de-sentencias-preparadas">4. Prueba de sentencias preparadas</h2>
+<h3 id="4-1-aclaracion-tecnica">4.1 Aclaracion tecnica</h3>
+<p>El requisito habla de &quot;sentencias preparadas&quot;. En esta arquitectura no se usa un driver SQL directo como <code>pg</code>, <code>PDO</code> o <code>mysqli</code>. El backend usa Supabase JS SDK.</p>
+<p>Por eso, la equivalencia tecnica es:</p>
+<div class="table-wrap"><table><thead><tr><th>Requisito tradicional</th><th>Implementacion en este proyecto</th></tr></thead><tbody><tr><td>Sentencia preparada</td><td>Supabase Query Builder</td></tr><tr><td>Parametros separados del SQL</td><td>Valores pasados como argumentos/objetos a <code>.eq()</code>, <code>.insert()</code>, <code>.update()</code></td></tr><tr><td>No concatenar SQL</td><td>No existe SQL crudo construido con input</td></tr><tr><td>Control de permisos</td><td>RLS en Supabase/Postgres</td></tr></tbody></table></div>
+<p>La razon de seguridad es la misma: <strong>la entrada del usuario no se concatena en un string SQL ejecutable</strong>.</p>
+<h3 id="4-2-capa-donde-se-implementa">4.2 Capa donde se implementa</h3>
+<p>Las consultas equivalentes a preparadas se implementan en la capa de repositorios:</p>
+<ul><li><code>parcial/api/src/repositories/bookingRepository.mjs</code></li><li><code>parcial/api/src/repositories/roleRequestRepository.mjs</code></li></ul>
+<p>La capa de servicios valida datos, pero no consulta directamente la base. La capa de rutas recibe HTTP, pero tampoco construye SQL. La responsabilidad de acceso a datos vive en repositorios.</p>
+<h3 id="4-3-evidencia-en-bookingrepository-mjs">4.3 Evidencia en <code>bookingRepository.mjs</code></h3>
+<h4 id="4-3-1-insert-seguro-de-reservas">4.3.1 Insert seguro de reservas</h4>
+<p>Archivo:</p>
+<ul><li><code>parcial/api/src/repositories/bookingRepository.mjs</code></li></ul>
+<p>Lineas relevantes:</p>
+<ul><li>35 a 49</li></ul>
+<p>Codigo:</p>
+<pre><code class="language-js">async create(supabase, { userId, nombreCliente, bookingTime, numeroPersonas, comentarios, status }) {
+  const data = await runQuery(
+    supabase
+      .from(&quot;bookings&quot;)
+      .insert({
+        user_id: userId,
+        client_name: nombreCliente,
+        booking_time: bookingTime,
+        party_size: numeroPersonas,
+        comments: comentarios,
+        status
+      })
+      .select(BOOKING_SELECT)
+      .single()
+  );
+
+  return mapBooking(data);
+}</code></pre>
+<p>Por que es seguro:</p>
+<ul><li><code>nombreCliente</code>, <code>comentarios</code>, <code>bookingTime</code> y demas valores entran como propiedades de un objeto.</li><li>No existe una cadena <code>INSERT INTO ... VALUES (&#39;${nombreCliente}&#39;)</code>.</li><li>Supabase/PostgREST recibe estructura y valores por separado.</li><li>Antes de llegar aqui, <code>bookingService</code> valida formato, longitud y markup HTML.</li></ul>
+<h4 id="4-3-2-select-seguro-por-usuario">4.3.2 Select seguro por usuario</h4>
+<p>Lineas relevantes:</p>
+<ul><li>54 a 59</li></ul>
+<p>Codigo:</p>
+<pre><code class="language-js">async listByUserId(supabase, userId) {
+  const data = await runQuery(
+    supabase.from(&quot;bookings&quot;).select(BOOKING_SELECT).eq(&quot;user_id&quot;, userId).order(&quot;booking_time&quot;, {
+      ascending: true
+    })
+  );
+
+  return data.map(mapBooking);
+}</code></pre>
+<p>Por que es seguro:</p>
+<ul><li><code>userId</code> se pasa como argumento de <code>.eq(&quot;user_id&quot;, userId)</code>.</li><li>No se concatena en un <code>WHERE user_id = &#39;${userId}&#39;</code>.</li><li>La consulta tambien se ejecuta bajo el contexto del JWT del usuario, por lo que RLS limita el acceso.</li></ul>
+<h4 id="4-3-3-select-seguro-por-id">4.3.3 Select seguro por ID</h4>
+<p>Lineas relevantes:</p>
+<ul><li>74 a 76</li></ul>
+<p>Codigo:</p>
+<pre><code class="language-js">async findById(supabase, id) {
+  const data = await runQuery(supabase.from(&quot;bookings&quot;).select(BOOKING_SELECT).eq(&quot;id&quot;, id).maybeSingle());
+  return mapBooking(data);
+}</code></pre>
+<p>Por que es seguro:</p>
+<ul><li><code>id</code> se pasa como valor parametrizado del query builder.</li><li>No existe concatenacion SQL.</li><li><code>maybeSingle()</code> limita la expectativa de resultado a cero o un registro.</li></ul>
+<h4 id="4-3-4-update-seguro-de-reservas">4.3.4 Update seguro de reservas</h4>
+<p>Lineas relevantes:</p>
+<ul><li>79 a 87</li></ul>
+<p>Codigo:</p>
+<pre><code class="language-js">async update(supabase, id, payload) {
+  const data = await runQuery(
+    supabase
+      .from(&quot;bookings&quot;)
+      .update(payload)
+      .eq(&quot;id&quot;, id)
+      .select(BOOKING_SELECT)
+      .single()
+  );
+
+  return mapBooking(data);
+}</code></pre>
+<p>Por que es seguro:</p>
+<ul><li><code>payload</code> es un objeto validado previamente por el servicio.</li><li><code>id</code> entra por <code>.eq(&quot;id&quot;, id)</code>.</li><li>No se arma <code>UPDATE bookings SET ... WHERE id = ...</code> manualmente.</li></ul>
+<h4 id="4-3-5-delete-seguro-de-reservas">4.3.5 Delete seguro de reservas</h4>
+<p>Lineas relevantes:</p>
+<ul><li>96 a 99</li></ul>
+<p>Codigo:</p>
+<pre><code class="language-js">async remove(supabase, id) {
+  const { error } = await supabase.from(&quot;bookings&quot;).delete().eq(&quot;id&quot;, id);
+  if (error) throw error;
+}</code></pre>
+<p>Por que es seguro:</p>
+<ul><li>El filtro de borrado usa <code>.eq(&quot;id&quot;, id)</code>.</li><li>No se concatena el ID dentro de SQL textual.</li></ul>
+<h3 id="4-4-evidencia-en-rolerequestrepository-mjs">4.4 Evidencia en <code>roleRequestRepository.mjs</code></h3>
+<h4 id="4-4-1-insert-seguro-de-solicitudes">4.4.1 Insert seguro de solicitudes</h4>
+<p>Lineas relevantes:</p>
+<ul><li>40 a 47</li></ul>
+<p>Codigo:</p>
+<pre><code class="language-js">async create(supabase, { userId, requestedRole, justification }) {
+  const data = await runQuery(
+    supabase
+      .from(&quot;role_change_requests&quot;)
+      .insert({ user_id: userId, requested_role: requestedRole, justification, status: &quot;active&quot; })
+      .select(REQUEST_SELECT)
+      .single()
+  );
+
+  const requesterEmail = await this.findRequesterEmail(supabase, data.user_id);
+  return mapRequest(data, requesterEmail);
+}</code></pre>
+<p>Por que es seguro:</p>
+<ul><li><code>justification</code> puede venir del usuario, pero viaja como valor de objeto.</li><li><code>requestedRole</code> ya fue validado contra un conjunto permitido.</li><li>No existe SQL crudo con interpolacion.</li></ul>
+<h4 id="4-4-2-select-seguro-con-in">4.4.2 Select seguro con <code>.in()</code></h4>
+<p>Lineas relevantes:</p>
+<ul><li>29 a 36</li></ul>
+<p>Codigo:</p>
+<pre><code class="language-js">const userIds = [...new Set(requests.map((request) =&gt; request.user_id))];
+const profiles = await runQuery(supabase.from(&quot;profiles&quot;).select(&quot;id,email&quot;).in(&quot;id&quot;, userIds));</code></pre>
+<p>Por que es seguro:</p>
+<ul><li>La lista <code>userIds</code> se pasa como arreglo a <code>.in(&quot;id&quot;, userIds)</code>.</li><li>No se construye un <code>IN (${ids.join(&quot;,&quot;)})</code> manual.</li><li>Supabase maneja la parametrizacion del filtro.</li></ul>
+<h4 id="4-4-3-select-seguro-por-usuario">4.4.3 Select seguro por usuario</h4>
+<p>Lineas relevantes:</p>
+<ul><li>61 a 66</li></ul>
+<p>Codigo:</p>
+<pre><code class="language-js">async listByUser(supabase, userId) {
+  const data = await runQuery(
+    supabase.from(&quot;role_change_requests&quot;).select(REQUEST_SELECT).eq(&quot;user_id&quot;, userId).order(&quot;created_at&quot;, {
+      ascending: false
+    })
+  );
+
+  return enrichWithRequesterEmails(supabase, data);
+}</code></pre>
+<p>Por que es seguro:</p>
+<ul><li><code>userId</code> entra por <code>.eq()</code>.</li><li>No se interpola dentro de un string SQL.</li></ul>
+<h4 id="4-4-4-update-seguro-de-solicitud">4.4.4 Update seguro de solicitud</h4>
+<p>Lineas relevantes:</p>
+<ul><li>79 a 87</li></ul>
+<p>Codigo:</p>
+<pre><code class="language-js">async update(supabase, id, { requestedRole, justification }) {
+  const data = await runQuery(
+    supabase
+      .from(&quot;role_change_requests&quot;)
+      .update({ requested_role: requestedRole, justification })
+      .eq(&quot;id&quot;, id)
+      .select(REQUEST_SELECT)
+      .single()
+  );
+
+  const requesterEmail = await this.findRequesterEmail(supabase, data.user_id);
+  return mapRequest(data, requesterEmail);
+}</code></pre>
+<p>Por que es seguro:</p>
+<ul><li><code>requestedRole</code> y <code>justification</code> se envian como objeto.</li><li><code>id</code> se envia por <code>.eq()</code>.</li><li>La capa de servicio ya rechazo roles invalidos, textos demasiado largos y markup HTML.</li></ul>
+<h4 id="4-4-5-update-seguro-de-estado">4.4.5 Update seguro de estado</h4>
+<p>Lineas relevantes:</p>
+<ul><li>93 a 101</li></ul>
+<p>Codigo:</p>
+<pre><code class="language-js">async updateStatus(supabase, id, status) {
+  const data = await runQuery(
+    supabase
+      .from(&quot;role_change_requests&quot;)
+      .update({ status })
+      .eq(&quot;id&quot;, id)
+      .select(REQUEST_SELECT)
+      .single()
+  );
+}</code></pre>
+<p>Por que es seguro:</p>
+<ul><li><code>status</code> viene de un conjunto permitido.</li><li><code>id</code> se filtra por <code>.eq()</code>.</li><li>No se concatena SQL.</li></ul>
+<h4 id="4-4-6-update-seguro-de-roles-con-service-client">4.4.6 Update seguro de roles con service client</h4>
+<p>Lineas relevantes:</p>
+<ul><li>107 a 136</li></ul>
+<p>Codigo resumido:</p>
+<pre><code class="language-js">const { data, error } = await supabase
+  .from(&quot;profiles&quot;)
+  .update({ role })
+  .eq(&quot;id&quot;, userId)
+  .select(&quot;id,role&quot;)
+  .maybeSingle();</code></pre>
+<p>Y fallback:</p>
+<pre><code class="language-js">const service = createServiceSupabaseClient();
+const { data: svcData, error: svcError } = await service
+  .from(&quot;profiles&quot;)
+  .update({ role })
+  .eq(&quot;id&quot;, userId)
+  .select(&quot;id,role&quot;)
+  .maybeSingle();</code></pre>
+<p>Por que es seguro:</p>
+<ul><li>Incluso en operacion privilegiada se usa Query Builder.</li><li>No hay SQL crudo.</li><li>El <code>service role key</code> solo se usa server-side y en un flujo auditado.</li><li>El rol aprobado viene de solicitudes validadas y de un conjunto permitido.</li></ul>
+<h3 id="4-5-capa-previa-de-validacion">4.5 Capa previa de validacion</h3>
+<p>La seguridad de consultas se complementa con validacion de dominio.</p>
+<h4 id="reservas">Reservas</h4>
+<p>Archivo:</p>
+<ul><li><code>parcial/api/src/services/bookingService.mjs</code></li></ul>
+<p>Lineas relevantes:</p>
+<ul><li>7 a 18: normalizacion.</li><li>21 a 50: validacion.</li><li>72 a 80: creacion tras validar.</li><li>83 a 107: actualizacion tras validar.</li></ul>
+<p>Controles:</p>
+<ul><li>campos obligatorios;</li><li>numero de personas entero y mayor a cero;</li><li>comentarios maximo 800 caracteres;</li><li>nombre maximo 120 caracteres;</li><li>fecha/hora validas;</li><li>reserva no puede estar en el pasado;</li><li>rechazo de <code>&lt;</code> y <code>&gt;</code> en campos libres.</li></ul>
+<h4 id="solicitudes-de-rol">Solicitudes de rol</h4>
+<p>Archivo:</p>
+<ul><li><code>parcial/api/src/services/roleRequestService.mjs</code></li></ul>
+<p>Lineas relevantes:</p>
+<ul><li>21 a 43: validacion de payload.</li><li>59 a 66: creacion tras validar.</li><li>69 a 79: actualizacion tras validar.</li></ul>
+<p>Controles:</p>
+<ul><li>rol solicitado obligatorio;</li><li>justificacion obligatoria;</li><li>justificacion minimo 12 y maximo 1200 caracteres;</li><li>rol solicitado solo puede ser <code>customer</code>, <code>staff</code> o <code>admin</code>;</li><li>rechazo de <code>&lt;</code> y <code>&gt;</code> en justificacion.</li></ul>
+<h2 id="5-matriz-cia">5. Matriz CIA</h2>
+<div class="table-wrap"><table><thead><tr><th>Activo</th><th>Confidencialidad</th><th>Integridad</th><th>Disponibilidad</th><th>Controles implementados</th></tr></thead><tbody><tr><td>Contraseñas de usuarios</td><td>Alta</td><td>Alta</td><td>Media</td><td>Delegadas a Supabase Auth; no se guardan en tablas propias; Supabase almacena hashes internos.</td></tr><tr><td>JWT de sesion</td><td>Alta</td><td>Alta</td><td>Media</td><td>Enviado como Bearer token; validado con <code>supabase.auth.getUser</code>; no se almacena en backend.</td></tr><tr><td>Perfiles (<code>profiles</code>)</td><td>Media</td><td>Alta</td><td>Media</td><td>RLS, validacion de token, acceso por Supabase client contextual.</td></tr><tr><td>Reservas (<code>bookings</code>)</td><td>Media</td><td>Alta</td><td>Alta</td><td>RLS, validacion de servicio, Query Builder, controles de rol.</td></tr><tr><td>Solicitudes de rol</td><td>Media</td><td>Alta</td><td>Media</td><td>RLS, validacion de rol, estados permitidos, Query Builder.</td></tr><tr><td>Service role key</td><td>Critica</td><td>Critica</td><td>Media</td><td>Solo server-side; nunca en frontend; usada en flujo auditado de aprobacion de rol.</td></tr><tr><td>Panel admin</td><td>Media</td><td>Alta</td><td>Alta</td><td>Supabase Auth, validacion de sesion, escape HTML, CORS controlado.</td></tr><tr><td>API Parcial</td><td>Media</td><td>Alta</td><td>Alta</td><td>Helmet, CORS, requireAuth, HttpError, validacion, tests.</td></tr></tbody></table></div>
+<h3 id="lectura-de-la-matriz">Lectura de la matriz</h3>
+<ul><li><strong>Confidencialidad:</strong> se protege principalmente con Supabase Auth, JWT, RLS y no exposicion del service key.</li><li><strong>Integridad:</strong> se protege con validacion de servicios, Query Builder, reglas de rol y RLS.</li><li><strong>Disponibilidad:</strong> depende de Vercel, Render y Supabase; el diseno separa frontend estatico y API para reducir acoplamiento.</li></ul>
+<h2 id="6-analisis-de-riesgos">6. Analisis de riesgos</h2>
+<div class="table-wrap"><table><thead><tr><th>Riesgo</th><th>Probabilidad</th><th>Impacto</th><th>Estado</th><th>Mitigacion</th></tr></thead><tbody><tr><td>Robo de Contraseñas desde tabla propia</td><td>Baja</td><td>Critico</td><td>Mitigado</td><td>No hay tabla propia de Contraseñas; Supabase Auth gestiona hashes.</td></tr><tr><td>SQL injection en filtros <code>id</code>/<code>user_id</code></td><td>Baja</td><td>Alto</td><td>Mitigado</td><td><code>.eq()</code>, <code>.in()</code>, <code>.insert()</code>, <code>.update()</code> con Query Builder.</td></tr><tr><td>SQL injection en comentarios/justificaciones</td><td>Baja</td><td>Alto</td><td>Mitigado</td><td>Valores viajan como objeto; servicio valida longitud y markup.</td></tr><tr><td>XSS almacenado en comentarios</td><td>Baja</td><td>Alto</td><td>Mitigado</td><td>Backend rechaza <code>&lt;</code>/<code>&gt;</code>; frontend aplica <code>escapeHtml()</code>.</td></tr><tr><td>XSS reflejado en mensajes de error</td><td>Baja</td><td>Medio</td><td>Mitigado</td><td>Mensajes se muestran con <code>textContent</code>.</td></tr><tr><td>Exposicion de service role key</td><td>Media</td><td>Critico</td><td>Control operativo</td><td>Debe existir solo en Render/API, nunca en Vercel/frontend.</td></tr><tr><td>CORS bloqueando API o permitiendo origen indebido</td><td>Media</td><td>Medio</td><td>Mitigado parcialmente</td><td>Middleware CORS permite origenes conocidos; revisar <code>CORS_ALLOWED_ORIGINS</code> al migrar.</td></tr><tr><td>Usuario sin perfil tras signup</td><td>Media</td><td>Medio</td><td>Requiere operacion</td><td>Trigger <code>handle_new_user()</code> o provisionamiento manual de <code>profiles</code>.</td></tr></tbody></table></div>
+<h2 id="7-manual-de-migracion-detallado">7. Manual de migracion detallado</h2>
+<h3 id="7-1-variables-de-entorno">7.1 Variables de entorno</h3>
+<p>Frontend Vercel:</p>
+<pre><code class="language-env">SUPABASE_URL=https://&lt;project&gt;.supabase.co
+SUPABASE_ANON_KEY=&lt;publishable-or-anon-key&gt;
+PUBLIC_API_BASE_URL=https://&lt;api-host&gt;</code></pre>
+<p>API Render/local:</p>
+<pre><code class="language-env">NODE_ENV=production
+PORT=3001
+SUPABASE_URL=https://&lt;project&gt;.supabase.co
+SUPABASE_ANON_KEY=&lt;publishable-or-anon-key&gt;
+SUPABASE_SERVICE_ROLE_KEY=&lt;service-role-key&gt;
+PUBLIC_SITE_URL=https://&lt;frontend-host&gt;
+CORS_ALLOWED_ORIGINS=https://&lt;frontend-host&gt;</code></pre>
+<p>Regla critica:</p>
+<ul><li><code>SUPABASE_SERVICE_ROLE_KEY</code> nunca debe existir en el frontend.</li><li><code>SUPABASE_ANON_KEY</code> o <code>sb_publishable_...</code> si puede estar en el navegador; no es una private key.</li></ul>
+<h3 id="7-2-migracion-local">7.2 Migracion local</h3>
+<ol><li>Instalar dependencias:</li></ol>
+<pre><code class="language-bash">pnpm install</code></pre>
+<ol><li>Configurar <code>.env</code> local con Supabase URL y anon key.</li><li>Ejecutar API y frontend:</li></ol>
+<pre><code class="language-bash">pnpm dev</code></pre>
+<ol><li>Abrir:</li></ol>
+<pre><code class="language-text">http://localhost:4321/admin</code></pre>
+<ol><li>Probar login con Supabase Auth.</li><li>Probar reservas y solicitudes.</li><li>Ejecutar pruebas:</li></ol>
+<pre><code class="language-bash">pnpm parcial:test
+pnpm build</code></pre>
+<h3 id="7-3-migracion-cloud">7.3 Migracion cloud</h3>
+<ol><li>Crear o verificar proyecto Supabase.</li><li>Configurar Auth con email/password.</li><li>Crear tablas publicas necesarias:</li></ol>
+<p>- <code>profiles</code> - <code>bookings</code> - <code>role_change_requests</code></p>
+<ol><li>Habilitar RLS.</li><li>Crear politicas de acceso.</li><li>Configurar trigger de perfil si aplica.</li><li>Desplegar API en Render.</li><li>Configurar variables de entorno de API.</li><li>Desplegar frontend en Vercel.</li><li>Configurar <code>PUBLIC_API_BASE_URL</code> apuntando a Render.</li><li>Configurar <code>CORS_ALLOWED_ORIGINS</code> en API para permitir el dominio Vercel.</li><li>Probar preflight CORS desde navegador.</li><li>Probar login y CRUD.</li><li>Ejecutar smoke tests si el entorno lo permite.</li></ol>
+<h3 id="7-4-checklist-post-migracion">7.4 Checklist post-migracion</h3>
+<div class="table-wrap"><table><thead><tr><th>Verificacion</th><th>Resultado esperado</th></tr></thead><tbody><tr><td>Login admin</td><td>Supabase emite sesion.</td></tr><tr><td>API sin token</td><td>Responde 401.</td></tr><tr><td>API con token valido</td><td>Responde datos permitidos por RLS.</td></tr><tr><td>Preflight CORS</td><td><code>OPTIONS</code> responde 204 para origen permitido.</td></tr><tr><td>Payload <code>&lt;script&gt;</code> en reserva</td><td>API responde 400.</td></tr><tr><td>Payload <code>&lt;script&gt;</code> en solicitud</td><td>API responde 400.</td></tr><tr><td><code>profiles</code></td><td>No contiene columna password.</td></tr><tr><td><code>auth.users</code></td><td>Contiene hash interno gestionado por Supabase.</td></tr><tr><td>Service key</td><td>Solo en API host.</td></tr></tbody></table></div>
+<h2 id="8-evidencias-recomendadas-para-anexar">8. Evidencias anexadas y encontradas en el repo del proyecto</h2>
+<h3 id="8-1-capturas">8.1 Capturas</h3>
+<p>Las dos capturas de Supabase Auth ya estan incorporadas aqui.</p>
+<section class="capture-grid" aria-label="Capturas de Supabase Auth">
+  <figure class="capture-card">
+    <img src="images/supabase_auth_users.png" alt="Supabase Authentication Users sin contraseña visible" loading="lazy" />
+    <figcaption>Supabase Authentication Users. La cuenta se gestiona en Supabase Auth y no en una tabla propia con contraseña.</figcaption>
+  </figure>
+  <figure class="capture-card">
+    <img src="images/profiles.png" alt="Tabla public.profiles sin columna de contraseña" loading="lazy" />
+    <figcaption>Tabla public.profiles sin columna de Contraseña. Solo se conservan datos de perfil y rol.</figcaption>
+  </figure>
+</section>
+<ul class="evidence-list"><li>Codigo <code>public/scripts/admin/auth.js</code> usando <code>signInWithPassword</code>.</li><li>Codigo <code>bookingRepository.mjs</code> usando <code>.insert()</code>, <code>.eq()</code>, <code>.update()</code>.</li><li>Codigo <code>roleRequestRepository.mjs</code> usando <code>.insert()</code>, <code>.eq()</code>, <code>.in()</code>, <code>.update()</code>.</li></ul>
+<h3 id="8-2-comandos-de-evidencia">8.2 Comandos de evidencia</h3>
+<p>Buscar SQL crudo:</p>
+<pre><code class="language-bash">rg -n &quot;query\\(|execute\\(|raw\\(|sql`|SELECT|INSERT|UPDATE|DELETE&quot; parcial/api/src</code></pre>
+<p>Ejecutar pruebas:</p>
+<pre><code class="language-bash">pnpm parcial:test</code></pre>
+<p>Construir el sitio:</p>
+<pre><code class="language-bash">pnpm build</code></pre>
+<h2 id="9-conclusion">9. Conclusion</h2>
+<p>El proyecto cumple el objetivo de la rubrica desde la logica de seguridad:</p>
+<ul><li>Las Contraseñas no se almacenan en tablas propias; se delegan a Supabase Auth.</li><li>La API no implementa comparacion de Contraseñas; solo valida JWTs.</li><li>Las consultas a la base no se escriben como SQL interpolado; se hacen con Supabase Query Builder.</li><li>Los valores del usuario se pasan como parametros/objetos a <code>.insert()</code>, <code>.update()</code>, <code>.eq()</code> e <code>.in()</code>.</li><li>La validacion de servicios reduce datos invalidos antes de persistir.</li><li>RLS limita el acceso a filas segun identidad.</li><li>La arquitectura cloud separa frontend estatico, API y proveedor de identidad/base de datos, lo que permite controles por capa.</li></ul>
+        </div>
+      </main>
+    </div>
+    <script>(function buildToc(){const toc=document.querySelector('#toc');if(!toc)return;const headings=[...document.querySelectorAll('.content h2, .content h3')].filter((heading)=>heading.id);for(const heading of headings){const item=document.createElement('li');item.className=heading.tagName==='H3'?'toc-h3':'toc-h2';const link=document.createElement('a');link.href='#'+heading.id;link.textContent=heading.textContent;item.append(link);toc.append(item);}})();</script>
+  </body>
+</html>
