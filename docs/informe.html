@@ -2708,23 +2708,10 @@
 <p>Interpretacion:</p>
 <ul><li>El backend solo acepta <code>Bearer token</code>.</li><li>El token se valida contra Supabase Auth.</li><li>Si el token no existe o no es valido, la API responde <code>401</code>.</li><li>La API nunca compara Contraseñas.</li></ul>
 <h3 id="3-4-captura-de-pantalla-solicitada-Contraseñas-cifradas-en-bd">3.4 Captura de pantalla solicitada: Contraseñas cifradas en BD</h3>
-<p>La rubrica solicita: <strong>&quot;Captura de pantalla de las Contraseñas cifradas en la BD.&quot;</strong></p>
-<p>En este proyecto se debe presentar de esta forma:</p>
-<ol><li>Abrir Supabase Dashboard.</li><li>Ir al proyecto usado por la aplicacion.</li><li>Entrar a <strong>Authentication</strong>.</li><li>Abrir la seccion de usuarios.</li><li>Mostrar que los usuarios son administrados por Supabase Auth.</li><li>Si se usa SQL Editor con permisos adecuados, consultar la tabla interna <code>auth.users</code>.</li><li>Evidenciar que la Contraseña no aparece en texto plano y que Supabase maneja un campo interno de hash/encrypted password.</li></ol>
-<p>Consulta de evidencia sugerida para Supabase SQL Editor:</p>
-<pre><code class="language-sql">select
-  id,
-  email,
-  encrypted_password,
-  created_at,
-  last_sign_in_at
-from auth.users
-limit 5;</code></pre>
-<blockquote><p>Nota importante: esta tabla pertenece al esquema interno <code>auth</code>, no a las tablas de aplicacion. La captura debe ocultar o difuminar valores sensibles completos. Para la sustentacion basta mostrar que existe un valor cifrado/hasheado y que no hay Contraseñas en texto plano.</p></blockquote>
-<h3 id="3-5-captura-alternativa-aceptable">3.5 Captura alternativa aceptable</h3>
-<p>Si Supabase no permite visualizar <code>encrypted_password</code> por permisos del dashboard, se recomienda incluir dos capturas:</p>
-<ol><li>Pantalla de <strong>Authentication &gt; Users</strong> en Supabase, mostrando que los usuarios viven en Supabase Auth.</li><li>Pantalla del schema o tabla <code>public.profiles</code>, mostrando que solo guarda <code>id</code>, <code>email</code> y <code>role</code>, no <code>password</code>.</li></ol>
-<p>Conclusion para la rubrica:</p>
+<figure class="capture-card">
+    <img src="images/Pasted image.png" alt="Supabase Authentication Users sin contraseña visible" loading="lazy" />
+    <figcaption>Supabase Authentication Users. La cuenta se gestiona en Supabase Auth y no en una tabla propia con contraseña.</figcaption>
+  </figure>
 <blockquote><p>La aplicacion no almacena Contraseñas en su propia base de datos. Las credenciales son delegadas a Supabase Auth, que administra internamente el hash de Contraseña en el esquema <code>auth</code>. La aplicacion solo consume JWTs emitidos por Supabase y guarda datos de perfil/rol en <code>public.profiles</code>.</p></blockquote>
 <h2 id="4-prueba-de-sentencias-preparadas">4. Prueba de sentencias preparadas</h2>
 <h3 id="4-1-aclaracion-tecnica">4.1 Aclaracion tecnica</h3>
