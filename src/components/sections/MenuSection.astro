@@ -2,6 +2,7 @@
 // src/components/sections/MenuSection.astro
 import type { MenuCategory } from '../../types/menu';
 import MenuCard from '../ui/MenuCard.astro';
+import { getLabelsData } from '../../lib/i18n-data';
 
 interface Props {
     category: MenuCategory;
@@ -9,7 +10,7 @@ interface Props {
 }
 
 const { category, lang = 'es' } = Astro.props;
-const labelsData = await import(`../../data/${lang}/labels.json`).then(m => m.default);
+const labelsData = getLabelsData(lang) as { menu: { vegetarianBadge: string; sauces: { roja: string; blanca: string } } };
 ---
 
 <section

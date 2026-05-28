@@ -6,6 +6,7 @@ import Contact from '../../components/sections/Contact.astro';
 import Reviews from '../../components/sections/Reviews.astro';
 import GalleryItem from '../../components/ui/GalleryItem.astro';
 import type { GalleryMedia } from '../../types/gallery';
+import { getGalleryData } from '../../lib/i18n-data';
 
 export function getStaticPaths() {
     return [
@@ -15,9 +16,7 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-
-// Importar datos del JSON
-const galleryData = await import(`../../data/${lang}/gallery.json`).then(m => m.default);
+const galleryData = getGalleryData(lang as 'es' | 'en') as { items: GalleryMedia[] };
 const galleryItems: GalleryMedia[] = galleryData.items;
 ---
 

@@ -1,13 +1,13 @@
 ---
 // src/components/sections/Hero.astro
+import { getHeroData } from '../../lib/i18n-data';
+
 interface Props {
     lang?: string;
 }
 
 const lang = (Astro.props.lang || 'es') as 'es' | 'en';
-
-// Importar datos del JSON según el idioma
-const heroData = await import(`../../data/${lang}/hero.json`).then(m => m.default);
+const heroData = getHeroData(lang);
 ---
 
 <header class="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex flex-col items-center justify-center text-center px-4 pt-28 pb-12 sm:pt-32 sm:pb-20 md:pt-40 overflow-hidden bg-ragazza-secondary">

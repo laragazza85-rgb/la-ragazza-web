@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import Contact from '../../components/sections/Contact.astro';
 import Footer from '../../components/ui/Footer.astro';
 import MenuSection from '../../components/sections/MenuSection.astro';
+import { getMenuData, getMenuPageData } from '../../lib/i18n-data';
 
 export function getStaticPaths() {
     return [
@@ -13,11 +14,8 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-
-// Importar datos del menú
-const menuData = await import(`../../data/${lang}/menu.json`).then(m => m.default);
-const menuPageData = await import(`../../data/${lang}/menu-page.json`).then(m => m.default);
-
+const menuData = getMenuData(lang as 'es' | 'en');
+const menuPageData = getMenuPageData(lang as 'es' | 'en') as { seo: { title: string; description: string }; header: unknown; filters: unknown };
 const filterLabels = menuPageData.filters;
 ---
 

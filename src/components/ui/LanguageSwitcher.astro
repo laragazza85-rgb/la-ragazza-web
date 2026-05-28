@@ -1,4 +1,6 @@
 ---
+import { getLabelsData } from '../../lib/i18n-data';
+
 interface Props {
   lang: 'es' | 'en';
 }
@@ -7,7 +9,7 @@ const { lang } = Astro.props;
 const otherLang = lang === 'es' ? 'en' : 'es';
 const currentPath = Astro.url.pathname.replace(`/${lang}/`, '');
 const targetPath = `/${otherLang}/${currentPath}`;
-const labelsData = await import(`../../data/${lang}/labels.json`).then((m) => m.default);
+const labelsData = getLabelsData(lang) as { languageSwitcher: { toEs: string; toEn: string } };
 const label = otherLang === 'es' ? labelsData.languageSwitcher.toEs : labelsData.languageSwitcher.toEn;
 ---
 

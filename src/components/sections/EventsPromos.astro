@@ -1,10 +1,12 @@
 ---
+import { getEventsData } from '../../lib/i18n-data';
+
 interface Props {
   lang?: string;
 }
 
 const lang = (Astro.props.lang || 'es') as 'es' | 'en';
-const eventsData = await import(`../../data/${lang}/events.json`).then((m) => m.default);
+const eventsData = getEventsData(lang) as { label: string; title: string; events: unknown[] };
 ---
 
 <section class="py-20 bg-ragazza-bg reveal opacity-0 translate-y-8 transition-all duration-1000" aria-labelledby="events-title">

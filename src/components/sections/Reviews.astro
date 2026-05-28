@@ -1,6 +1,7 @@
 ---
 // src/components/sections/Reviews.astro
 import ReviewCard from '../ui/ReviewCard.astro';
+import { getReviewsData, getReviewsUiData } from '../../lib/i18n-data';
 
 interface Props {
     lang?: string;
@@ -14,9 +15,8 @@ interface Review {
 
 const lang = (Astro.props.lang || 'es') as 'es' | 'en';
 
-// Importar datos de resenas desde JSON centralizado
-const reviewsRawData = await import(`../../data/reviews/reviews.json`).then(m => m.default);
-const reviewsUiData = await import(`../../data/${lang}/reviews-ui.json`).then((m) => m.default);
+const reviewsRawData = getReviewsData() as { reviews: unknown[] };
+const reviewsUiData = getReviewsUiData(lang);
 
 const sectionTexts = reviewsUiData;
 

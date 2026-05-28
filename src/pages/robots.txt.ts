@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { SITE_URL } from '../utils/seo';
+import { SITE_URL } from '../lib/business-constants';
 
 export const prerender = true;
 
@@ -20,6 +20,9 @@ export const GET: APIRoute = ({ site }) => {
     'Disallow: /*?*s=',
     'Disallow: /*?*search=',
     'Disallow: /*?*buscar=',
+    '',
+    `# Host: ${origin}`,
+    'Crawl-delay: 1',
     '',
     `Sitemap: ${sitemapUrl}`,
   ].join('\n');

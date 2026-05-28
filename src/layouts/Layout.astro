@@ -7,9 +7,10 @@ import {
     buildCanonicalUrl,
     buildRestaurantJsonLd,
     buildXDefault,
-    SITE_URL,
     type Locale,
 } from '../utils/seo';
+import { SITE_URL } from '../lib/business-constants';
+import { getContactData, getLabelsData } from '../lib/i18n-data';
 
 interface Props {
     title: string;
@@ -20,8 +21,8 @@ interface Props {
 const lang = (Astro.params.lang || Astro.currentLocale || 'es') as Locale;
 const { title, description, solidBg = false } = Astro.props;
 
-const contactData = await import(`../data/${lang}/contact.json`).then((m) => m.default);
-const labelsData = await import(`../data/${lang}/labels.json`).then((m) => m.default);
+const contactData = getContactData(lang) as { whatsapp: { message?: string; phoneNumber: string } };
+const labelsData = getLabelsData(lang) as { layout: { siteName: string; metaKeywords: string; whatsappAria: string } };
 const whatsappMessage = encodeURIComponent(contactData.whatsapp.message || '');
 const whatsappHref = `https://wa.me/${contactData.whatsapp.phoneNumber}?text=${whatsappMessage}`;
 
@@ -77,18 +78,10 @@ const jsonLd = buildRestaurantJsonLd({
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
-      rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
-    </noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" />
 
     <!-- Google Tag Manager (GTM) - For instant Search Console verification -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DN31EQS43S"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DN31EQS43S" integrity="sha256-sp8LPh61hXWdeQHpducHnAlyYv1yBrQEUXWtqJkk6uM=" crossorigin="anonymous"></script>
 
     <!-- Google Analytics 4 (GA4) -->
     <script is:inline>

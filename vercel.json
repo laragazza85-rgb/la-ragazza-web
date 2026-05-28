@@ -5,6 +5,26 @@
       "source": "/",
       "destination": "/es/",
       "permanent": true
+    },
+    {
+      "source": "/es",
+      "destination": "/es/",
+      "permanent": true
+    },
+    {
+      "source": "/en",
+      "destination": "/en/",
+      "permanent": true
+    },
+    {
+      "source": "/es/:path",
+      "destination": "/es/:path/",
+      "permanent": true
+    },
+    {
+      "source": "/en/:path",
+      "destination": "/en/:path/",
+      "permanent": true
     }
   ]
 }

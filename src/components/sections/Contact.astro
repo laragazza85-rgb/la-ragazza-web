@@ -1,6 +1,7 @@
 ---
 // src/components/sections/Contact.astro
 import { useTranslations } from '../../i18n/utils';
+import { getContactData } from '../../lib/i18n-data';
 
 interface Props {
     lang?: string;
@@ -8,9 +9,12 @@ interface Props {
 
 const lang = (Astro.props.lang || 'es') as 'es' | 'en';
 const t = useTranslations(lang);
-
-// Importar datos desde JSON
-const contactData = await import(`../../data/${lang}/contact.json`).then(m => m.default);
+const contactData = getContactData(lang) as {
+  location: { mapLink?: string; mapEmbedUrl?: string; wazeLink?: string; streetAddress: string; city: string; state: string; country: string; label: string };
+  whatsapp: { phoneNumber: string; message: string; label: string; description: string };
+  family: { title: string; founded: string; owners: string; philosophy: string };
+  ui: { map: { openAria: string; iframeTitle: string; title: string; google: string; waze: string }; aboutAria: string; social: { instagramAria: string; facebookAria: string }; title: string };
+};
 
 const mapLink = contactData.location.mapLink || 'https://maps.app.goo.gl/BXPjN95nZqAvGyiQ7';
 const mapEmbedUrl = contactData.location.mapEmbedUrl || '';

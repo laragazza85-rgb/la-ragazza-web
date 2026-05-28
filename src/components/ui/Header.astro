@@ -2,6 +2,7 @@
 // src/components/ui/Header.astro
 import { useTranslations } from '../../i18n/utils';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import { getLabelsData } from '../../lib/i18n-data';
 
 interface Props {
     lang?: string;
@@ -10,7 +11,7 @@ interface Props {
 
 const lang = (Astro.props.lang || 'es') as 'es' | 'en';
 const t = useTranslations(lang);
-const labelsData = await import(`../../data/${lang}/labels.json`).then(m => m.default);
+const labelsData = getLabelsData(lang) as { brand: { name: string }; header: { mobileMenuAria: string; reserve: string } };
 
 const navItems = [
     { name: t('nav.home'), path: `/${lang}/` },

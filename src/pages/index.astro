@@ -1,5 +1,7 @@
 ---
-const redirectsData = await import('../data/es/redirects.json').then((m) => m.default as any);
+import { getRedirectsData } from '../lib/i18n-data';
+
+const redirectsData = getRedirectsData() as { home: { lang: string; title: string; message: string; path: string } };
 const redirectData = redirectsData.home;
 ---
 
@@ -14,6 +16,5 @@ const redirectData = redirectsData.home;
 </head>
 <body>
   <p>{redirectData.message}</p>
-  <script define:vars={{ redirectPath: redirectData.path }}>window.location.href=redirectPath;</script>
 </body>
 </html>
