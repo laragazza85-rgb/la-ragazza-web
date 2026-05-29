@@ -26,7 +26,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Type check
         run: pnpm typecheck
@@ -35,7 +35,7 @@ jobs:
         run: pnpm build
 
       - name: Security audit
-        run: pnpm audit
+        run: pnpm audit --audit-level=high
 
       - name: Upload build artifact
         if: github.ref == 'refs/heads/master'

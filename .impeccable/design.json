@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-29T18:50:18Z",
+  "title": "Design System: La Ragazza Web",
+  "extensions": {
+    "colorMeta": {
+      "house-bordeaux": {
+        "role": "primary",
+        "displayName": "House Bordeaux",
+        "canonical": "#662a2a",
+        "tonalRamp": [
+          "#1f0c0c",
+          "#311313",
+          "#451b1b",
+          "#5a2424",
+          "#662a2a",
+          "#8a4e4e",
+          "#b58686",
+          "#e8dddd"
+        ]
+      },
+      "cellar-brown": {
+        "role": "secondary",
+        "displayName": "Cellar Brown",
+        "canonical": "#331717",
+        "tonalRamp": [
+          "#120808",
+          "#1d0d0d",
+          "#261111",
+          "#2d1414",
+          "#331717",
+          "#573b3b",
+          "#8e7777",
+          "#d7cdcd"
+        ]
+      },
+      "olive-leaf": {
+        "role": "tertiary",
+        "displayName": "Olive Leaf",
+        "canonical": "#749f62",
+        "tonalRamp": [
+          "#1d2a18",
+          "#2e4326",
+          "#3f5d35",
+          "#567a49",
+          "#749f62",
+          "#8db57e",
+          "#b4d0ab",
+          "#e4efe1"
+        ]
+      },
+      "linen-surface": {
+        "role": "neutral",
+        "displayName": "Linen Surface",
+        "canonical": "#f8f7f6",
+        "tonalRamp": [
+          "#262524",
+          "#3a3938",
+          "#5a5957",
+          "#7d7b79",
+          "#a09f9c",
+          "#c5c3c1",
+          "#e3e1df",
+          "#f8f7f6"
+        ]
+      },
+      "porcelain-white": {
+        "role": "neutral",
+        "displayName": "Porcelain White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#2a2a2a",
+          "#404040",
+          "#626262",
+          "#858585",
+          "#a8a8a8",
+          "#cdcdcd",
+          "#ededed",
+          "#ffffff"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero and marquee section headlines."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section anchors and major transitions."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles and interaction triggers."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Narrative copy and long-form readability."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Navigation labels and compact controls."
+      }
+    },
+    "shadows": [
+      {
+        "name": "interactive-lift",
+        "value": "0 10px 22px rgba(51, 23, 23, 0.2)",
+        "purpose": "Primary CTA hover feedback."
+      },
+      {
+        "name": "card-lift",
+        "value": "0 14px 28px rgba(51, 23, 23, 0.14)",
+        "purpose": "Menu card hover depth."
+      },
+      {
+        "name": "press-feedback",
+        "value": "0 4px 12px rgba(51, 23, 23, 0.15)",
+        "purpose": "Active press confirmation."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Primary enter and hover easing."
+      },
+      {
+        "name": "ease-in-out-expo",
+        "value": "cubic-bezier(0.87, 0, 0.13, 1)",
+        "purpose": "Balanced in-out transitions."
+      },
+      {
+        "name": "ease-spring",
+        "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "purpose": "Expressive micro-motion moments."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "High-intent CTA with warm tactile feedback.",
+      "html": "<button class=\"ds-btn-primary\">Reserve table</button>",
+      "css": ".ds-btn-primary { background: var(--color-ragazza-primary, #662a2a); color: #ffffff; border: 0; border-radius: 9999px; padding: 0.75rem 1.5rem; font-family: var(--font-cinzel, 'Cinzel', serif); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1), background-color 160ms ease; } .ds-btn-primary:hover { background: var(--color-ragazza-dark, #331717); transform: translateY(-2px); box-shadow: 0 10px 22px rgba(51, 23, 23, 0.2); } .ds-btn-primary:active { transform: scale(0.97); box-shadow: 0 4px 12px rgba(51, 23, 23, 0.15); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-ragazza-accent, #749f62); outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary CTA used in navigation and map actions.",
+      "html": "<button class=\"ds-btn-outline\">Open map</button>",
+      "css": ".ds-btn-outline { background: #ffffff; color: var(--color-ragazza-primary, #662a2a); border: 1px solid color-mix(in srgb, var(--color-ragazza-primary, #662a2a) 40%, transparent); border-radius: 9999px; padding: 0.75rem 1.25rem; font-family: var(--font-cinzel, 'Cinzel', serif); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; transition: background-color 160ms ease, color 160ms ease, transform 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-outline:hover { background: var(--color-ragazza-primary, #662a2a); color: #ffffff; transform: translateY(-2px); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-ragazza-accent, #749f62); outline-offset: 2px; }"
+    },
+    {
+      "name": "Menu Card",
+      "kind": "card",
+      "refersTo": "card-menu",
+      "description": "Core menu item container with restrained ornament and hover lift.",
+      "html": "<article class=\"ds-card-menu\"><h3 class=\"ds-card-title\">Spaghetti alla Ragazza</h3><p class=\"ds-card-copy\">Pasta fresca, salsa de la casa y aceite de oliva.</p><span class=\"ds-card-price\">$38.000</span></article>",
+      "css": ".ds-card-menu { position: relative; background: rgba(255, 255, 255, 0.82); border: 1px solid color-mix(in srgb, var(--color-ragazza-primary, #662a2a) 10%, transparent); border-radius: 1.5rem; padding: 1.5rem 1rem; transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-card-menu:hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(51, 23, 23, 0.14); } .ds-card-title { margin: 0 0 0.5rem; font-family: var(--font-cinzel, 'Cinzel', serif); font-size: 1.25rem; color: var(--color-ragazza-primary, #662a2a); } .ds-card-copy { margin: 0; font-family: var(--font-lora, 'Lora', serif); line-height: 1.6; color: color-mix(in srgb, var(--color-ragazza-dark, #331717) 80%, white); } .ds-card-price { display: inline-block; margin-top: 0.75rem; font-family: var(--font-lora, 'Lora', serif); font-weight: 600; color: var(--color-ragazza-dark, #331717); }"
+    },
+    {
+      "name": "Header Nav Link",
+      "kind": "nav",
+      "refersTo": "button-outline",
+      "description": "Desktop navigation link with underline reveal.",
+      "html": "<a class=\"ds-nav-link\" href=\"#\">Menu</a>",
+      "css": ".ds-nav-link { position: relative; display: inline-block; padding-bottom: 0.125rem; color: #ffffff; text-decoration: none; font-family: var(--font-cinzel, 'Cinzel', serif); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; transition: color 200ms ease; } .ds-nav-link::after { content: ''; position: absolute; left: 0; bottom: -0.125rem; width: 0; height: 1px; background: var(--color-ragazza-accent, #749f62); transition: width 200ms ease; } .ds-nav-link:hover { color: var(--color-ragazza-accent, #749f62); } .ds-nav-link:hover::after { width: 100%; } .ds-nav-link:focus-visible { outline: 2px solid var(--color-ragazza-accent, #749f62); outline-offset: 3px; }"
+    },
+    {
+      "name": "Social Icon Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Circular icon control for social links and quick actions.",
+      "html": "<button class=\"ds-social-btn\" aria-label=\"Instagram\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7.75 2h8.5A5.757 5.757 0 0 1 22 7.75v8.5A5.757 5.757 0 0 1 16.25 22h-8.5A5.757 5.757 0 0 1 2 16.25v-8.5A5.757 5.757 0 0 1 7.75 2Zm0 1.8A3.955 3.955 0 0 0 3.8 7.75v8.5a3.955 3.955 0 0 0 3.95 3.95h8.5a3.955 3.955 0 0 0 3.95-3.95v-8.5a3.955 3.955 0 0 0-3.95-3.95h-8.5Zm8.85 1.35a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z\"/></svg></button>",
+      "css": ".ds-social-btn { display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; border: 1px solid color-mix(in srgb, var(--color-ragazza-primary, #662a2a) 20%, transparent); color: var(--color-ragazza-primary, #662a2a); background: #ffffff; transition: background-color 300ms ease, color 300ms ease; } .ds-social-btn svg { width: 1.25rem; height: 1.25rem; fill: currentColor; } .ds-social-btn:hover { background: var(--color-ragazza-primary, #662a2a); color: #ffffff; } .ds-social-btn:focus-visible { outline: 2px solid var(--color-ragazza-accent, #749f62); outline-offset: 2px; }"
+    },
+    {
+      "name": "FAQ Item",
+      "kind": "custom",
+      "refersTo": "card-menu",
+      "description": "Accordion row with question prominence and compact transition state.",
+      "html": "<article class=\"ds-faq-item\"><button class=\"ds-faq-trigger\" aria-expanded=\"false\"><span>Do you have vegetarian options?</span><span class=\"ds-faq-icon\">+</span></button><p class=\"ds-faq-answer\">Yes, we label vegetarian options directly in menu sections.</p></article>",
+      "css": ".ds-faq-item { border: 1px solid color-mix(in srgb, var(--color-ragazza-primary, #662a2a) 10%, transparent); background: color-mix(in srgb, var(--color-ragazza-bg, #f8f7f6) 40%, #ffffff); padding: 1.25rem; } .ds-faq-trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 0; background: transparent; color: var(--color-ragazza-primary, #662a2a); font-family: var(--font-cinzel, 'Cinzel', serif); font-size: 1.125rem; text-align: left; cursor: pointer; } .ds-faq-icon { color: var(--color-ragazza-accent, #749f62); transition: transform 200ms ease; } .ds-faq-trigger[aria-expanded='true'] .ds-faq-icon { transform: rotate(45deg); } .ds-faq-answer { margin: 0.75rem 0 0; font-family: var(--font-lora, 'Lora', serif); line-height: 1.6; color: color-mix(in srgb, var(--color-ragazza-dark, #331717) 80%, white); } .ds-faq-trigger:focus-visible { outline: 2px solid var(--color-ragazza-accent, #749f62); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Family Table",
+    "overview": "This system is warm and welcoming with handcrafted details. It should feel like stepping into a trusted neighborhood dining room, where every surface carries care and familiarity.\n\nVisual language combines deep bordeaux anchors, soft cream breathing room, and olive accents used as punctuation. Typography pairs ceremonial display moments with readable editorial body copy so menus and contact actions stay clear while brand character remains present.\n\nThe system must project authenticity over costume. It explicitly rejects visuals that feel theatrical, generic, or emotionally cold.",
+    "keyCharacteristics": [
+      "Strong hospitality tone, never transactional-first.",
+      "High readability with elegant serif hierarchy.",
+      "Accent color used with intent, not constant saturation.",
+      "Motion and hover feedback that feel tactile and welcoming.",
+      "Bilingual parity in rhythm, spacing, and hierarchy."
+    ],
+    "rules": [
+      {
+        "name": "The House Accent Rule",
+        "body": "Olive Leaf appears as punctuation, not as the dominant field, so emphasis remains legible and intentional.",
+        "section": "colors"
+      },
+      {
+        "name": "The Hospitality Contrast Rule",
+        "body": "Body and supporting text stays in deep ink-adjacent tones over light surfaces to preserve WCAG AA readability.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Voice Rule",
+        "body": "Cinzel speaks for structure and emphasis, Lora speaks for narrative and comfort.",
+        "section": "typography"
+      },
+      {
+        "name": "The Legibility-First Rule",
+        "body": "Decorative hierarchy never lowers body contrast or reading pace.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-Until-Intent Rule",
+        "body": "Surfaces stay quiet until user intent, then elevate briefly to confirm interaction.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep hospitality tone visible in every primary section through clear hierarchy and warm contrast (#662a2a, #331717, #f8f7f6).",
+      "Do use Olive Leaf (#749f62) as targeted emphasis on dividers, highlights, and state cues.",
+      "Do preserve tactile interaction feedback (lift on hover, press compression on active).",
+      "Do keep bilingual screens structurally equivalent so Spanish and English experiences feel equally authored."
+    ],
+    "donts": [
+      "Don't use overly rustic or cliché “Italian stereotype” aesthetics that feel theatrical instead of authentic.",
+      "Don't use generic SaaS-style marketing composition patterns that flatten local identity.",
+      "Don't use cold, minimal monochrome presentation that removes warmth and hospitality.",
+      "Don't reduce body contrast into low-ink tints on cream surfaces just to appear elegant."
+    ]
+  }
+}
