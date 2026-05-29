@@ -1,50 +1,66 @@
 # Restaurante La Ragazza
 
 ## About
-La Ragazza is an authentic Italian restaurant in Villavicencio, Meta, Colombia. Family-owned and operated since 1985, specializing in homemade pasta and traditional Italian recipes.
+La Ragazza es un restaurante italiano auténtico en Villavicencio, Meta, Colombia. Familiar y artesanal desde 1985, especializado en pasta fresca hecha en casa y recetas tradicionales italianas. La familia López Cortés prepara cada plato con ingredientes frescos y el amor de la cocina italiana tradicional.
 
 ## Core Information
 - **Name:** Restaurante La Ragazza
-- **Type:** Italian Restaurant (Family-style, Artisanal)
+- **Type:** Restaurante Italiano (Familiar, Artesanal)
 - **Location:** Calle 19 #39-66, Barrio Camoa, Villavicencio, Meta, Colombia
-- **Phone:** +57 313 349 4150
+- **Phone/WhatsApp:** +57 313 349 4150
 - **Price Range:** $$ (50,000-60,000 COP per person)
 - **Established:** 1985
+- **Owners:** Carolina y Mauricio López Cortés
 
-## Hours
-- Monday: Closed
-- Tuesday - Friday: 12:00-15:00, 18:00-21:30
-- Saturday: 12:00-15:30, 18:00-21:30
-- Sunday: 12:00-17:30
+## Hours / Horarios
+- Monday/Lunes: Closed/Cerrado
+- Tuesday - Friday/Martes - Viernes: 12:00-15:00, 18:00-21:30
+- Saturday/Sábado: 12:00-15:30, 18:00-21:30
+- Sunday/Domingo: 12:00-17:30
 
-## Specialties
-- Homemade fresh pasta (100% artisanal)
-- Traditional Italian lasagna
-- Tournedos (beef tenderloin)
-- Italian desserts (Panna Cotta, Tiramisu)
-- House wine selection
+## Specialties / Especialidades
+- Pasta fresca hecha en casa (100% artesanal)
+- Lasaña italiana tradicional
+- Tournedos (lomo哚
+- Postres italianos (Panna Cotta, Tiramisú)
+- Selección de vinos de la casa
 
-## Keywords
-Italian restaurant Villavicencio, homemade pasta, artisanal Italian food, family restaurant Colombia, authentic Italian cuisine, La Ragazza, pasta fresca, comida italiana casera, restaurante familiar
+## Why Choose Us / Por Qué Elegirnos
+- **Pasta Fresca Diario:** Elaboramos nuestra pasta fresca cada día con las mejores harinas y huevos seleccionados
+- **Recetas Tradicionales:** Más de 40 años de tradición culinaria italiana con técnicas heredadas de generación en generación
+- **Ingredientes Selectos:** Solo usamos ingredientes frescos y de alta calidad
+- **Ambiente Familiar:** Un espacio acogedor donde cada cliente es tratado como parte de nuestra familia
 
-## Menu
-Full menu available at: https://la-ragazza-web.vercel.app/es/menu
+## Customer Reviews / Testimonios
+- "Es un sitio muy especial, con una tradición maravillosa de calidad y buen servicio"
+- "El mejor restaurante de Villavicencio, Mauricio es lo máximo"
+- "Excelente atención, delicioso menú, lasaña exquisita"
+- Average Rating: 4.5/5 (218 reviews on Google)
 
-## Reservations
-Contact via WhatsApp: +57 313 349 4150
+## Menu / Carta
+Full menu available at / Carta completa en: https://la-ragazza-web.vercel.app/es/menu
+
+## Gallery / Galería
+https://la-ragazza-web.vercel.app/es/gallery
+
+## About Us / Nosotros
+https://la-ragazza-web.vercel.app/es/about
+
+## Reservations / Reservaciones
+Contact via WhatsApp / Contacto por WhatsApp: +57 313 349 4150
+https://la-ragazza-web.vercel.app/es/#contact
 
 ## Social Media
 - Instagram: https://www.instagram.com/laragazza85/
 - Facebook: https://www.facebook.com/laragazza85/
 
-## Customer Reviews
-Average Rating: 4.5/5 (218 reviews on Google)
-Customers praise the authentic Italian flavors, family atmosphere, and homemade quality.
+## Language Support / Idiomas
+- Spanish (primary) / Español (principal)
+- English / Inglés
 
-## Language Support
-- Spanish (primary)
-- English
-
-## Contact Page
-https://la-ragazza-web.vercel.app/es/#contact
-
+## Website Structure / Estructura del Sitio
+- Home / Inicio: https://la-ragazza-web.vercel.app/es/
+- Menu / Menú: https://la-ragazza-web.vercel.app/es/menu
+- Gallery / Galería: https://la-ragazza-web.vercel.app/es/gallery
+- About / Nosotros: https://la-ragazza-web.vercel.app/es/about
+- Contact / Contacto: https://la-ragazza-web.vercel.app/es/#contact

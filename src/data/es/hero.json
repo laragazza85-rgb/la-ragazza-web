@@ -1,28 +1,57 @@
 {
   "seo": {
     "title": "La Ragazza | Comida Italiana Artesanal Villavicencio",
-    "description": "Restaurante de comida italiana familiar y artesanal en Villavicencio. Pasta hecha en casa desde 1985. Reserva tu mesa en La Ragazza."
+    "description": "Restaurante italiano familiar y artesanal en Villavicencio desde 1985. Pasta fresca hecha en casa,añas y ravioles. Reserva tu mesa hoy."
   },
   "title": "Restaurante Italiano La Ragazza",
-  "subtitle": "Un rincon de Italia en los Llanos desde 1985",
+  "subtitle": "Un rincón de Italia en los Llanos desde 1985",
   "philosophy": "Fatto en casa",
-  "viewMenu": "Ver Menu",
+  "viewMenu": "Ver Menú",
   "reserveTable": "Reservar Mesa",
   "homeSeoSection": {
     "heading": "Restaurante Italiano en Villavicencio desde 1985",
-    "paragraphOne": "La Ragazza es un restaurante de comida italiana artesanal ubicado en el corazon de Villavicencio, Meta. Desde 1985, nuestra familia Lopez Cortes prepara pasta fresca hecha en casa siguiendo recetas tradicionales italianas.",
-    "paragraphTwo": "Nuestro menu incluye lasanas, ravioles, tournedos y postres como panna cotta. Cada plato se elabora con ingredientes frescos y el amor de la cocina familiar italiana. Somos el lugar perfecto para reservar una mesa especial en Villavicencio.",
+    "paragraphOne": "La Ragazza es un restaurante de comida italiana artesanal ubicado en el corazón de Villavicencio, Meta. Desde 1985, nuestra familia López Cortés prepara pasta fresca hecha en casa siguiendo recetas tradicionales italianas transmitidas de generación en generación.",
+    "paragraphTwo": "Nuestro menú incluyeañas, ravioles, tournedos y postres como panna cotta. Cada plato se elabora con ingredientes frescos y el amor de la cocina familiar italiana. Somos el lugar perfecto para reservar una mesa especial en Villavicencio.",
     "paragraphThree": {
-      "beforeMenuLink": "Ven a descubrir la galeria de nuestros platos y conoce por que La Ragazza es el rincon de Italia favorito en los Llanos.",
-      "menuLinkText": "Explora nuestro menu completo",
+      "beforeMenuLink": "Ven a descubrir la galería de nuestros platos y conoce por qué La Ragazza es el rincón de Italia favorito en los Llanos.",
+      "menuLinkText": "Explora nuestro menú completo",
       "betweenLinks": "y",
       "reserveLinkText": "reserva tu mesa",
       "afterReserveLink": "hoy."
-    }
+    },
+    "testimonials": [
+      {
+        "text": "Es un sitio muy especial, con una tradición maravillosa de calidad y buen servicio"
+      },
+      {
+        "text": "El mejor restaurante de Villavicencio, Mauricio es lo máximo"
+      },
+      {
+        "text": "Excelente atención, delicioso menú, lasaña exquisita"
+      }
+    ],
+    "whyChooseUs": [
+      {
+        "title": "Pasta Fresca Diario",
+        "description": "Elaboramos nuestra pasta fresca cada día con las mejores harinas y huevos seleccionados."
+      },
+      {
+        "title": "Recetas Tradicionales",
+        "description": "Más de 40 años de tradición culinaria italiana con técnicas heredadas de generación en generación."
+      },
+      {
+        "title": "Ingredientes Selectos",
+        "description": "Solo usamos ingredientes frescos y de alta calidad en cada uno de nuestros platos."
+      },
+      {
+        "title": "Ambiente Familiar",
+        "description": "Un espacio acogedor donde cada cliente es tratado como parte de nuestra familia."
+      }
+    ]
   },
   "essence": {
-    "title": "La verdadera tradicion no se inventa,<br/>se hereda.",
-    "description": "Desde 1985, la familia Lopez Cortes ha mantenido intacta la filosofia de cocinar \"como en casa\". Cada pasta es fabricada a mano, cada salsa respeta los tiempos de coccion lentos y cada cliente es recibido como parte de la familia.",
+    "title": "La verdadera tradición no se inventa,<br/>se hereda.",
+    "description": "Desde 1985, la familia López Cortés ha mantenido intacta la filosofía de cocinar \"como en casa\". Cada pasta es fabricada a mano, cada salsa respeta los tiempos de cocción lentos y cada cliente es recibido como parte de la familia.",
     "ctaText": "Descubra nuestra historia",
     "ctaLink": "/es/about"
   },
@@ -33,11 +62,11 @@
     },
     "gallery": {
       "title": "El Ambiente",
-      "subtitle": "Un rincon de Italia"
+      "subtitle": "Un rincón de Italia"
     },
     "reservations": {
       "title": "Reservaciones",
-      "subtitle": "Atencion personalizada"
+      "subtitle": "Atención personalizada"
     }
   }
 }

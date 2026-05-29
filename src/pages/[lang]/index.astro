@@ -105,6 +105,60 @@ const heroData = getHeroData(lang as 'es' | 'en');
             </div>
         </section>
 
+        {/* Section: Why Choose Us */}
+        <section id="porque-elegirnos" aria-labelledby="porque-elegirnos-heading" class="py-24 bg-white px-4 sm:px-6 lg:px-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold">La diferencia La Ragazza</span>
+                    <h2 id="porque-elegirnos-heading" class="font-cinzel text-4xl md:text-5xl text-ragazza-primary mt-4">
+                        {lang === 'es' ? 'Por qué elegirnos' : 'Why choose us'}
+                    </h2>
+                    <div class="sauce-line mx-auto mt-6"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {heroData.homeSeoSection.whyChooseUs.map((item: { title: string; description: string }, index: number) => (
+                        <article class="text-center reveal opacity-0 translate-y-8 transition-all duration-1000" style={`animation-delay: ${index * 100}ms`}>
+                            <div class="w-16 h-16 mx-auto mb-6 bg-ragazza-bg rounded-full flex items-center justify-center">
+                                <svg class="w-8 h-8 text-ragazza-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    {index === 0 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />}
+                                    {index === 1 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />}
+                                    {index === 2 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />}
+                                    {index === 3 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />}
+                                </svg>
+                            </div>
+                            <h3 class="font-cinzel text-xl text-ragazza-dark mb-3">{item.title}</h3>
+                            <p class="font-lora text-ragazza-secondary/80 text-sm leading-relaxed">{item.description}</p>
+                        </article>
+                    ))}
+                </div>
+            </div>
+        </section>
+
+        {/* Section: Testimonials */}
+        <section id="testimonios" aria-labelledby="testimonios-heading" class="py-24 bg-ragazza-bg px-4 sm:px-6 lg:px-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold">
+                        {lang === 'es' ? 'Lo que dicen nuestros clientes' : 'What our clients say'}
+                    </span>
+                    <h2 id="testimonios-heading" class="font-cinzel text-4xl md:text-5xl text-ragazza-primary mt-4">
+                        {lang === 'es' ? 'Testimonios' : 'Testimonials'}
+                    </h2>
+                    <div class="sauce-line mx-auto mt-6"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {heroData.homeSeoSection.testimonials.map((testimonial: { text: string }, index: number) => (
+                        <article class="bg-white p-8 rounded-lg shadow-sm border border-ragazza-primary/10 reveal opacity-0 translate-y-8 transition-all duration-1000" style={`animation-delay: ${index * 100}ms`}>
+                            <svg class="w-8 h-8 text-ragazza-accent/40 mb-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                            </svg>
+                            <blockquote class="font-lora text-ragazza-secondary/90 italic leading-relaxed">"{testimonial.text}"</blockquote>
+                        </article>
+                    ))}
+                </div>
+            </div>
+        </section>
+
         <FaqSection lang={lang} />
         <Contact lang={lang} />
     </main>
