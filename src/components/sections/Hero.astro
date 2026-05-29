@@ -10,8 +10,7 @@ const lang = (Astro.props.lang || 'es') as 'es' | 'en';
 const heroData = getHeroData(lang);
 ---
 
-<header class="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex flex-col items-center justify-center text-center px-4 pt-28 pb-12 sm:pt-32 sm:pb-20 md:pt-40 overflow-hidden bg-ragazza-secondary">
-    <div class="absolute inset-0 bg-[linear-gradient(180deg,#3b1616_0%,#331717_100%)] z-0"></div>
+<header class="relative min-h-[60vh] sm:min-h-[70vh] md:min-h-[85vh] flex flex-col items-center justify-center text-center px-4 pt-28 pb-12 sm:pt-32 sm:pb-20 md:pt-40 overflow-hidden bg-ragazza-dark">
 
     <div class="relative z-10 max-w-4xl mx-auto flex flex-col items-center motion-fade-up">
 
@@ -26,10 +25,10 @@ const heroData = getHeroData(lang);
         </p>
 
         <div class="mt-8 sm:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4 motion-fade-up" style="animation-delay: 0.28s;">
-            <a href={`/${lang}/menu`} class="btn-elegant px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm bg-white text-ragazza-primary font-cinzel font-bold tracking-wider hover:bg-ragazza-bg">
+            <a href={`/${lang}/menu`} class="btn-elegant px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm bg-white text-ragazza-primary font-cinzel font-bold tracking-wider hover:opacity-90 transition-opacity">
                 {heroData.viewMenu}
             </a>
-            <a href="#contact" class="btn-elegant px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm bg-transparent border border-white text-white font-cinzel font-bold tracking-wider hover:bg-white/10">
+            <a href="#contact" class="btn-elegant px-6 sm:px-8 py-2 sm:py-3 text-xs sm:text-sm bg-transparent border border-white text-white font-cinzel font-bold tracking-wider hover:opacity-70 transition-opacity">
                 {heroData.reserveTable}
             </a>
         </div>

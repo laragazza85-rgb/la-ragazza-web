@@ -29,14 +29,14 @@ const navItems = [
         <div class="flex justify-between items-center h-20 sm:h-24 lg:h-28 transition-all duration-300" id="header-container">
 
             {/* Logo Tipográfico */}
-            <a href={`/${lang}/`} class="font-cinzel text-2xl sm:text-3xl lg:text-4xl font-bold tracking-widest z-50 hover:text-ragazza-accent transition-colors whitespace-nowrap">
+            <a href={`/${lang}/`} class="font-cinzel text-2xl sm:text-3xl lg:text-4xl font-bold tracking-widest z-50 hover:opacity-70 transition-opacity whitespace-nowrap">
                 {labelsData.brand.name}
             </a>
 
             {/* Menú Desktop */}
             <nav class="hidden lg:flex space-x-10">
                 {navItems.map(item => (
-                        <a href={item.path} class="font-cinzel text-sm uppercase tracking-widest hover:text-ragazza-accent transition-colors duration-200 relative group">
+                        <a href={item.path} class="font-cinzel text-sm uppercase tracking-widest hover:opacity-70 transition-opacity duration-200 relative group">
                             {item.name}
                             <span class="absolute -bottom-2 left-0 w-0 h-[1px] bg-ragazza-accent transition-all duration-200 ease-out group-hover:w-full"></span>
                         </a>
@@ -45,7 +45,7 @@ const navItems = [
 
             {/* Botón CTA y Hamburguesa Mobile */}
             <div class="flex items-center gap-6 z-50">
-                <a href="#contact" class="btn-elegant hidden lg:inline-flex border border-white/50 px-6 py-2.5 font-cinzel text-xs uppercase tracking-widest hover:bg-white hover:text-ragazza-primary">
+                <a href="#contact" class="btn-elegant hidden lg:inline-flex border border-white/50 px-6 py-2.5 font-cinzel text-xs uppercase tracking-widest hover:opacity-70 transition-opacity">
                     {labelsData.header.reserve}
                 </a>
 
@@ -53,7 +53,7 @@ const navItems = [
                     <LanguageSwitcher lang={lang} />
                 </div>
 
-                <button id="mobile-menu-btn" class="lg:hidden p-2 text-white hover:text-ragazza-accent transition-colors" aria-label={labelsData.header.mobileMenuAria} aria-expanded="false">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 text-white hover:opacity-70 transition-opacity" aria-label={labelsData.header.mobileMenuAria} aria-expanded="false">
                     <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -67,14 +67,14 @@ const navItems = [
     <div id="mobile-menu" class="lg:hidden fixed inset-0 top-20 sm:top-24 bg-ragazza-dark max-h-screen overflow-y-auto z-40 translate-y-full transition-transform duration-300 ease-out">
         <nav class="flex flex-col px-6 py-8">
             {navItems.map(item => (
-                    <a href={item.path} class="font-cinzel text-2xl sm:text-3xl uppercase tracking-widest text-white border-b border-white/10 py-6 hover:text-ragazza-accent transition-colors duration-200">
+                    <a href={item.path} class="font-cinzel text-2xl sm:text-3xl uppercase tracking-widest text-white border-b border-white/10 py-6 hover:opacity-70 transition-opacity duration-200">
                         {item.name}
                     </a>
             ))}
 
             {/* Language Switcher y Reserve Button en el menú móvil */}
             <div class="pt-8 pb-4 flex justify-between items-center">
-                <a href="#contact" class="btn-elegant border border-white/50 px-4 py-2 font-cinzel text-xs uppercase tracking-widest hover:bg-white hover:text-ragazza-primary text-white">
+                <a href="#contact" class="btn-elegant border border-white/50 px-4 py-2 font-cinzel text-xs uppercase tracking-widest hover:opacity-70 transition-opacity text-white">
                     {labelsData.header.reserve}
                 </a>
                 <LanguageSwitcher lang={lang} />
