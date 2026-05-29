@@ -1,14 +1,13 @@
 ---
 // src/components/sections/Reviews.astro
 import ReviewCard from '../ui/ReviewCard.astro';
-import { getReviewsData, getReviewsUiData } from '../../lib/i18n-data';
+import { getReviewsData, getReviewsUiData, type ReviewsUiData } from '../../lib/i18n-data';
 
 interface Props {
     lang?: string;
 }
 
 interface Review {
-    reviewerName: string;
     text: string;
     stars: number;
 }
@@ -16,13 +15,12 @@ interface Review {
 const lang = (Astro.props.lang || 'es') as 'es' | 'en';
 
 const reviewsRawData = getReviewsData() as { reviews: unknown[] };
-const reviewsUiData = getReviewsUiData(lang);
+const reviewsUiData = getReviewsUiData(lang) as ReviewsUiData;
 
 const sectionTexts = reviewsUiData;
 
 // Mapear reviews al formato esperado, usando el idioma correcto
 let reviews: Review[] = reviewsRawData.reviews.map((review: any) => ({
-    reviewerName: review.reviewerName,
     text: lang === 'es' ? review.text_es : review.text_en,
     stars: review.stars
 }));
@@ -65,7 +63,7 @@ const GOOGLE_MAPS_LINK = sectionTexts.googleMapsLink;
             <div class="overflow-hidden bg-white shadow-2xl relative mx-8 md:mx-0">
                 <div id="reviews-track" class="flex transition-transform duration-700 ease-in-out">
                     {reviews.map((review: Review) => (
-                            <ReviewCard reviewerName={review.reviewerName} text={review.text} stars={review.stars} />
+                            <ReviewCard text={review.text} stars={review.stars} />
                     ))}
                 </div>
             </div>

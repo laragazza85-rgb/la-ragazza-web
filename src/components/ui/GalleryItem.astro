@@ -8,7 +8,7 @@ export interface GalleryMedia {
 }
 
 interface Props {
-    item: GalleryMedia;
+    item: { type: string; src: string; alt: string };
     index: number;
     videoNotSupportedLabel?: string;
 }

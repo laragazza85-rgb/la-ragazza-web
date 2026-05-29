@@ -1,20 +1,22 @@
 @import "tailwindcss";
 
-/* Aquí definimos nuestro Design System para Tailwind v4 */
+/* Design System Tokens */
 @theme {
-    /* Tipografías: Esto generará las clases font-cinzel y font-lora */
     --font-cinzel: 'Cinzel', serif;
     --font-lora: 'Lora', serif;
 
-    /* Colores de marca: Esto generará bg-ragazza-primary, text-ragazza-dark, etc. */
     --color-ragazza-primary: #662a2a;
     --color-ragazza-secondary: #331717;
     --color-ragazza-dark: #331717;
     --color-ragazza-accent: #749f62;
     --color-ragazza-bg: #f8f7f6;
+
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Base global de Tailwind v4 */
+/* Base */
 @layer base {
     body {
         @apply bg-ragazza-bg text-ragazza-dark font-lora antialiased;
@@ -27,7 +29,7 @@
     }
 }
 
-/* Animated title underline that simulates sauce spilling left-to-right. */
+/* Sauce Line Animation */
 .sauce-line {
     position: relative;
     width: 4rem;
@@ -36,7 +38,7 @@
     overflow: hidden;
     background: linear-gradient(90deg, #5f8b4d 0%, #749f62 55%, #8ab87a 100%);
     transform-origin: left center;
-    animation: sauce-fill 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: sauce-fill 0.9s var(--ease-out-expo) both;
 }
 
 .sauce-line::after {
@@ -53,7 +55,7 @@
       radial-gradient(circle at 48% 35%, #5f8b4d 0 40%, transparent 43%);
     filter: blur(0.2px);
     transform: translateY(-50%);
-    animation: sauce-splash 0.9s ease-out both;
+    animation: sauce-splash 0.9s var(--ease-out-expo) both;
 }
 
 @keyframes sauce-fill {
@@ -89,55 +91,41 @@
     }
 }
 
-/* Elegant motion utilities shared across sections/components. */
-@keyframes elegant-fade-up {
-    0% {
-        opacity: 0;
-        transform: translateY(16px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes elegant-float {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-8px);
-    }
-}
-
-@keyframes elegant-sheen {
-    0% {
-        transform: translateX(-130%);
-        opacity: 0;
-    }
-    22% {
-        opacity: 0.25;
-    }
-    55% {
-        opacity: 0.35;
-    }
-    100% {
-        transform: translateX(160%);
-        opacity: 0;
-    }
-}
-
+/* Motion Fade Up - Natural entrance with subtle scale */
 .motion-fade-up {
-    animation: elegant-fade-up 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+    animation: elegant-fade-up 0.6s var(--ease-out-expo) forwards;
 }
 
+@keyframes elegant-fade-up {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Float Animation - Decorative only */
 .motion-float {
     animation: elegant-float 6.2s ease-in-out infinite;
 }
 
+@keyframes elegant-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* Sheen Effect */
+@keyframes elegant-sheen {
+    0% { transform: translateX(-130%); opacity: 0; }
+    22% { opacity: 0.25; }
+    55% { opacity: 0.35; }
+    100% { transform: translateX(160%); opacity: 0; }
+}
+
+/* Card Component */
 .card-elegant {
-    transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+    transition: transform 200ms var(--ease-out-expo), box-shadow 200ms var(--ease-out-expo);
 }
 
 .card-elegant:hover {
@@ -145,6 +133,14 @@
     box-shadow: 0 14px 28px rgba(51, 23, 23, 0.14);
 }
 
+/* Only apply hover on devices that support hover */
+@media (hover: hover) and (pointer: fine) {
+    .card-elegant:hover {
+        transform: translateY(-4px);
+    }
+}
+
+/* Menu Item Card */
 .menu-item-card {
     background: rgba(255, 255, 255, 0.82);
 }
@@ -157,7 +153,7 @@
     pointer-events: none;
     background: radial-gradient(circle at 14% 50%, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0) 62%);
     opacity: 0;
-    transition: opacity 300ms ease, transform 300ms ease;
+    transition: opacity 200ms ease, transform 200ms ease;
     transform: scale(0.98);
 }
 
@@ -171,10 +167,11 @@
     z-index: 1;
 }
 
+/* Button Component - Elegant with press feedback */
 .btn-elegant {
     position: relative;
     overflow: hidden;
-    transition: transform 250ms ease, box-shadow 250ms ease;
+    transition: transform 160ms var(--ease-out-expo), box-shadow 160ms var(--ease-out-expo);
 }
 
 .btn-elegant::after {
@@ -192,14 +189,51 @@
     box-shadow: 0 10px 22px rgba(51, 23, 23, 0.2);
 }
 
+/* Press feedback - critical for responsiveness */
+.btn-elegant:active {
+    transform: scale(0.97) translateY(0);
+    box-shadow: 0 4px 12px rgba(51, 23, 23, 0.15);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .btn-elegant:hover {
+        transform: translateY(-2px);
+    }
+}
+
+/* Link Component */
 .link-elegant {
-    transition: color 250ms ease, letter-spacing 250ms ease;
+    transition: color 160ms ease, letter-spacing 160ms ease;
 }
 
 .link-elegant:hover {
     letter-spacing: 0.06em;
 }
 
+/* Review Card Stars */
+.review-stars {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.review-star-filled {
+    fill: #F59E0B;
+}
+
+.review-star-empty {
+    fill: #E5E7EB;
+}
+
+.review-text {
+    color: #331717;
+}
+
+.review-author {
+    color: #662a2a;
+}
+
+/* Accessibility: Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
     .motion-fade-up,
     .motion-float,
@@ -211,5 +245,10 @@
     .sauce-line::after {
         animation: none !important;
         transition: none !important;
+    }
+
+    .motion-fade-up {
+        opacity: 1;
+        transform: none;
     }
 }

@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { category, lang = 'es' } = Astro.props;
-const labelsData = getLabelsData(lang) as { menu: { vegetarianBadge: string; sauces: { roja: string; blanca: string } } };
+const labelsData = getLabelsData(lang as 'es' | 'en') as { menu: { vegetarian: string; options: string } };
 ---
 
 <section

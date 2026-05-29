@@ -5,7 +5,7 @@ import Hero from '../../components/sections/Hero.astro';
 import Contact from '../../components/sections/Contact.astro';
 import Footer from '../../components/ui/Footer.astro';
 import FaqSection from '../../components/sections/FaqSection.astro';
-import { getHeroData } from '../../lib/i18n-data';
+import { getHeroData, getReviewsData } from '../../lib/i18n-data';
 
 export function getStaticPaths() {
     return [
@@ -16,6 +16,10 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params;
 const heroData = getHeroData(lang as 'es' | 'en');
+const reviewsData = getReviewsData() as { reviews: { text_es: string; text_en: string }[] };
+const allReviews = reviewsData.reviews;
+const shuffled = allReviews.sort(() => Math.random() - 0.5);
+const randomReviews = shuffled.slice(0, 3);
 ---
 
 <Layout
@@ -51,16 +55,16 @@ const heroData = getHeroData(lang as 'es' | 'en');
         </section>
 
         {/* Section: The Essence (Initial Storytelling) */}
-        <section class="py-24 bg-ragazza-bg px-4 sm:px-6 lg:px-8 text-center reveal opacity-0 translate-y-8 transition-all duration-1000">
+        <section class="py-24 bg-ragazza-bg px-4 sm:px-6 lg:px-8 text-center reveal opacity-0 translate-y-8 transition-all duration-300">
             <div class="max-w-3xl mx-auto">
-                <svg class="w-8 h-8 mx-auto text-ragazza-accent mb-6 opacity-80" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                <svg class="w-8 h-8 mx-auto text-ragazza-accent mb-6 opacity-80" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
                 <h2 class="font-cinzel text-3xl md:text-5xl text-ragazza-primary leading-tight mb-8">
                     <Fragment set:html={heroData.essence.title} />
                 </h2>
                 <p class="font-lora text-lg md:text-xl text-ragazza-secondary/80 italic leading-relaxed">
                     {heroData.essence.description}
                 </p>
-                <a href={heroData.essence.ctaLink} class="inline-block mt-10 font-cinzel text-sm text-ragazza-primary font-bold uppercase tracking-widest border-b border-ragazza-primary pb-1 hover:text-ragazza-accent hover:border-ragazza-accent transition-colors">
+                <a href={heroData.essence.ctaLink} class="link-elegant inline-block mt-10 font-cinzel text-sm text-ragazza-primary font-bold uppercase tracking-widest border-b border-ragazza-primary pb-1 hover:text-ragazza-accent hover:border-ragazza-accent">
                     {heroData.essence.ctaText}
                 </a>
             </div>
@@ -72,9 +76,9 @@ const heroData = getHeroData(lang as 'es' | 'en');
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                     {/* Card 1: Menu */}
-                    <a href={`/${lang}/menu`} class="group relative h-[450px] overflow-hidden reveal opacity-0 translate-y-8 transition-all duration-1000">
-                        <div class="absolute inset-0 bg-ragazza-primary/20 transition-all duration-700 group-hover:bg-ragazza-dark/40 z-10"></div>
-                        <div class="absolute inset-0 bg-ragazza-secondary transition-transform duration-1000 group-hover:scale-105"></div>
+                    <a href={`/${lang}/menu`} class="group relative h-[450px] overflow-hidden reveal opacity-0 translate-y-8 transition-all duration-300">
+                        <div class="absolute inset-0 bg-ragazza-primary/20 transition-all duration-200 group-hover:bg-ragazza-dark/40 z-10"></div>
+                        <div class="absolute inset-0 bg-ragazza-secondary transition-transform duration-200 group-hover:scale-105"></div>
                         <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
                             <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.menu.title}</h3>
                             <p class="font-lora text-white/80 italic">{heroData.cards.menu.subtitle}</p>
@@ -82,9 +86,9 @@ const heroData = getHeroData(lang as 'es' | 'en');
                     </a>
 
                     {/* Card 2: Gallery */}
-                    <a href={`/${lang}/gallery`} class="group relative h-[450px] overflow-hidden reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">
-                        <div class="absolute inset-0 bg-ragazza-accent/20 transition-all duration-700 group-hover:bg-ragazza-dark/40 z-10"></div>
-                        <div class="absolute inset-0 bg-ragazza-primary transition-transform duration-1000 group-hover:scale-105"></div>
+                    <a href={`/${lang}/gallery`} class="group relative h-[450px] overflow-hidden reveal opacity-0 translate-y-8 transition-all duration-300 delay-100">
+                        <div class="absolute inset-0 bg-ragazza-accent/20 transition-all duration-200 group-hover:bg-ragazza-dark/40 z-10"></div>
+                        <div class="absolute inset-0 bg-ragazza-primary transition-transform duration-200 group-hover:scale-105"></div>
                         <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
                             <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.gallery.title}</h3>
                             <p class="font-lora text-white/80 italic">{heroData.cards.gallery.subtitle}</p>
@@ -92,9 +96,9 @@ const heroData = getHeroData(lang as 'es' | 'en');
                     </a>
 
                     {/* Card 3: Reservations */}
-                    <a href="#contact" class="group relative h-[450px] overflow-hidden md:col-span-2 lg:col-span-1 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200">
-                        <div class="absolute inset-0 bg-ragazza-dark/20 transition-all duration-700 group-hover:bg-ragazza-dark/60 z-10"></div>
-                        <div class="absolute inset-0 bg-[#4a1f1f] transition-transform duration-1000 group-hover:scale-105"></div>
+                    <a href="#contact" class="group relative h-[450px] overflow-hidden md:col-span-2 lg:col-span-1 reveal opacity-0 translate-y-8 transition-all duration-300 delay-200">
+                        <div class="absolute inset-0 bg-ragazza-dark/20 transition-all duration-200 group-hover:bg-ragazza-dark/60 z-10"></div>
+                        <div class="absolute inset-0 bg-[#4a1f1f] transition-transform duration-200 group-hover:scale-105"></div>
                         <div class="absolute inset-0 z-20 flex flex-col items-center justify-center p-8 text-center border border-white/20 m-4">
                             <h3 class="font-cinzel text-3xl text-white mb-2">{heroData.cards.reservations.title}</h3>
                             <p class="font-lora text-white/80 italic">{heroData.cards.reservations.subtitle}</p>
@@ -117,7 +121,7 @@ const heroData = getHeroData(lang as 'es' | 'en');
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {heroData.homeSeoSection.whyChooseUs.map((item: { title: string; description: string }, index: number) => (
-                        <article class="text-center reveal opacity-0 translate-y-8 transition-all duration-1000" style={`animation-delay: ${index * 100}ms`}>
+                        <article class="text-center reveal opacity-0 translate-y-8 transition-all duration-300" style={`animation-delay: ${index * 100}ms`}>
                             <div class="w-16 h-16 mx-auto mb-6 bg-ragazza-bg rounded-full flex items-center justify-center">
                                 <svg class="w-8 h-8 text-ragazza-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                     {index === 0 && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />}
@@ -147,12 +151,12 @@ const heroData = getHeroData(lang as 'es' | 'en');
                     <div class="sauce-line mx-auto mt-6"></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {heroData.homeSeoSection.testimonials.map((testimonial: { text: string }, index: number) => (
-                        <article class="bg-white p-8 rounded-lg shadow-sm border border-ragazza-primary/10 reveal opacity-0 translate-y-8 transition-all duration-1000" style={`animation-delay: ${index * 100}ms`}>
+                    {randomReviews.map((review: { text_es: string; text_en: string }, index: number) => (
+                        <article class="bg-white p-8 rounded-lg shadow-sm border border-ragazza-primary/10 reveal opacity-0 translate-y-8 transition-all duration-300" style={`animation-delay: ${index * 100}ms`}>
                             <svg class="w-8 h-8 text-ragazza-accent/40 mb-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
                             </svg>
-                            <blockquote class="font-lora text-ragazza-secondary/90 italic leading-relaxed">"{testimonial.text}"</blockquote>
+                            <blockquote class="font-lora text-ragazza-secondary/90 italic leading-relaxed">"{lang === 'es' ? review.text_es : review.text_en}"</blockquote>
                         </article>
                     ))}
                 </div>
