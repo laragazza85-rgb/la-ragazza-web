@@ -1,7 +1,7 @@
 {
   "seo": {
     "title": "La Ragazza | Artisanal Italian Food Villavicencio",
-    "description": "Family-style Italian restaurant in Villavicencio with homemade pasta and artisanal recipes since 1985. Book your table at La Ragazza."
+    "description": "Authentic family-style Italian restaurant in Villavicencio since 1985. Fresh homemade pasta, traditional lasagnas, ravioli and tournedos. Book your table today."
   },
   "title": "La Ragazza Italian Restaurant",
   "subtitle": "A corner of Italy in the Llanos since 1985",
@@ -10,7 +10,7 @@
   "reserveTable": "Book a Table",
   "homeSeoSection": {
     "heading": "Italian Restaurant in Villavicencio since 1985",
-    "paragraphOne": "La Ragazza is an artisanal Italian restaurant located in the heart of Villavicencio, Meta. Since 1985, our Lopez Cortes family has been preparing fresh homemade pasta following traditional Italian recipes.",
+    "paragraphOne": "La Ragazza is an artisanal Italian restaurant located in the heart of Villavicencio, Meta. Since 1985, our Lopez Cortes family has been preparing fresh homemade pasta following traditional Italian recipes passed down through generations.",
     "paragraphTwo": "Our menu includes lasagnas, ravioli, tournedos, and desserts like panna cotta. Each dish is crafted with fresh ingredients and the love of Italian family cooking. We are the perfect place to book a special table in Villavicencio.",
     "paragraphThree": {
       "beforeMenuLink": "Come discover the gallery of our dishes and see why La Ragazza is the favorite corner of Italy in Los Llanos.",
@@ -18,7 +18,36 @@
       "betweenLinks": "and",
       "reserveLinkText": "book your table",
       "afterReserveLink": "today."
-    }
+    },
+    "testimonials": [
+      {
+        "text": "The best pasta I have ever had in Villavicencio. The atmosphere is family-friendly and the service is exceptional."
+      },
+      {
+        "text": "Since we tried the lasagna at La Ragazza, it has become our favorite restaurant for family celebrations."
+      },
+      {
+        "text": "The pasta is authentically Italian. You can tell it is made with love and family recipes."
+      }
+    ],
+    "whyChooseUs": [
+      {
+        "title": "Fresh Pasta Daily",
+        "description": "We prepare our fresh pasta every day using the finest flour and selected eggs."
+      },
+      {
+        "title": "Traditional Recipes",
+        "description": "Over 40 years of Italian culinary tradition with techniques inherited from generation to generation."
+      },
+      {
+        "title": "Select Ingredients",
+        "description": "We only use fresh, high-quality ingredients in each of our dishes."
+      },
+      {
+        "title": "Family Atmosphere",
+        "description": "A welcoming space where every customer is treated as part of our family."
+      }
+    ]
   },
   "essence": {
     "title": "True tradition is not invented,<br/>it is inherited.",
