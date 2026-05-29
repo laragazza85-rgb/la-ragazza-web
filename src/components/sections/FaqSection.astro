@@ -36,7 +36,7 @@ const faqJsonLd = {
         const buttonId = `faq-button-${lang}-${index}`;
 
         return (
-          <article class="border border-ragazza-primary/10 bg-ragazza-bg/40 p-5 transition-colors duration-300">
+          <article class="border border-ragazza-primary/10 bg-ragazza-bg/40 p-5 transition-colors duration-200">
             <button
               id={buttonId}
               type="button"
@@ -45,12 +45,12 @@ const faqJsonLd = {
               aria-controls={panelId}
             >
               <span>{item.question}</span>
-              <span class="faq-icon text-ragazza-accent transition-transform duration-300">+</span>
+              <span class="faq-icon text-ragazza-accent transition-transform duration-200">+</span>
             </button>
 
             <div
               id={panelId}
-              class="faq-panel overflow-hidden max-h-0 opacity-0 transition-[max-height,opacity] duration-300 ease-in-out"
+              class="faq-panel overflow-hidden max-h-0 opacity-0 transition-[max-height,opacity] duration-200 ease-out"
               role="region"
               aria-labelledby={buttonId}
             >
@@ -62,7 +62,7 @@ const faqJsonLd = {
     </div>
   </div>
 
-  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} is:inline></script>
 </section>
 
 <script>
@@ -72,7 +72,7 @@ const faqJsonLd = {
 
     const items = Array.from(accordion.querySelectorAll('article'));
 
-    const closeItem = (item) => {
+    const closeItem = (item: Element) => {
       const trigger = item.querySelector('.faq-trigger');
       const panel = item.querySelector('.faq-panel');
       const icon = item.querySelector('.faq-icon');
@@ -89,7 +89,7 @@ const faqJsonLd = {
       item.classList.add('bg-ragazza-bg/40');
     };
 
-    const openItem = (item) => {
+    const openItem = (item: Element) => {
       const trigger = item.querySelector('.faq-trigger');
       const panel = item.querySelector('.faq-panel');
       const icon = item.querySelector('.faq-icon');

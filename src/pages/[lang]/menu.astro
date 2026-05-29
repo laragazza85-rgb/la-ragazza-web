@@ -14,8 +14,8 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-const menuData = getMenuData(lang as 'es' | 'en');
-const menuPageData = getMenuPageData(lang as 'es' | 'en') as { seo: { title: string; description: string }; header: unknown; filters: unknown };
+const menuData = getMenuData(lang as 'es' | 'en') as Array<{ id: string; title: string; description?: string; items: Array<{ name: string; description?: string; price: number; isVegetarian?: boolean; sauceOptions?: string[]; notes?: string }> }>;
+const menuPageData = getMenuPageData(lang as 'es' | 'en');
 const filterLabels = menuPageData.filters;
 ---
 
