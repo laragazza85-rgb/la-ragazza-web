@@ -18,12 +18,12 @@ const labelsData = getLabelsData(lang as 'es' | 'en') as { menu: { vegetarian: s
     id={category.id}
     data-menu-category={category.id}
 >
-    <header class="mb-8 text-center sm:text-left border-b border-ragazza-primary/20 pb-4">
-        <h2 class="font-cinzel text-3xl md:text-4xl text-ragazza-primary uppercase tracking-wider">
+    <header class="mb-8 text-center sm:text-left border-b border-ragazza-primary/20 dark:border-white/10 pb-4">
+        <h2 class="font-cinzel text-3xl md:text-4xl text-ragazza-primary dark:text-ragazza-ink uppercase tracking-wider">
             {category.title}
         </h2>
         {category.description && (
-                <p class="font-lora text-ragazza-secondary/70 mt-2 italic">
+                <p class="font-lora text-ragazza-secondary/70 dark:text-ragazza-ink/70 mt-2 italic">
                     {category.description}
                 </p>
         )}

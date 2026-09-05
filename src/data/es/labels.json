@@ -13,7 +13,8 @@
   },
   "header": {
     "reserve": "Reservar",
-    "mobileMenuAria": "Menu"
+    "mobileMenuAria": "Menu",
+    "themeToggleAria": "Cambiar a modo oscuro"
   },
   "footer": {
     "navAria": "Enlaces del pie de pagina",

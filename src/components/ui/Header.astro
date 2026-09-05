@@ -2,6 +2,7 @@
 // src/components/ui/Header.astro
 import { useTranslations } from '../../i18n/utils';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import ThemeToggle from './ThemeToggle.astro';
 import { getLabelsData } from '../../lib/i18n-data';
 
 interface Props {
@@ -49,7 +50,8 @@ const navItems = [
                     {labelsData.header.reserve}
                 </a>
 
-                <div class="hidden lg:block">
+                <div class="hidden lg:flex items-center gap-3">
+                    <ThemeToggle lang={lang} />
                     <LanguageSwitcher lang={lang} />
                 </div>
 
@@ -72,12 +74,15 @@ const navItems = [
                     </a>
             ))}
 
-            {/* Language Switcher y Reserve Button en el menú móvil */}
+            {/* Language Switcher, Theme Toggle y Reserve Button en el menú móvil */}
             <div class="pt-8 pb-4 flex justify-between items-center">
                 <a href="#contact" class="btn-elegant border border-white/50 px-4 py-2 font-cinzel text-xs uppercase tracking-widest hover:opacity-70 transition-opacity text-white">
                     {labelsData.header.reserve}
                 </a>
-                <LanguageSwitcher lang={lang} />
+                <div class="flex items-center gap-3">
+                    <ThemeToggle lang={lang} />
+                    <LanguageSwitcher lang={lang} />
+                </div>
             </div>
         </nav>
     </div>

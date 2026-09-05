@@ -22,11 +22,11 @@ const faqJsonLd = {
 };
 ---
 
-<section class="py-20 bg-white reveal opacity-0 translate-y-8 transition-all duration-1000" aria-labelledby="faq-title">
+<section class="py-20 bg-white dark:bg-ragazza-surface reveal opacity-0 translate-y-8 transition-all duration-1000" aria-labelledby="faq-title">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-10">
       <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold">{faqData.label}</span>
-      <h2 id="faq-title" class="font-cinzel text-3xl md:text-5xl text-ragazza-primary mt-4">{faqData.title}</h2>
+      <h2 id="faq-title" class="font-cinzel text-3xl md:text-5xl text-ragazza-primary dark:text-ragazza-ink mt-4">{faqData.title}</h2>
       <div class="w-16 h-0.5 bg-ragazza-primary/30 mx-auto mt-6"></div>
     </div>
 
@@ -36,11 +36,11 @@ const faqJsonLd = {
         const buttonId = `faq-button-${lang}-${index}`;
 
         return (
-          <article class="border border-ragazza-primary/10 bg-ragazza-bg/40 p-5 transition-colors duration-200">
+          <article class="border border-ragazza-primary/10 dark:border-white/10 bg-ragazza-bg/40 dark:bg-ragazza-surface/60 p-5 transition-colors duration-200">
             <button
               id={buttonId}
               type="button"
-              class="faq-trigger w-full font-cinzel text-ragazza-primary text-lg cursor-pointer flex items-center justify-between gap-4 text-left"
+              class="faq-trigger w-full font-cinzel text-ragazza-primary dark:text-ragazza-ink text-lg cursor-pointer flex items-center justify-between gap-4 text-left"
               aria-expanded="false"
               aria-controls={panelId}
             >
@@ -54,7 +54,7 @@ const faqJsonLd = {
               role="region"
               aria-labelledby={buttonId}
             >
-              <p class="font-lora text-ragazza-secondary/80 mt-4 leading-relaxed">{item.answer}</p>
+              <p class="font-lora text-ragazza-secondary/80 dark:text-ragazza-ink/70 mt-4 leading-relaxed">{item.answer}</p>
             </div>
           </article>
         );
@@ -85,8 +85,8 @@ const faqJsonLd = {
         panel.classList.add('opacity-0');
       });
       icon.classList.remove('rotate-45');
-      item.classList.remove('bg-white');
-      item.classList.add('bg-ragazza-bg/40');
+      item.classList.remove('bg-white', 'dark:bg-ragazza-surface-raised');
+      item.classList.add('bg-ragazza-bg/40', 'dark:bg-ragazza-surface/60');
     };
 
     const openItem = (item: Element) => {
@@ -99,8 +99,8 @@ const faqJsonLd = {
       panel.classList.remove('opacity-0');
       panel.style.maxHeight = `${panel.scrollHeight}px`;
       icon.classList.add('rotate-45');
-      item.classList.remove('bg-ragazza-bg/40');
-      item.classList.add('bg-white');
+      item.classList.remove('bg-ragazza-bg/40', 'dark:bg-ragazza-surface/60');
+      item.classList.add('bg-white', 'dark:bg-ragazza-surface-raised');
     };
 
     items.forEach((item) => {

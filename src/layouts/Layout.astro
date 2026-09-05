@@ -40,6 +40,19 @@ const jsonLd = buildRestaurantJsonLd({
 <html lang={lang} class="scroll-smooth">
 <head>
     <meta charset="UTF-8" />
+    <script is:inline>
+        // Set light/dark before first paint to avoid a flash of the wrong theme.
+        (function () {
+            try {
+                var stored = localStorage.getItem('ragazza-theme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var isDark = stored ? stored === 'dark' : prefersDark;
+                if (isDark) document.documentElement.classList.add('dark');
+            } catch (e) {
+                // localStorage/matchMedia unavailable — default to light.
+            }
+        })();
+    </script>
     <meta name="description" content={description} />
     <meta name="keywords" content={labelsData.layout.metaKeywords} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

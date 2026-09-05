@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Ragazza — Sistema de Diseño (Noche)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap">
+<style>
+  :root{
+    --c-primary:#662a2a;
+    --c-primary-deep:#331717;
+    --c-accent:#749f62;
+    --c-accent-strong:#8db57e;
+    --c-accent-tint:rgba(116,159,98,.16);
+    --c-bg:#1d0d0d;
+    --c-surface:#261111;
+    --c-surface-raised:#2d1414;
+    --c-ink:#f8f7f6;
+    --c-ink-muted:#d7cdcd;
+    --c-ink-faint:#8e7777;
+    --c-border:rgba(255,255,255,.1);
+    --shadow-lift:0 10px 22px rgba(0,0,0,.5);
+    --shadow-card:0 14px 28px rgba(0,0,0,.45);
+    --shadow-press:0 4px 12px rgba(0,0,0,.35);
+    --r-sm:.375rem; --r-md:.75rem; --r-lg:1rem; --r-xl:1.5rem; --r-pill:9999px;
+    --ease-out-expo:cubic-bezier(0.16,1,0.3,1);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--c-bg); color:var(--c-ink);
+    font-family:'Lora',serif; line-height:1.65; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.font-display{font-family:'Cinzel',serif; margin:0;}
+  a{color:inherit;}
+  ::selection{background:var(--c-accent-tint); color:var(--c-ink);}
+
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--c-accent); outline-offset:2px; border-radius:4px;
+  }
+
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:var(--c-primary-deep); color:#fff;
+    border-bottom:1px solid rgba(255,255,255,.1);
+  }
+  .topbar-inner{
+    max-width:1240px; margin:0 auto; padding:0 1.5rem;
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+    height:64px; overflow-x:auto;
+  }
+  .topbar-brand{font-family:'Cinzel',serif; font-weight:700; letter-spacing:.06em; font-size:1.05rem; white-space:nowrap;}
+  .topbar-nav{display:flex; gap:1.4rem; list-style:none; margin:0; padding:0; white-space:nowrap;}
+  .topbar-nav a{
+    font-family:'Cinzel',serif; font-size:.68rem; font-weight:700; letter-spacing:.14em;
+    text-transform:uppercase; opacity:.78; transition:opacity .2s;
+  }
+  .topbar-nav a:hover{opacity:1;}
+  .topbar-toggle{
+    font-family:'Cinzel',serif; font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    border:1px solid rgba(255,255,255,.4); padding:.5rem .9rem; border-radius:var(--r-pill);
+    white-space:nowrap; transition:opacity .2s;
+  }
+  .topbar-toggle:hover{opacity:.7;}
+
+  main{max-width:1240px; margin:0 auto; padding:0 1.5rem;}
+  section{padding:4.5rem 0; border-bottom:1px solid var(--c-border);}
+  section:last-of-type{border-bottom:none;}
+
+  .eyebrow{
+    font-family:'Cinzel',serif; font-weight:700; font-size:.75rem; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--c-accent); display:block; margin-bottom:.75rem;
+  }
+  .section-title{font-size:clamp(1.75rem,3.4vw,2.5rem); font-weight:700; color:var(--c-ink); letter-spacing:.01em;}
+  .section-intro{max-width:62ch; color:var(--c-ink-muted); margin-top:.9rem;}
+  .rule{width:4rem; height:2px; background:var(--c-ink); opacity:.15; margin-top:1.75rem;}
+
+  .hero-note{padding-top:3.5rem;}
+  .hero-note h1{font-size:clamp(2.25rem,5vw,3.75rem); color:var(--c-ink); letter-spacing:.02em; line-height:1.1;}
+  .lead{font-family:'Lora',serif; font-style:italic; font-weight:300; font-size:clamp(1.125rem,1.6vw,1.375rem); color:var(--c-ink-muted); max-width:60ch; margin-top:1.25rem;}
+  .keychars{list-style:none; margin:2.5rem 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:1rem;}
+  .keychars li{
+    background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-lg);
+    padding:1.1rem 1.25rem; font-size:.92rem; color:var(--c-ink-muted);
+  }
+  .keychars li::before{content:'—'; color:var(--c-accent); margin-right:.5rem; font-weight:700;}
+
+  .swatch-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.5rem; margin-top:2.5rem;}
+  .swatch{background:var(--c-surface); border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow-card); border:1px solid var(--c-border);}
+  .swatch-fill{height:110px;}
+  .swatch-body{padding:1.1rem 1.25rem 1.25rem;}
+  .swatch-name{font-family:'Cinzel',serif; font-weight:700; font-size:1rem; color:var(--c-ink);}
+  .swatch-hex{font-family:'Lora',serif; font-size:.8rem; color:var(--c-ink-faint); margin-top:.15rem; letter-spacing:.02em;}
+  .swatch-role{font-size:.78rem; color:var(--c-ink-muted); margin-top:.6rem; line-height:1.5;}
+  .ramp{display:flex; margin-top:.9rem; border-radius:4px; overflow:hidden; height:16px;}
+  .ramp span{flex:1;}
+
+  .surface-note{
+    margin-top:2.5rem; background:var(--c-surface); border:1px solid var(--c-border); border-radius:var(--r-lg);
+    padding:1.5rem 1.75rem; font-size:.85rem; color:var(--c-ink-muted); line-height:1.6;
+  }
+  .surface-note strong{color:var(--c-ink);}
+  .surface-tokens{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1rem; margin-top:2.5rem;}
+  .surface-token{border-radius:var(--r-md); padding:1.25rem 1rem; border:1px solid var(--c-border);}
+  .surface-token-name{font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase;}
+  .surface-token-hex{font-size:.72rem; margin-top:.35rem; opacity:.8;}
+  .tok-bg{background:var(--c-bg); color:var(--c-ink);}
+  .tok-surface{background:var(--c-surface); color:var(--c-ink);}
+  .tok-raised{background:var(--c-surface-raised); color:var(--c-ink);}
+  .tok-ink{background:var(--c-ink); color:var(--c-primary-deep);}
+  .tok-muted{background:var(--c-ink-muted); color:var(--c-primary-deep);}
+
+  .type-row{padding:2rem 0; border-top:1px solid var(--c-border); display:grid; grid-template-columns:1fr; gap:.5rem;}
+  .type-row:first-of-type{border-top:none; padding-top:2.5rem;}
+  .type-sample{color:var(--c-ink);}
+  .type-spec{font-family:'Lora',serif; font-size:.78rem; color:var(--c-ink-faint); letter-spacing:.01em;}
+  .type-spec code{background:rgba(255,255,255,.08); padding:.1rem .4rem; border-radius:4px; font-size:.75rem;}
+
+  .t-display{font-family:'Cinzel',serif; font-weight:700; font-size:clamp(2.25rem,6vw,3.75rem); line-height:1.1; letter-spacing:.04em;}
+  .t-headline{font-family:'Cinzel',serif; font-weight:700; font-size:clamp(1.75rem,4vw,2.75rem); line-height:1.2; letter-spacing:.02em;}
+  .t-title{font-family:'Cinzel',serif; font-weight:700; font-size:1.25rem; line-height:1.3; letter-spacing:.02em;}
+  .t-eyebrow{font-family:'Cinzel',serif; font-weight:700; font-size:.8rem; letter-spacing:.18em; text-transform:uppercase; color:var(--c-accent);}
+  .t-lead{font-family:'Lora',serif; font-style:italic; font-weight:300; font-size:1.375rem; line-height:1.5; color:var(--c-ink);}
+  .t-body{font-family:'Lora',serif; font-weight:400; font-size:1rem; line-height:1.65; max-width:62ch; color:var(--c-ink);}
+  .t-label{font-family:'Cinzel',serif; font-weight:700; font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; color:var(--c-ink);}
+  .t-caption{font-family:'Lora',serif; font-size:.8125rem; line-height:1.5; color:var(--c-ink-muted);}
+
+  .row{display:flex; flex-wrap:wrap; gap:1rem; align-items:center; margin-top:1.75rem;}
+  .row-label{font-family:'Cinzel',serif; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--c-ink-faint); margin-top:2.5rem;}
+
+  .btn{
+    position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center;
+    font-family:'Cinzel',serif; font-weight:700; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase;
+    padding:.85rem 1.75rem; border-radius:var(--r-pill); cursor:pointer; border:1px solid transparent;
+    transition:transform 160ms var(--ease-out-expo), box-shadow 160ms var(--ease-out-expo), opacity 160ms;
+    text-decoration:none;
+  }
+  .btn::after{
+    content:''; position:absolute; inset:0; width:50%;
+    background:linear-gradient(115deg, transparent 0%, rgba(255,255,255,.28) 45%, transparent 100%);
+    animation:sheen 4.8s ease-in-out infinite; pointer-events:none;
+  }
+  .btn:hover{transform:translateY(-2px); box-shadow:var(--shadow-lift);}
+  .btn:active{transform:scale(.97) translateY(0); box-shadow:var(--shadow-press);}
+  @keyframes sheen{0%{transform:translateX(-130%);opacity:0;}22%{opacity:.25;}55%{opacity:.35;}100%{transform:translateX(160%);opacity:0;}}
+
+  .btn-primary{background:var(--c-primary); color:#fff;}
+  .btn-primary:hover{background:var(--c-primary-deep);}
+  .btn-outline{background:transparent; color:var(--c-ink); border-color:rgba(255,255,255,.4);}
+  .btn-outline:hover{background:rgba(255,255,255,.08);}
+  .btn-ghost{background:transparent; color:var(--c-ink); padding-left:.25rem; padding-right:.25rem; border-radius:0;}
+  .btn-ghost::after{display:none;}
+  .btn-ghost{border-bottom:1px solid transparent;}
+  .btn-ghost:hover{border-color:var(--c-ink); transform:none; box-shadow:none;}
+  .btn[disabled]{opacity:.4; cursor:not-allowed; pointer-events:none;}
+
+  .btn-night-primary{background:#fff; color:var(--c-primary);}
+  .btn-night-outline{background:transparent; color:#fff; border-color:rgba(255,255,255,.5);}
+  .night-chip{background:var(--c-primary-deep); padding:2rem; border-radius:var(--r-lg); display:flex; flex-wrap:wrap; gap:1rem; align-items:center;}
+
+  .focus-demo-note{font-size:.8rem; color:var(--c-ink-faint); margin-top:.6rem;}
+
+  .badge{
+    display:inline-flex; align-items:center; gap:.35rem; font-family:'Lora',serif; font-size:.75rem;
+    font-weight:500; padding:.4rem .8rem; border-radius:var(--r-pill);
+  }
+  .badge-veg{background:var(--c-accent-tint); color:var(--c-accent-strong);}
+  .badge-outline{border:1px solid rgba(255,255,255,.25); color:var(--c-ink-muted); font-style:italic;}
+  .badge-note{background:var(--c-surface-raised); color:var(--c-ink-muted); box-shadow:0 1px 2px rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.08);}
+  .badge-eyebrow-pill{background:var(--c-primary); color:#fff; font-family:'Cinzel',serif; font-size:.65rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; padding:.4rem 1rem;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:2rem; margin-top:2.5rem; align-items:start;}
+  .card{background:var(--c-surface); border-radius:var(--r-xl); transition:transform 200ms var(--ease-out-expo), box-shadow 200ms var(--ease-out-expo);}
+  .card:hover{transform:translateY(-4px); box-shadow:var(--shadow-card);}
+
+  .menu-card{display:flex; gap:1rem; padding:1.25rem; border-bottom:1px solid var(--c-border);}
+  .menu-card-img{
+    flex-shrink:0; width:96px; height:96px; border-radius:var(--r-md); background:rgba(255,255,255,.06);
+    display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.25);
+  }
+  .menu-card-body{flex:1;}
+  .menu-card-top{display:flex; justify-content:space-between; gap:1rem; align-items:baseline;}
+  .menu-card-name{font-family:'Cinzel',serif; font-weight:700; font-size:1.1rem; color:var(--c-ink);}
+  .menu-card-price{font-family:'Lora',serif; font-weight:500; white-space:nowrap;}
+  .menu-card-desc{font-size:.88rem; color:var(--c-ink-muted); margin-top:.4rem; line-height:1.55;}
+  .menu-card-meta{display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.75rem;}
+
+  .review-card{padding:2.5rem 2rem; text-align:center; box-shadow:var(--shadow-card);}
+  .stars{display:flex; gap:.4rem; justify-content:center; margin-bottom:1.25rem;}
+  .review-quote{font-family:'Lora',serif; font-style:italic; font-size:1.15rem; line-height:1.6; color:var(--c-ink);}
+
+  .faq-card{border:1px solid var(--c-border); background:var(--c-surface); padding:1.1rem 1.25rem; border-radius:var(--r-md);}
+  .faq-card.is-open{background:var(--c-surface-raised);}
+  .faq-trigger{width:100%; background:none; border:0; padding:0; display:flex; justify-content:space-between; align-items:center; gap:1rem; cursor:pointer; font-family:'Cinzel',serif; color:var(--c-ink); font-size:1.05rem; text-align:left;}
+  .faq-icon{color:var(--c-accent); transition:transform .2s; flex-shrink:0;}
+  .faq-card.is-open .faq-icon{transform:rotate(45deg);}
+  .faq-panel{overflow:hidden; max-height:0; opacity:0; transition:max-height .2s ease-out, opacity .2s ease-out;}
+  .faq-card.is-open .faq-panel{max-height:200px; opacity:1;}
+  .faq-panel p{margin:.9rem 0 0; font-size:.9rem; color:var(--c-ink-muted);}
+
+  .nav-mock{background:var(--c-primary-deep); border-radius:var(--r-lg); padding:1.5rem 1.75rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-top:2.5rem;}
+  .nav-mock-brand{font-family:'Cinzel',serif; color:#fff; font-weight:700; letter-spacing:.08em; font-size:1.3rem;}
+  .nav-mock-links{display:flex; gap:1.75rem; flex-wrap:wrap;}
+  .nav-mock-links a{font-family:'Cinzel',serif; color:#fff; font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; opacity:.85; position:relative;}
+  .nav-mock-links a:hover{opacity:1;}
+  .nav-mock-links a::after{content:''; position:absolute; left:0; bottom:-6px; width:0; height:1px; background:var(--c-accent); transition:width .2s;}
+  .nav-mock-links a:hover::after{width:100%;}
+
+  .footer-mock{background:var(--c-primary-deep); border-radius:var(--r-lg); padding:1.5rem 1.75rem; margin-top:1.25rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; align-items:center;}
+  .footer-mock-brand{font-family:'Cinzel',serif; color:#fff; font-weight:700;}
+  .footer-mock-copy{font-size:.8rem; color:rgba(248,247,246,.5);}
+
+  .elev-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2rem; margin-top:2.5rem;}
+  .elev-box{background:var(--c-surface-raised); border-radius:var(--r-lg); padding:2rem 1.5rem; text-align:center;}
+  .elev-1{box-shadow:var(--shadow-press);}
+  .elev-2{box-shadow:var(--shadow-card);}
+  .elev-3{box-shadow:var(--shadow-lift);}
+  .elev-label{font-family:'Cinzel',serif; font-size:.78rem; letter-spacing:.06em; color:var(--c-ink); margin-bottom:.4rem;}
+  .elev-code{font-size:.72rem; color:var(--c-ink-faint); display:block; margin-top:.5rem; word-break:break-word;}
+
+  .sauce-line{position:relative; width:5rem; height:.28rem; border-radius:999px; overflow:hidden; background:linear-gradient(90deg,#5f8b4d 0%,#749f62 55%,#8ab87a 100%);}
+  .sauce-line.play{animation:sauce-fill .9s var(--ease-out-expo) both;}
+  @keyframes sauce-fill{0%{transform:scaleX(.08);opacity:.5;}65%{transform:scaleX(1.03);opacity:1;}100%{transform:scaleX(1);opacity:1;}}
+  .replay-btn{margin-top:1.5rem; font-family:'Lora',serif; font-size:.85rem; color:var(--c-accent-strong); background:none; border:1px solid rgba(255,255,255,.25); padding:.5rem 1.1rem; border-radius:var(--r-pill); cursor:pointer;}
+
+  footer.site-end{padding:3rem 1.5rem; text-align:center; font-size:.8rem; color:var(--c-ink-faint);}
+
+  @media (max-width:640px){
+    section{padding:3rem 0;}
+    .topbar-nav{gap:1rem;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="topbar-brand">La Ragazza · Sistema</span>
+    <ul class="topbar-nav">
+      <li><a href="#colores">Colores</a></li>
+      <li><a href="#tipografia">Tipografía</a></li>
+      <li><a href="#botones">Botones</a></li>
+      <li><a href="#insignias">Insignias</a></li>
+      <li><a href="#tarjetas">Tarjetas</a></li>
+      <li><a href="#navegacion">Navegación</a></li>
+      <li><a href="#elevacion">Elevación</a></li>
+      <li><a href="#movimiento">Movimiento</a></li>
+    </ul>
+    <a class="topbar-toggle" href="preview.html">Modo día →</a>
+  </div>
+</div>
+
+<main>
+
+  <section id="overview" class="hero-note">
+    <span class="eyebrow">The Family Table — Evening Service</span>
+    <h1>Sistema de diseño — servicio de noche</h1>
+    <p class="lead">Mismas raíces, luces bajas. Las superficies oscuras vienen de los mismos pasos de rampa tonal que ya calcula <code>.impeccable/design.json</code> — nunca un gris slate genérico.</p>
+    <ul class="keychars">
+      <li>Fondo y tarjetas: pasos oscuros de la rampa Cellar Brown, no negro puro.</li>
+      <li>El acento Olive Leaf no cambia — ya se usa así en el footer activo.</li>
+      <li>Los titulares que eran bordeaux se invierten a Linen Surface para mantener contraste.</li>
+      <li>Los botones no se "invierten": cambian de relleno, tal como ya hace el Hero.</li>
+      <li>Misma tipografía, mismo ritmo, mismo tono hospitalario.</li>
+    </ul>
+  </section>
+
+  <section id="colores">
+    <span class="eyebrow">Paleta</span>
+    <h2 class="section-title">Color</h2>
+    <p class="section-intro">Las cinco marcas de color no cambian de noche — solo cambia qué rol de la rampa se usa para fondo, superficie y texto.</p>
+
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-fill" style="background:#662a2a"></div>
+        <div class="swatch-body">
+          <div class="swatch-name">House Bordeaux</div>
+          <div class="swatch-hex">#662a2a · Primario</div>
+          <div class="swatch-role">Relleno de botones primarios y acentos puntuales. De noche, no se usa como color de texto (bajo contraste sobre fondo oscuro).</div>
+          <div class="ramp">
+            <span style="background:#1f0c0c"></span><span style="background:#311313"></span><span style="background:#451b1b"></span><span style="background:#5a2424"></span><span style="background:#662a2a"></span><span style="background:#8a4e4e"></span><span style="background:#b58686"></span><span style="background:#e8dddd"></span>
+          </div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-fill" style="background:#331717"></div>
+        <div class="swatch-body">
+          <div class="swatch-name">Cellar Brown</div>
+          <div class="swatch-hex">#331717 · Secundario</div>
+          <div class="swatch-role">Esta rampa es la fuente de las superficies nocturnas de abajo (pasos 2-4) y del texto secundario (paso 8).</div>
+          <div class="ramp">
+            <span style="background:#120808"></span><span style="background:#1d0d0d"></span><span style="background:#261111"></span><span style="background:#2d1414"></span><span style="background:#331717"></span><span style="background:#573b3b"></span><span style="background:#8e7777"></span><span style="background:#d7cdcd"></span>
+          </div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-fill" style="background:#749f62"></div>
+        <div class="swatch-body">
+          <div class="swatch-name">Olive Leaf</div>
+          <div class="swatch-hex">#749f62 · Terciario / acento</div>
+          <div class="swatch-role">Acento sin cambios de noche — ya funciona como enlace activo sobre Cellar Brown en el footer real.</div>
+          <div class="ramp">
+            <span style="background:#1d2a18"></span><span style="background:#2e4326"></span><span style="background:#3f5d35"></span><span style="background:#567a49"></span><span style="background:#749f62"></span><span style="background:#8db57e"></span><span style="background:#b4d0ab"></span><span style="background:#e4efe1"></span>
+          </div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-fill" style="background:#f8f7f6"></div>
+        <div class="swatch-body">
+          <div class="swatch-name">Linen Surface</div>
+          <div class="swatch-hex">#f8f7f6 · Neutro</div>
+          <div class="swatch-role">De noche se convierte en el color de texto principal (titulares, cuerpo), invertido sobre las superficies oscuras.</div>
+          <div class="ramp">
+            <span style="background:#262524"></span><span style="background:#3a3938"></span><span style="background:#5a5957"></span><span style="background:#7d7b79"></span><span style="background:#a09f9c"></span><span style="background:#c5c3c1"></span><span style="background:#e3e1df"></span><span style="background:#f8f7f6"></span>
+          </div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-fill" style="background:#ffffff"></div>
+        <div class="swatch-body">
+          <div class="swatch-name">Porcelain White</div>
+          <div class="swatch-hex">#ffffff · Neutro</div>
+          <div class="swatch-role">Reservado para el relleno de botones "night-primary" (ver Botones) — el mismo patrón que ya usa el CTA del Hero.</div>
+          <div class="ramp">
+            <span style="background:#2a2a2a"></span><span style="background:#404040"></span><span style="background:#626262"></span><span style="background:#858585"></span><span style="background:#a8a8a8"></span><span style="background:#cdcdcd"></span><span style="background:#ededed"></span><span style="background:#ffffff"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="surface-note">
+      <strong>Regla de misma familia:</strong> las superficies nocturnas de abajo no son grises inventados — son pasos concretos de la rampa Cellar Brown que ya vive en <code>.impeccable/design.json</code>. Servicio de noche, misma sala.
+    </div>
+    <div class="surface-tokens">
+      <div class="surface-token tok-bg">
+        <div class="surface-token-name">Fondo</div>
+        <div class="surface-token-hex">#1d0d0d</div>
+      </div>
+      <div class="surface-token tok-surface">
+        <div class="surface-token-name">Superficie</div>
+        <div class="surface-token-hex">#261111</div>
+      </div>
+      <div class="surface-token tok-raised">
+        <div class="surface-token-name">Superficie elevada</div>
+        <div class="surface-token-hex">#2d1414</div>
+      </div>
+      <div class="surface-token tok-ink">
+        <div class="surface-token-name">Texto principal</div>
+        <div class="surface-token-hex">#f8f7f6</div>
+      </div>
+      <div class="surface-token tok-muted">
+        <div class="surface-token-name">Texto secundario</div>
+        <div class="surface-token-hex">#d7cdcd</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tipografia">
+    <span class="eyebrow">Jerarquía</span>
+    <h2 class="section-title">Escala tipográfica</h2>
+    <p class="section-intro">Mismos tamaños y tracking que de día. Lo único que cambia es el color: los titulares se leen en Linen Surface, no en bordeaux.</p>
+
+    <div class="type-row">
+      <div class="t-display type-sample">Cucina di Famiglia</div>
+      <div class="type-spec">Display — <code>Cinzel 700</code> · <code>clamp(2.25rem,6vw,5rem)</code> · lh <code>1.1</code> · tracking <code>0.04em</code></div>
+    </div>
+    <div class="type-row">
+      <div class="t-headline type-sample">Nuestra Historia</div>
+      <div class="type-spec">Headline — <code>Cinzel 700</code> · <code>clamp(1.75rem,4vw,3.5rem)</code> · lh <code>1.2</code> · tracking <code>0.02em</code></div>
+    </div>
+    <div class="type-row">
+      <div class="t-title type-sample">Antipasti della Casa</div>
+      <div class="type-spec">Title — <code>Cinzel 700</code> · <code>1.25rem</code> · lh <code>1.3</code></div>
+    </div>
+    <div class="type-row">
+      <div class="t-eyebrow">Preguntas Frecuentes</div>
+      <div class="type-spec">Eyebrow (nuevo) — <code>Cinzel 700</code> · <code>0.8rem</code> · tracking <code>0.18em</code> · Olive Leaf</div>
+    </div>
+    <div class="type-row">
+      <div class="t-lead">"Un lugar que se siente como la mesa de la abuela, con el rigor de una cocina profesional."</div>
+      <div class="type-spec">Lead (nuevo) — <code>Lora 300 italic</code> · <code>1.375rem</code> · lh <code>1.5</code></div>
+    </div>
+    <div class="type-row">
+      <div class="t-body">Pasta fresca hecha a mano cada mañana, salsas reducidas a fuego lento durante horas y un servicio que recuerda tu nombre desde la segunda visita.</div>
+      <div class="type-spec">Body — <code>Lora 400</code> · <code>1rem</code> · lh <code>1.65</code> · ancho de línea ~65-75ch</div>
+    </div>
+    <div class="type-row">
+      <div class="t-label">Reservar Mesa</div>
+      <div class="type-spec">Label — <code>Cinzel 700</code> · <code>0.75rem</code> · tracking <code>0.12em</code> · uppercase</div>
+    </div>
+    <div class="type-row">
+      <div class="t-caption">Fotografía: interior del comedor principal, servicio de temporada 2026.</div>
+      <div class="type-spec">Caption (nuevo) — <code>Lora 400</code> · <code>0.8125rem</code> · ink al 70%</div>
+    </div>
+  </section>
+
+  <section id="botones">
+    <span class="eyebrow">Interacción</span>
+    <h2 class="section-title">Botones</h2>
+    <p class="section-intro">Sobre superficie oscura, el outline y el ghost pasan a borde/texto claro — el mismo ajuste que ya hace <code>Header.astro</code> con su CTA "Reservar".</p>
+
+    <div class="row-label">Sobre superficie oscura (ink invertido)</div>
+    <div class="row">
+      <button class="btn btn-primary">Reservar Mesa</button>
+      <button class="btn btn-outline">Ver el Menú</button>
+      <a href="#" class="btn btn-ghost">Ver galería completa</a>
+      <button class="btn btn-primary" disabled>No disponible</button>
+    </div>
+
+    <div class="row-label">Patrón "night" del Hero (relleno blanco)</div>
+    <div class="night-chip">
+      <button class="btn btn-night-primary">Ver el Menú</button>
+      <button class="btn btn-night-outline">Reservar Mesa</button>
+    </div>
+
+    <div class="row-label">Estado de foco (accesibilidad)</div>
+    <div class="row">
+      <button class="btn btn-outline">Tab hasta aquí →</button>
+    </div>
+    <p class="focus-demo-note">Mismo anillo que de día: <code>2px solid Olive Leaf</code>, <code>offset 2px</code> — el acento no cambia entre temas.</p>
+  </section>
+
+  <section id="insignias">
+    <span class="eyebrow">Metadatos</span>
+    <h2 class="section-title">Insignias &amp; chips</h2>
+    <p class="section-intro">Mismo vocabulario, tonos invertidos. Sigue habiendo un único acento de color.</p>
+    <div class="row">
+      <span class="badge badge-veg">🌿 Vegetariano</span>
+      <span class="badge badge-outline">Salsas: Bolognese, Arrabbiata</span>
+      <span class="badge badge-note">Contiene frutos secos</span>
+      <span class="badge badge-eyebrow-pill">Nuevo en la carta</span>
+    </div>
+  </section>
+
+  <section id="tarjetas">
+    <span class="eyebrow">Contenido</span>
+    <h2 class="section-title">Tarjetas</h2>
+    <p class="section-intro">Las tarjetas usan el paso "Superficie" de la rampa; el hover sube a "Superficie elevada" — la misma jerarquía de elevación, solo que de noche también cambia el fondo, no solo la sombra.</p>
+
+    <div class="card-grid">
+      <div class="card menu-card">
+        <div class="menu-card-img">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </div>
+        <div class="menu-card-body">
+          <div class="menu-card-top">
+            <span class="menu-card-name">Tagliatelle al Tartufo</span>
+            <span class="menu-card-price">€18,50</span>
+          </div>
+          <p class="menu-card-desc">Pasta fresca al huevo, crema de trufa negra de temporada y parmesano 24 meses.</p>
+          <div class="menu-card-meta">
+            <span class="badge badge-veg">🌿 Vegetariano</span>
+            <span class="badge badge-outline">Sin gluten disponible</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card review-card">
+        <div class="stars">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="#749f62"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="#749f62"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="#749f62"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="#749f62"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="rgba(255,255,255,.15)"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </div>
+        <p class="review-quote">"Reconquistó nuestro paladar en la primera cucharada — se siente como comer en casa de un chef italiano."</p>
+      </div>
+
+      <div class="card faq-card" data-faq>
+        <button class="faq-trigger">
+          <span>¿Tienen opciones vegetarianas?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-panel">
+          <p>Sí, las opciones vegetarianas están etiquetadas directamente en cada sección del menú.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="navegacion">
+    <span class="eyebrow">Wayfinding</span>
+    <h2 class="section-title">Navegación</h2>
+    <p class="section-intro">El header y el footer reales ya son permanentemente oscuros — no cambian entre temas, así que se ven idénticos aquí y en <code>preview.html</code>.</p>
+    <div class="nav-mock">
+      <span class="nav-mock-brand">La Ragazza</span>
+      <nav class="nav-mock-links">
+        <a href="#">Inicio</a>
+        <a href="#">Nosotros</a>
+        <a href="#">Menú</a>
+        <a href="#">Galería</a>
+      </nav>
+      <button class="btn btn-night-outline" style="padding:.5rem 1.25rem; font-size:.7rem;">Reservar</button>
+    </div>
+    <div class="footer-mock">
+      <span class="footer-mock-brand">La Ragazza</span>
+      <span class="footer-mock-copy">&copy; 2026 La Ragazza. Todos los derechos reservados.</span>
+    </div>
+  </section>
+
+  <section id="elevacion">
+    <span class="eyebrow">Profundidad</span>
+    <h2 class="section-title">Elevación &amp; sombra</h2>
+    <p class="section-intro">De noche la sombra no puede llevar tinta bordeaux sobre un fondo ya oscuro — se vuelve negra y opaca, pero conserva la misma forma y jerarquía.</p>
+    <div class="elev-grid">
+      <div class="elev-box elev-1">
+        <div class="elev-label">Press Feedback</div>
+        <span class="elev-code">0 4px 12px rgba(0,0,0,.35)</span>
+      </div>
+      <div class="elev-box elev-2">
+        <div class="elev-label">Card Lift</div>
+        <span class="elev-code">0 14px 28px rgba(0,0,0,.45)</span>
+      </div>
+      <div class="elev-box elev-3">
+        <div class="elev-label">Interactive Lift</div>
+        <span class="elev-code">0 10px 22px rgba(0,0,0,.5)</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="movimiento">
+    <span class="eyebrow">Ritmo</span>
+    <h2 class="section-title">Movimiento</h2>
+    <p class="section-intro">La línea de salsa no cambia de noche — sus verdes ya tienen suficiente saturación para leerse sobre fondo oscuro sin ajustes.</p>
+    <div class="sauce-line" id="sauceDemo"></div>
+    <br>
+    <button class="replay-btn" id="replayBtn">Repetir animación</button>
+  </section>
+
+</main>
+
+<footer class="site-end">
+  La Ragazza Web — Sistema de Diseño (Noche) · generado con las skills <code>redesign-existing-projects</code>, <code>design-taste-frontend</code> y <code>high-end-visual-design</code> sobre la base ya existente en <code>DESIGN.md</code>.
+</footer>
+
+<script>
+  document.querySelectorAll('[data-faq]').forEach((card) => {
+    card.querySelector('.faq-trigger').addEventListener('click', () => {
+      card.classList.toggle('is-open');
+    });
+  });
+
+  const replayBtn = document.getElementById('replayBtn');
+  const sauce = document.getElementById('sauceDemo');
+  replayBtn.addEventListener('click', () => {
+    sauce.classList.remove('play');
+    void sauce.offsetWidth;
+    sauce.classList.add('play');
+  });
+  sauce.classList.add('play');
+</script>
+
+</body>
+</html>

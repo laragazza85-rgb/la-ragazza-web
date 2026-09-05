@@ -1,0 +1,69 @@
+---
+// src/components/ui/ThemeToggle.astro
+import { getLabelsData } from '../../lib/i18n-data';
+
+interface Props {
+    lang?: string;
+    class?: string;
+}
+
+const lang = (Astro.props.lang || 'es') as 'es' | 'en';
+const labelsData = getLabelsData(lang) as { header: { themeToggleAria: string } };
+const label = labelsData.header.themeToggleAria;
+const extraClass = Astro.props.class || '';
+---
+
+<button
+    type="button"
+    id="theme-toggle"
+    class:list={['theme-toggle inline-flex items-center justify-center p-2 text-white hover:opacity-70 transition-opacity', extraClass]}
+    aria-label={label}
+    title={label}
+>
+    <svg class="theme-toggle-sun w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1.5M12 19.5V21M4.5 12H3M21 12h-1.5M5.636 5.636l1.06 1.06M17.304 17.304l1.06 1.06M18.364 5.636l-1.06 1.06M6.696 17.304l-1.06 1.06M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+    </svg>
+    <svg class="theme-toggle-moon w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+    </svg>
+</button>
+
+<script>
+    const STORAGE_KEY = 'ragazza-theme';
+
+    const applyIcons = (isDark: boolean) => {
+        document.querySelectorAll('.theme-toggle').forEach((btn) => {
+            btn.querySelector('.theme-toggle-sun')?.classList.toggle('hidden', isDark);
+            btn.querySelector('.theme-toggle-moon')?.classList.toggle('hidden', !isDark);
+        });
+    };
+
+    const initThemeToggle = () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        applyIcons(isDark);
+
+        document.querySelectorAll('.theme-toggle').forEach((btn) => {
+            if ((btn as HTMLElement).dataset.themeInitialized === 'true') return;
+            (btn as HTMLElement).dataset.themeInitialized = 'true';
+
+            btn.addEventListener('click', () => {
+                const nowDark = !document.documentElement.classList.contains('dark');
+                document.documentElement.classList.toggle('dark', nowDark);
+                try {
+                    localStorage.setItem(STORAGE_KEY, nowDark ? 'dark' : 'light');
+                } catch {
+                    // ignore (private browsing / storage blocked)
+                }
+                applyIcons(nowDark);
+            });
+        });
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initThemeToggle);
+    } else {
+        initThemeToggle();
+    }
+
+    document.addEventListener('astro:page-load', initThemeToggle);
+</script>

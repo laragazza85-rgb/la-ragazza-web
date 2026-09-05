@@ -13,7 +13,8 @@
   },
   "header": {
     "reserve": "Reserve",
-    "mobileMenuAria": "Menu"
+    "mobileMenuAria": "Menu",
+    "themeToggleAria": "Switch to dark mode"
   },
   "footer": {
     "navAria": "Footer links",

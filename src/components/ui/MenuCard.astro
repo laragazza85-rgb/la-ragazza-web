@@ -13,7 +13,7 @@ const { item, vegetarianLabel = '', optionsLabel = '' } = Astro.props;
 ---
 
 <article
-    class="menu-item-card card-elegant relative overflow-hidden rounded-2xl px-4 flex flex-col sm:flex-row gap-4 py-6 border-b border-ragazza-primary/10 last:border-b-0 group"
+    class="menu-item-card card-elegant relative overflow-hidden rounded-2xl px-4 flex flex-col sm:flex-row gap-4 py-6 border-b border-ragazza-primary/10 dark:border-white/10 last:border-b-0 group"
     data-menu-item
     data-vegetarian={item.isVegetarian ? 'true' : 'false'}
 >
@@ -32,16 +32,16 @@ const { item, vegetarianLabel = '', optionsLabel = '' } = Astro.props;
     <div class="flex-1 flex flex-col justify-center">
 
         <div class="flex justify-between items-start gap-4">
-            <h3 class="font-cinzel text-lg md:text-xl font-bold text-ragazza-primary group-hover:text-ragazza-accent transition-colors duration-300">
+            <h3 class="font-cinzel text-lg md:text-xl font-bold text-ragazza-primary dark:text-ragazza-ink group-hover:text-ragazza-accent transition-colors duration-300">
                 {item.name}
             </h3>
-            <span class="font-lora font-medium text-ragazza-dark whitespace-nowrap">
+            <span class="font-lora font-medium text-ragazza-ink whitespace-nowrap">
         {formatPrice(item.price)}
       </span>
         </div>
 
         {item.description && (
-                <p class="font-lora text-ragazza-secondary/80 mt-2 text-sm leading-relaxed">
+                <p class="font-lora text-ragazza-secondary/80 dark:text-ragazza-ink/70 mt-2 text-sm leading-relaxed">
                     {item.description}
                 </p>
         )}
@@ -59,13 +59,13 @@ const { item, vegetarianLabel = '', optionsLabel = '' } = Astro.props;
             )}
 
             {item.sauceOptions && (
-                    <span class="text-xs font-lora text-ragazza-primary/70 italic border border-ragazza-primary/20 px-2 py-1 rounded-full">
+                    <span class="text-xs font-lora text-ragazza-primary/70 dark:text-ragazza-ink/70 italic border border-ragazza-primary/20 dark:border-white/20 px-2 py-1 rounded-full">
           {optionsLabel}: {item.sauceOptions.join(', ')}
         </span>
             )}
 
             {item.notes && (
-                    <span class="text-xs font-lora text-ragazza-primary/70 bg-white px-2 py-1 rounded shadow-sm border border-ragazza-primary/5">
+                    <span class="text-xs font-lora text-ragazza-primary/70 dark:text-ragazza-ink/70 bg-ragazza-surface px-2 py-1 rounded shadow-sm border border-ragazza-primary/5 dark:border-white/10">
           {item.notes}
         </span>
             )}

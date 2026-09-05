@@ -25,7 +25,7 @@ const aboutData = getAboutData(lang as 'es' | 'en');
     <div class="pt-40 pb-20 bg-ragazza-bg text-center px-4 relative overflow-hidden">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-ragazza-primary/5 rounded-full blur-3xl -z-10"></div>
         <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold reveal opacity-0 translate-y-8 transition-all duration-1000">{aboutData.header.label}</span>
-        <h1 class="font-cinzel text-5xl md:text-7xl text-ragazza-dark mt-4 mb-6 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">{aboutData.header.title}</h1>
+        <h1 class="font-cinzel text-5xl md:text-7xl text-ragazza-ink mt-4 mb-6 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-100">{aboutData.header.title}</h1>
         <div class="sauce-line mx-auto mt-8 mb-8 reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200"></div>
     </div>
 
@@ -33,11 +33,11 @@ const aboutData = getAboutData(lang as 'es' | 'en');
 
         {/* Block 1: History and Philosophy */}
         <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-32 text-center reveal opacity-0 translate-y-8 transition-all duration-1000 ease-out">
-            <h2 class="font-cinzel text-3xl md:text-4xl text-ragazza-primary mb-8">{aboutData.philosophy.title}</h2>
-            <p class="font-lora text-lg md:text-xl text-ragazza-secondary/80 leading-relaxed italic mb-6">
+            <h2 class="font-cinzel text-3xl md:text-4xl text-ragazza-primary dark:text-ragazza-ink mb-8">{aboutData.philosophy.title}</h2>
+            <p class="font-lora text-lg md:text-xl text-ragazza-secondary/80 dark:text-ragazza-ink/70 leading-relaxed italic mb-6">
                 {aboutData.philosophy.description}
             </p>
-            <p class="font-lora text-lg md:text-xl text-ragazza-secondary/80 leading-relaxed italic">
+            <p class="font-lora text-lg md:text-xl text-ragazza-secondary/80 dark:text-ragazza-ink/70 leading-relaxed italic">
                 {aboutData.philosophy.promise}
             </p>
         </section>
@@ -61,8 +61,8 @@ const aboutData = getAboutData(lang as 'es' | 'en');
                 {/* Text Container */}
                 <div class="reveal opacity-0 translate-y-8 transition-all duration-1000 delay-200">
                     <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold">{aboutData.mauricio.label}</span>
-                    <h2 class="font-cinzel text-4xl lg:text-5xl text-ragazza-dark mt-2 mb-6">{aboutData.mauricio.name}</h2>
-                    <div class="space-y-6 font-lora text-ragazza-secondary/80 leading-relaxed text-lg">
+                    <h2 class="font-cinzel text-4xl lg:text-5xl text-ragazza-ink mt-2 mb-6">{aboutData.mauricio.name}</h2>
+                    <div class="space-y-6 font-lora text-ragazza-secondary/80 dark:text-ragazza-ink/70 leading-relaxed text-lg">
                         {aboutData.mauricio.paragraphs.map((paragraph: string) => (
                             <p>{paragraph}</p>
                         ))}
@@ -78,8 +78,8 @@ const aboutData = getAboutData(lang as 'es' | 'en');
                 {/* Text Container */}
                 <div class="order-2 md:order-1 reveal opacity-0 translate-y-8 transition-all duration-1000">
                     <span class="font-cinzel text-ragazza-accent tracking-widest text-sm uppercase font-bold">{aboutData.carolina.label}</span>
-                    <h2 class="font-cinzel text-4xl lg:text-5xl text-ragazza-dark mt-2 mb-6">{aboutData.carolina.name}</h2>
-                    <div class="space-y-6 font-lora text-ragazza-secondary/80 leading-relaxed text-lg">
+                    <h2 class="font-cinzel text-4xl lg:text-5xl text-ragazza-ink mt-2 mb-6">{aboutData.carolina.name}</h2>
+                    <div class="space-y-6 font-lora text-ragazza-secondary/80 dark:text-ragazza-ink/70 leading-relaxed text-lg">
                         {aboutData.carolina.paragraphs.map((paragraph: string) => (
                             <p>{paragraph}</p>
                         ))}
